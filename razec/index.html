@@ -165,20 +165,31 @@ a{color:var(--primary);text-decoration:none}
 .preview-panel blockquote{border-left:3px solid var(--primary);padding-left:1rem;color:var(--muted);font-style:italic;margin-bottom:.75rem}
 
 /* ── PROMPT PANEL ────────────────────────────────────── */
-.prompt-panel{width:290px;border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--sidebar);flex-shrink:0}
-.prompt-header{padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px}
-.prompt-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px}
-.prompt-explain{font-size:11px;color:var(--muted);line-height:1.5;padding:8px 10px;background:var(--card);border-radius:6px;border:1px solid var(--border)}
-.prompt-preset{padding:7px 10px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:12px;cursor:pointer;text-align:left;transition:all .15s;line-height:1.4}
-.prompt-preset:hover{border-color:var(--primary);color:var(--text)}
-.prompt-result{display:none;flex-direction:column;gap:6px}
+.prompt-panel{width:310px;border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--sidebar);flex-shrink:0}
+.prompt-header{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:6px}
+.prompt-auto-btn{font-size:10px;background:rgba(88,166,255,.15);color:var(--primary);border:1px solid rgba(88,166,255,.3);border-radius:5px;padding:3px 8px;cursor:pointer;white-space:nowrap}
+.prompt-auto-btn:hover{background:rgba(88,166,255,.25)}
+.prompt-cats{display:flex;gap:4px;flex-wrap:wrap;padding:8px 10px;border-bottom:1px solid var(--border)}
+.prompt-cat{font-size:10px;padding:3px 8px;border-radius:99px;border:1px solid var(--border);color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .15s}
+.prompt-cat:hover{border-color:var(--primary);color:var(--primary)}
+.prompt-cat.active{background:var(--primary);color:#000;border-color:transparent;font-weight:600}
+.prompt-body{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:5px}
+.prompt-preset{padding:7px 10px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:11px;cursor:pointer;text-align:left;transition:all .15s;line-height:1.4;display:flex;align-items:flex-start;gap:7px}
+.prompt-preset:hover{border-color:var(--primary);color:var(--text);background:rgba(88,166,255,.05)}
+.prompt-preset-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.prompt-preset-info{}
+.prompt-preset-title{font-weight:600;color:var(--text);font-size:11px;margin-bottom:2px}
+.prompt-preset-desc{font-size:10px;color:var(--muted);line-height:1.3}
+.prompt-result{display:none;flex-direction:column;gap:5px;padding:8px;border-top:1px solid var(--border);background:var(--bg)}
 .prompt-result.show{display:flex}
-.prompt-text{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;font-size:11px;color:#cdd9e5;line-height:1.5;white-space:pre-wrap;max-height:180px;overflow-y:auto}
+.prompt-result-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.prompt-text{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;font-size:11px;color:#cdd9e5;line-height:1.5;white-space:pre-wrap;max-height:160px;overflow-y:auto}
 .prompt-copy{padding:7px;background:var(--primary);color:#000;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;text-align:center;transition:background .15s}
 .prompt-copy:hover{background:#79b8ff}
 .prompt-copy.copied{background:var(--success);color:#fff}
 .prompt-save{padding:7px;background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;text-align:center;transition:all .15s}
 .prompt-save:hover{border-color:var(--success);color:var(--success)}
+.prompt-save.saved{background:rgba(63,185,80,.1);border-color:var(--success);color:var(--success)}
 .prompt-save.saved{background:rgba(63,185,80,.1);border-color:var(--success);color:var(--success)}
 /* Prompts salvos view */
 .saved-prompt-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px}
@@ -392,20 +403,17 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
           </div>
           <div class="preview-panel" id="previewPanel"></div>
           <div class="prompt-panel">
-            <div class="prompt-header">🤖 Gerar Prompt</div>
-            <div class="prompt-body">
-              <div class="prompt-explain">Gera um prompt pronto para copiar e usar no Claude, ChatGPT ou outra IA.</div>
-              <button class="prompt-preset" onclick="gerarPrompt('resumo')">📋 Resumir esta nota</button>
-              <button class="prompt-preset" onclick="gerarPrompt('tarefas')">☑️ Listar tarefas</button>
-              <button class="prompt-preset" onclick="gerarPrompt('melhorar')">✨ Sugerir melhorias</button>
-              <button class="prompt-preset" onclick="gerarPrompt('codigo')">💻 Explicar o código</button>
-              <button class="prompt-preset" onclick="gerarPrompt('perguntas')">❓ Perguntas de revisão</button>
-              <button class="prompt-preset" onclick="gerarPrompt('expandir')">📝 Expandir pontos</button>
-              <div class="prompt-result" id="promptResult">
-                <div class="prompt-text" id="promptText"></div>
-                <button class="prompt-copy" id="promptCopyBtn" onclick="copiarPrompt()">📋 Copiar prompt</button>
-                <button class="prompt-save" id="promptSaveBtn" onclick="salvarPrompt()">💾 Salvar prompt</button>
-              </div>
+            <div class="prompt-header">
+              <span>🤖 Prompts IA</span>
+              <button class="prompt-auto-btn" onclick="autoDetectarCategoria()">✨ Auto-detectar</button>
+            </div>
+            <div class="prompt-cats" id="promptCats"></div>
+            <div class="prompt-body" id="promptBody"></div>
+            <div class="prompt-result" id="promptResult">
+              <div class="prompt-result-label">Prompt gerado</div>
+              <div class="prompt-text" id="promptText"></div>
+              <button class="prompt-copy" id="promptCopyBtn" onclick="copiarPrompt()">📋 Copiar prompt</button>
+              <button class="prompt-save" id="promptSaveBtn" onclick="salvarPrompt()">💾 Salvar prompt</button>
             </div>
           </div>
         </div>
@@ -652,6 +660,7 @@ async function mostrarApp() {
   document.getElementById('loadingScreen').style.display = 'none';
   document.getElementById('appScreen').style.display     = 'flex';
   setupRealtime();
+  initPromptPanel();
 }
 
 let _authMode = 'login';
@@ -1250,7 +1259,208 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 function fmt(b,a){const ta=document.getElementById('editorBody');const s=ta.selectionStart,e=ta.selectionEnd;ta.value=ta.value.slice(0,s)+b+ta.value.slice(s,e)+a+ta.value.slice(e);ta.focus();ta.selectionStart=s+b.length;ta.selectionEnd=e+b.length;triggerAutoSave();}
 
-// PROMPT GENERATOR
+// ═══════════════════════════════════════════════════════════
+// PROMPT GENERATOR — BIBLIOTECA INTELIGENTE
+// ═══════════════════════════════════════════════════════════
+const PROMPT_CATS = [
+  { id:'geral',      icon:'⚡', label:'Geral',      kw:[] },
+  { id:'marketing',  icon:'📊', label:'Marketing',  kw:['marketing','instagram','cliente','venda','produto','marca','campanha','social','conteúdo','engajamento','funil','lead','copy','anúncio','tráfego'] },
+  { id:'negocios',   icon:'💼', label:'Negócios',   kw:['negócio','empresa','startup','gestão','estratégia','reunião','meta','okr','kpi','receita','lucro','sócio','contrato','proposta','pitch'] },
+  { id:'tech',       icon:'💻', label:'Tech',       kw:['código','função','api','bug','deploy','banco','sql','python','javascript','react','sistema','software','backend','frontend','git','docker','aws'] },
+  { id:'educacao',   icon:'📚', label:'Educação',   kw:['estudo','aprender','curso','aula','prova','resumo','matéria','faculdade','concurso','livro','certificado','habilidade'] },
+  { id:'criativo',   icon:'🎨', label:'Criativo',   kw:['ideia','criativo','roteiro','história','personagem','blog','artigo','post','vídeo','podcast','design','branding','narrativa'] },
+  { id:'saude',      icon:'🏥', label:'Saúde',      kw:['saúde','treino','dieta','exercício','médico','suplemento','sono','estresse','ansiedade','bem-estar','alimentação','nutrição'] },
+  { id:'financas',   icon:'💰', label:'Finanças',   kw:['dinheiro','investimento','renda','despesa','orçamento','poupança','dividendo','ação','cripto','imposto','fluxo','patrimônio'] },
+  { id:'projetos',   icon:'🎯', label:'Projetos',   kw:['projeto','prazo','entrega','sprint','backlog','tarefa','equipe','cliente','escopo','risco','cronograma','milestone'] },
+  { id:'juridico',   icon:'⚖️', label:'Jurídico',   kw:['contrato','lei','cláusula','direito','obrigação','responsabilidade','compliance','lgpd','termo','acordo','litígio'] },
+];
+
+const PROMPT_LIB = {
+  geral: [
+    { icon:'📋', title:'Resumo executivo', desc:'Sintetiza em pontos-chave',
+      fn:(t,c)=>`Você é um especialista em síntese de informações. Crie um resumo executivo claro e objetivo da nota abaixo.\n\n**Nota:** ${t}\n\n${c}\n\n**Instruções:**\n- Liste 3-5 pontos principais em tópicos\n- Use linguagem direta e objetiva\n- Destaque insights mais relevantes\n- Finalize com uma conclusão de 1-2 frases` },
+    { icon:'✅', title:'Lista de tarefas', desc:'Extrai e organiza ações pendentes',
+      fn:(t,c)=>`Analise a nota abaixo e extraia todas as tarefas, ações e próximos passos.\n\n**Nota:** ${t}\n\n${c}\n\n**Organize em:**\n🔴 Urgente/Crítico\n🟡 Importante (esta semana)\n🟢 Pode aguardar\n✅ Já concluído\n\nSe não houver tarefas explícitas, sugira quais deveriam ser feitas com base no contexto.` },
+    { icon:'💡', title:'Expandir e aprofundar', desc:'Desenvolve com mais detalhes e exemplos',
+      fn:(t,c)=>`Você é um especialista no assunto abaixo. Expanda este conteúdo com profundidade, exemplos práticos e contexto adicional.\n\n**Nota:** ${t}\n\n${c}\n\n**Inclua:**\n- Explicações mais detalhadas de cada ponto\n- 2-3 exemplos práticos do mundo real\n- Contexto e por que isso é relevante\n- Possíveis desdobramentos ou próximos passos` },
+    { icon:'❓', title:'Perguntas poderosas', desc:'Gera questões para reflexão e estudo',
+      fn:(t,c)=>`Com base na nota abaixo, crie perguntas que estimulem o pensamento crítico e aprofundem a compreensão.\n\n**Nota:** ${t}\n\n${c}\n\n**Crie:**\n- 3 perguntas de compreensão (o quê/como/quando)\n- 3 perguntas de análise (por quê/qual o impacto)\n- 2 perguntas desafiadoras (e se/como aplicar)\n- 1 pergunta reflexiva (o que você faria diferente)` },
+    { icon:'🔄', title:'Perspectivas alternativas', desc:'Analisa o tema por ângulos diferentes',
+      fn:(t,c)=>`Analise a nota abaixo sob diferentes perspectivas e apresente pontos de vista alternativos.\n\n**Nota:** ${t}\n\n${c}\n\n**Apresente:**\n- Perspectiva otimista: quais oportunidades isso cria?\n- Perspectiva crítica: quais são os riscos e limitações?\n- Perspectiva prática: o que é realmente viável agora?\n- Perspectiva de longo prazo: como isso evolui nos próximos anos?` },
+    { icon:'📝', title:'Revisar e melhorar texto', desc:'Correção, clareza e fluidez',
+      fn:(t,c)=>`Você é um revisor profissional. Revise e melhore o texto abaixo mantendo a intenção original.\n\n**Título:** ${t}\n\n**Texto:**\n${c}\n\n**Corrija e melhore:**\n- Gramática e ortografia\n- Clareza e objetividade\n- Fluidez e ritmo de leitura\n- Estrutura e organização\n- Elimine redundâncias\n\nApresente a versão revisada completa.` },
+  ],
+  marketing: [
+    { icon:'🎯', title:'Estratégia de conteúdo', desc:'Plano completo de marketing de conteúdo',
+      fn:(t,c)=>`Você é um estrategista de marketing digital sênior. Crie uma estratégia de conteúdo completa com base nesta nota.\n\n**Contexto:** ${t}\n\n${c}\n\n**Entregue:**\n1. Público-alvo (persona detalhada)\n2. Objetivos SMART (3 meses)\n3. Canais prioritários e por quê\n4. Calendário editorial (4 semanas de temas)\n5. Formatos de conteúdo por canal\n6. KPIs para medir sucesso\n7. Dicas para primeiros 30 dias` },
+    { icon:'✍️', title:'Copy persuasivo', desc:'Texto de vendas que converte',
+      fn:(t,c)=>`Você é um copywriter especialista em conversão. Crie um copy persuasivo baseado nesta nota.\n\n**Produto/Serviço:** ${t}\n\n**Informações:**\n${c}\n\n**Crie versões para:**\n📱 Post Instagram (legenda completa com CTA)\n📧 Email de vendas (assunto + corpo)\n🎯 Anúncio Google/Facebook (headline + descrição)\n💬 WhatsApp (mensagem de abordagem)\n\nUse gatilhos: escassez, prova social, benefício claro, autoridade.` },
+    { icon:'👥', title:'Persona do cliente ideal', desc:'Define o ICP com profundidade',
+      fn:(t,c)=>`Baseado nas informações abaixo, crie uma persona detalhada do cliente ideal (ICP).\n\n**Contexto:** ${t}\n\n${c}\n\n**Perfil completo:**\n- Nome fictício, idade, ocupação, renda\n- Onde mora e estilo de vida\n- Dores e frustrações principais (top 3)\n- Desejos e objetivos (top 3)\n- Onde busca informação (canais, influencers)\n- Objeções de compra\n- Como toma decisão de compra\n- Frase que diria sobre o problema que você resolve` },
+    { icon:'📈', title:'Funil de vendas', desc:'Estratégia do topo ao fundo do funil',
+      fn:(t,c)=>`Você é especialista em funil de vendas. Crie uma estratégia completa para converter prospects em clientes.\n\n**Negócio/Produto:** ${t}\n\n${c}\n\n**Monte o funil:**\n🔝 TOPO (Conscientização): como atrair desconhecidos\n🔄 MEIO (Consideração): como nutrir leads com valor\n🔻 FUNDO (Decisão): como converter em vendas\n🔁 PÓS-VENDA: como fidelizar e gerar indicações\n\nPara cada etapa: conteúdos, canais, métricas e gatilhos de passagem para próxima fase.` },
+    { icon:'🚀', title:'Lançamento de produto', desc:'Plano de lançamento em 30 dias',
+      fn:(t,c)=>`Crie um plano de lançamento de 30 dias para o produto/serviço abaixo.\n\n**Produto:** ${t}\n\n${c}\n\n**Planejamento por semanas:**\n📅 Semana 1 (Preparação): o que preparar\n📢 Semana 2 (Aquecimento): como gerar antecipação\n🎯 Semana 3 (Lançamento): sequência de ações\n📊 Semana 4 (Pós-lançamento): otimização\n\nInclua: métricas de sucesso, checklist de pré-lançamento e estratégia de e-mail.` },
+    { icon:'💬', title:'Scripts de vendas', desc:'Roteiros para WhatsApp e chamadas',
+      fn:(t,c)=>`Crie scripts de vendas profissionais e naturais para abordar clientes.\n\n**Produto/Serviço:** ${t}\n\n${c}\n\n**Crie roteiros para:**\n📱 Primeiro contato WhatsApp (sem parecer spam)\n📞 Ligação de qualificação (perguntas + apresentação)\n🔄 Follow-up após proposta (sem ser chato)\n⚠️ Resposta a objeções comuns:\n  - "Está caro"\n  - "Vou pensar"\n  - "Não tenho tempo agora"\n  - "Já tenho fornecedor"` },
+  ],
+  negocios: [
+    { icon:'🎯', title:'Plano estratégico', desc:'Estratégia completa com metas e ações',
+      fn:(t,c)=>`Você é um consultor de negócios sênior. Crie um plano estratégico baseado nesta nota.\n\n**Contexto:** ${t}\n\n${c}\n\n**Estruture:**\n1. Diagnóstico atual (forças, fraquezas, oportunidades, ameaças)\n2. Visão e missão (onde quer chegar)\n3. OKRs para 90 dias (3 objetivos + resultados-chave mensuráveis)\n4. Iniciativas prioritárias (top 5 ações)\n5. Recursos necessários (pessoas, dinheiro, tempo)\n6. Riscos e planos de contingência\n7. Indicadores de acompanhamento semanal` },
+    { icon:'💰', title:'Modelo de negócio', desc:'Canvas e proposta de valor',
+      fn:(t,c)=>`Analise e estruture o modelo de negócio baseado nesta nota usando o Business Model Canvas.\n\n**Negócio:** ${t}\n\n${c}\n\n**Canvas completo:**\n🎯 Segmentos de clientes\n💎 Proposta de valor (por segmento)\n📡 Canais de distribuição\n🤝 Relacionamento com clientes\n💵 Fontes de receita\n🔑 Recursos-chave\n⚙️ Atividades-chave\n🤜 Parcerias principais\n💸 Estrutura de custos\n\n+ Análise de viabilidade e próximos passos.` },
+    { icon:'📊', title:'Análise de mercado', desc:'Oportunidades, concorrência e posicionamento',
+      fn:(t,c)=>`Faça uma análise de mercado completa baseada neste contexto.\n\n**Mercado/Segmento:** ${t}\n\n${c}\n\n**Analise:**\n📏 Tamanho do mercado (TAM, SAM, SOM estimados)\n📈 Tendências e crescimento\n🏆 Principais players e suas estratégias\n🎯 Oportunidades não exploradas\n⚠️ Barreiras de entrada\n✅ Diferencial competitivo possível\n🚀 Estratégia de posicionamento recomendada` },
+    { icon:'🤝', title:'Proposta comercial', desc:'Proposta profissional que fecha negócio',
+      fn:(t,c)=>`Crie uma proposta comercial profissional e persuasiva.\n\n**Serviço/Produto:** ${t}\n\n${c}\n\n**Estrutura da proposta:**\n1. Resumo executivo (problema + solução)\n2. Entendimento do desafio do cliente\n3. Nossa solução (metodologia e entregáveis)\n4. Por que nos escolher (diferenciais + cases)\n5. Investimento e opções\n6. Cronograma e próximos passos\n7. Garantias e condições\n\nTom: profissional, confiante e centrado no cliente.` },
+    { icon:'📋', title:'Ata de reunião', desc:'Estrutura profissional de ata',
+      fn:(t,c)=>`Transforme as notas desta reunião em uma ata profissional e organizada.\n\n**Reunião:** ${t}\n\n**Notas:**\n${c}\n\n**Ata estruturada:**\n📅 Data, participantes e objetivo\n📋 Pauta discutida\n✅ Decisões tomadas\n🎯 Ações (o quê + responsável + prazo)\n⚠️ Pontos em aberto / pendências\n📅 Próxima reunião\n\nTom formal e objetivo.` },
+    { icon:'🔍', title:'SWOT detalhado', desc:'Análise estratégica completa',
+      fn:(t,c)=>`Faça uma análise SWOT detalhada e acionável com base nesta nota.\n\n**Contexto:** ${t}\n\n${c}\n\n**Analise:**\n💪 FORÇAS (internas): o que faz muito bem\n⚠️ FRAQUEZAS (internas): onde está vulnerável\n🚀 OPORTUNIDADES (externas): o que o mercado oferece\n🌪️ AMEAÇAS (externas): o que pode prejudicar\n\n**Cruze as análises:**\n- Como usar forças para aproveitar oportunidades?\n- Como usar forças para mitigar ameaças?\n- Como superar fraquezas para capturar oportunidades?\n- Como se proteger de ameaças considerando as fraquezas?` },
+  ],
+  tech: [
+    { icon:'🐛', title:'Debug e solução de bugs', desc:'Análise e correção de problemas',
+      fn:(t,c)=>`Você é um engenheiro de software sênior. Analise o problema e ajude a resolver.\n\n**Problema:** ${t}\n\n**Contexto/Código:**\n${c}\n\n**Responda:**\n1. Diagnóstico: qual é o provável problema e por quê\n2. Possíveis causas (da mais para menos provável)\n3. Solução passo a passo\n4. Código corrigido (se aplicável)\n5. Como testar a correção\n6. Como evitar este problema no futuro` },
+    { icon:'🏗️', title:'Arquitetura e design', desc:'Boas práticas e estrutura do sistema',
+      fn:(t,c)=>`Você é um arquiteto de software. Analise e recomende a melhor arquitetura para este projeto.\n\n**Projeto:** ${t}\n\n${c}\n\n**Avalie e recomende:**\n1. Arquitetura adequada (monolito, microsserviços, serverless)\n2. Stack tecnológica recomendada e justificativa\n3. Estrutura de pastas e organização do código\n4. Padrões de design aplicáveis\n5. Estratégia de banco de dados\n6. Segurança (autenticação, autorização, dados)\n7. Escalabilidade e performance\n8. O que evitar neste caso` },
+    { icon:'📖', title:'Documentação técnica', desc:'Docs claras para devs e usuários',
+      fn:(t,c)=>`Crie documentação técnica clara e completa para o código/sistema abaixo.\n\n**Sistema:** ${t}\n\n${c}\n\n**Gere:**\n📌 README (visão geral, instalação, uso rápido)\n⚙️ Configuração e variáveis de ambiente\n🔌 Documentação da API (endpoints, parâmetros, exemplos)\n📋 Guia de contribuição (se open source)\n🚀 Deploy e CI/CD\n❓ FAQ e problemas comuns\n\nUse Markdown com exemplos de código.` },
+    { icon:'🔍', title:'Code review', desc:'Revisão com boas práticas e melhorias',
+      fn:(t,c)=>`Faça um code review detalhado do código abaixo com foco em qualidade e boas práticas.\n\n**Contexto:** ${t}\n\n**Código:**\n${c}\n\n**Avalie:**\n✅ O que está bem feito\n⚠️ Problemas de qualidade (naming, estrutura, legibilidade)\n🐛 Possíveis bugs ou comportamentos inesperados\n🔒 Vulnerabilidades de segurança\n⚡ Oportunidades de performance\n📋 Sugestões de refatoração\n\nPriorize por impacto: crítico > importante > sugestão.` },
+    { icon:'🧪', title:'Estratégia de testes', desc:'Plano de testes completo',
+      fn:(t,c)=>`Crie uma estratégia de testes abrangente para o sistema abaixo.\n\n**Sistema:** ${t}\n\n${c}\n\n**Plano de testes:**\n🔬 Testes unitários (o que testar, exemplos)\n🔗 Testes de integração (fluxos críticos)\n🖥️ Testes E2E (cenários do usuário)\n⚡ Testes de performance (gargalos esperados)\n🔒 Testes de segurança (vulnerabilidades comuns)\n\nInclua exemplos de código de teste e ferramentas recomendadas.` },
+    { icon:'🚀', title:'Otimização de performance', desc:'Identificar e resolver gargalos',
+      fn:(t,c)=>`Analise e sugira otimizações de performance para o código/sistema abaixo.\n\n**Sistema:** ${t}\n\n${c}\n\n**Analise:**\n⚡ Gargalos mais prováveis\n🗄️ Otimizações de banco de dados (queries, índices)\n💾 Estratégias de cache\n🌐 Otimizações de rede e API\n🖥️ Performance de frontend (se aplicável)\n📊 Métricas a monitorar\n\nPriorize pelo impacto × esforço e forneça exemplos de código.` },
+  ],
+  educacao: [
+    { icon:'📚', title:'Plano de estudos', desc:'Cronograma estruturado de aprendizado',
+      fn:(t,c)=>`Crie um plano de estudos detalhado e eficaz para o tema abaixo.\n\n**Assunto:** ${t}\n\n**Contexto:**\n${c}\n\n**Plano estruturado:**\n🎯 Objetivo final e nível esperado\n📅 Cronograma semanal (4-8 semanas)\n📖 Recursos por semana (livros, cursos, vídeos, artigos)\n✅ Exercícios e projetos práticos\n🔄 Revisões espaçadas (quando revisar o quê)\n📊 Como medir o progresso\n💡 Dicas de produtividade para este assunto` },
+    { icon:'🗺️', title:'Mapa mental', desc:'Estrutura visual do conhecimento',
+      fn:(t,c)=>`Crie um mapa mental completo e estruturado para o tema abaixo.\n\n**Tema:** ${t}\n\n${c}\n\n**Estrutura do mapa mental (em texto):**\n🌟 CENTRO: tema principal\n\n📌 RAMO 1: [primeiro conceito principal]\n  ├── subtópico\n  ├── subtópico\n  └── exemplo prático\n\n📌 RAMO 2: [segundo conceito]\n  ├── ...\n\nContinue para todos os conceitos relevantes. Inclua conexões entre ramos onde existirem.` },
+    { icon:'🎓', title:'Explicação didática', desc:'Explica como se fosse a primeira vez',
+      fn:(t,c)=>`Explique o conceito abaixo de forma didática, clara e progressiva.\n\n**Conceito:** ${t}\n\n${c}\n\n**Explique em 3 níveis:**\n🟢 BÁSICO: explique como se fosse para um iniciante completo (sem jargões)\n🟡 INTERMEDIÁRIO: aprofunde com terminologia e nuances\n🔴 AVANÇADO: casos complexos, exceções e aplicações profissionais\n\n**Para cada nível:** use analogias, exemplos do dia a dia e, quando possível, analogias visuais (descreva um diagrama).` },
+    { icon:'📝', title:'Questões de fixação', desc:'Exercícios e gabarito para revisar',
+      fn:(t,c)=>`Crie um conjunto de questões para testar e fixar o aprendizado sobre este tema.\n\n**Tema:** ${t}\n\n${c}\n\n**Crie:**\n✅ 5 questões de múltipla escolha (com gabarito e explicação)\n❓ 3 questões dissertativas (com resposta modelo)\n🧩 2 questões de aplicação prática (problema para resolver)\n💡 1 desafio avançado\n\nOrdenação: do mais simples ao mais complexo.` },
+    { icon:'🔗', title:'Conexões com outros temas', desc:'Relaciona com conhecimento já existente',
+      fn:(t,c)=>`Mapeie as conexões deste tema com outras áreas do conhecimento.\n\n**Tema:** ${t}\n\n${c}\n\n**Identifique conexões com:**\n- Outros campos do conhecimento (matemática, filosofia, história, ciências)\n- Aplicações no dia a dia e no mundo profissional\n- Como este conceito evolui historicamente\n- Debates e controvérsias atuais\n- Quem são os principais pensadores/pesquisadores\n- Recursos avançados para quem quer ir além` },
+  ],
+  criativo: [
+    { icon:'💡', title:'Brainstorming de ideias', desc:'Gera 20+ ideias criativas',
+      fn:(t,c)=>`Você é um especialista em criatividade e inovação. Faça um brainstorming intenso sobre o tema abaixo.\n\n**Tema:** ${t}\n\n${c}\n\n**Gere:**\n🔥 20 ideias sem filtro (quantidade sobre qualidade)\n⭐ Top 5 ideias mais promissoras (expandidas)\n🌀 3 ideias completamente fora da caixa\n🔗 Combinações interessantes entre as ideias\n🚀 Qual ideia você deveria começar hoje e por quê\n\nNão se limite por viabilidade agora — ouse!` },
+    { icon:'📖', title:'Roteiro e estrutura narrativa', desc:'Estrutura de história impactante',
+      fn:(t,c)=>`Crie uma estrutura narrativa poderosa para o conteúdo abaixo.\n\n**Tema/Produto:** ${t}\n\n${c}\n\n**Estruture usando a Jornada do Herói:**\n1. Mundo comum (situação atual do público)\n2. O chamado (o problema/oportunidade)\n3. Resistência (objeções e medos)\n4. Mentor/Guia (você/seu produto)\n5. A jornada (o processo de transformação)\n6. A provação (maior desafio)\n7. A recompensa (resultado final)\n\nAdapte para: vídeo, artigo, pitch de vendas ou post.` },
+    { icon:'🖊️', title:'Artigo/Blog completo', desc:'Artigo profissional otimizado',
+      fn:(t,c)=>`Escreva um artigo completo e profissional sobre o tema abaixo.\n\n**Tema:** ${t}\n\n${c}\n\n**Estrutura do artigo:**\n📰 Headline magnética (3 opções)\n🎯 Lead irresistível (primeiras 3 frases que prendem)\n📋 Índice (se artigo longo)\n📖 Desenvolvimento (com subtítulos, exemplos, dados)\n💡 Caixa de destaque com insight principal\n✅ Lista de ações práticas\n🔚 Conclusão com CTA\n\nTom: [informativo/persuasivo/inspirador] — ajuste ao objetivo.` },
+    { icon:'📱', title:'Conteúdo para redes sociais', desc:'Posts para Instagram, LinkedIn e YouTube',
+      fn:(t,c)=>`Crie conteúdo otimizado para diferentes plataformas sobre o tema abaixo.\n\n**Tema:** ${t}\n\n${c}\n\n**Crie para cada plataforma:**\n📸 Instagram:\n  - Legenda (com ganchos, desenvolvimento e CTA)\n  - 15 hashtags estratégicas\n  - Sugestão de visual/carrossel\n\n💼 LinkedIn:\n  - Post longo com storytelling profissional\n  - Gancho das primeiras linhas\n\n🎥 YouTube:\n  - Título clicável (5 opções)\n  - Roteiro resumido (intro + 3 tópicos + CTA)\n  - Descrição com palavras-chave` },
+    { icon:'🎙️', title:'Roteiro de podcast/vídeo', desc:'Script completo com timing',
+      fn:(t,c)=>`Crie um roteiro completo de podcast ou vídeo sobre o tema abaixo.\n\n**Tema:** ${t}\n\n${c}\n\n**Roteiro (30 min estimado):**\n⏱️ 0:00-2:00 — INTRO: gancho + o que o ouvinte vai aprender\n⏱️ 2:00-5:00 — CONTEXTO: por que este tema importa agora\n⏱️ 5:00-20:00 — DESENVOLVIMENTO:\n  • Bloco 1: [primeiro grande ponto]\n  • Bloco 2: [segundo grande ponto]\n  • Bloco 3: [terceiro grande ponto]\n⏱️ 20:00-27:00 — APROFUNDAMENTO: exemplos e casos reais\n⏱️ 27:00-30:00 — FECHAMENTO: resumo + CTA + próximo episódio` },
+  ],
+  saude: [
+    { icon:'🏋️', title:'Plano de treino', desc:'Rotina personalizada de exercícios',
+      fn:(t,c)=>`Você é um personal trainer especializado. Crie um plano de treino baseado nas informações abaixo.\n\n**Objetivo/Contexto:** ${t}\n\n${c}\n\n**Plano completo:**\n🎯 Objetivo principal e secundários\n📅 Divisão semanal (quantos dias, quais grupos musculares)\n\n**Para cada dia:**\n- Aquecimento (5-10 min)\n- Exercícios (série x repetição x descanso)\n- Volta à calma\n\n⚡ Progressão (como evoluir nas próximas 4 semanas)\n⚠️ Cuidados e prevenção de lesões\n🍎 Dicas nutricionais complementares` },
+    { icon:'🥗', title:'Plano alimentar e nutrição', desc:'Orientações nutricionais detalhadas',
+      fn:(t,c)=>`Você é nutricionista. Forneça orientações nutricionais baseadas no contexto abaixo.\n\n**Objetivo:** ${t}\n\n${c}\n\n**Guia nutricional:**\n🎯 Objetivo calórico estimado\n🍽️ Distribuição de macros (proteína, carbo, gordura)\n📅 Exemplo de cardápio semanal\n🛒 Lista de compras essencial\n⚠️ Alimentos a evitar/limitar\n💡 Dicas práticas para o dia a dia\n⏰ Timing das refeições\n💊 Suplementação (se aplicável)\n\n*Consulte um profissional de saúde para orientações personalizadas.*` },
+    { icon:'🧠', title:'Saúde mental e bem-estar', desc:'Estratégias para equilíbrio emocional',
+      fn:(t,c)=>`Você é especialista em saúde mental e bem-estar. Forneça estratégias baseadas no contexto abaixo.\n\n**Situação:** ${t}\n\n${c}\n\n**Plano de bem-estar:**\n🧘 Técnicas de gestão de estresse (3 práticas imediatas)\n😴 Higiene do sono (rotina e ambiente)\n🏃 Movimento e exercício (mínimo viável)\n🤝 Conexões sociais e apoio\n📱 Detox digital e limites saudáveis\n📔 Práticas de autoconhecimento (journaling, meditação)\n🆘 Quando buscar ajuda profissional\n\n*Para questões sérias de saúde mental, consulte um profissional.*` },
+    { icon:'📊', title:'Análise de hábitos', desc:'Identifica padrões e sugere mudanças',
+      fn:(t,c)=>`Analise os hábitos descritos abaixo e sugira um plano de mudança gradual e sustentável.\n\n**Contexto:** ${t}\n\n${c}\n\n**Análise completa:**\n✅ Hábitos positivos a manter e ampliar\n⚠️ Hábitos a eliminar (prioridade alta)\n🔄 Hábitos a modificar gradualmente\n\n**Plano de mudança (método dos pequenos passos):**\n- Semana 1-2: apenas uma mudança (qual?)\n- Semana 3-4: adicionar segunda mudança\n- Mês 2: consolidar e adicionar mais\n\n💡 Gatilhos, rotinas e recompensas (framework de hábitos)` },
+  ],
+  financas: [
+    { icon:'💰', title:'Planejamento financeiro', desc:'Orçamento e controle de gastos',
+      fn:(t,c)=>`Você é consultor financeiro. Crie um planejamento financeiro baseado neste contexto.\n\n**Situação:** ${t}\n\n${c}\n\n**Planejamento completo:**\n📊 Diagnóstico financeiro atual\n🎯 Metas financeiras (curto, médio e longo prazo)\n💸 Orçamento mensal otimizado (regra 50-30-20 adaptada)\n🏦 Estratégia de reserva de emergência\n📈 Primeiros investimentos recomendados\n💳 Gestão de dívidas (se houver)\n🗓️ Plano de ação para os próximos 90 dias\n⚠️ Erros financeiros a evitar` },
+    { icon:'📈', title:'Estratégia de investimentos', desc:'Carteira e alocação de ativos',
+      fn:(t,c)=>`Você é analista de investimentos. Oriente sobre estratégia de investimentos para o perfil abaixo.\n\n**Perfil/Objetivo:** ${t}\n\n${c}\n\n**Estratégia completa:**\n🎯 Definição do perfil de risco\n📊 Alocação sugerida de portfólio\n🏦 Tipos de investimentos recomendados (com %)\n⏰ Horizonte temporal por objetivo\n🔄 Estratégia de rebalanceamento\n⚠️ Riscos a considerar\n💡 Por onde começar (passo a passo)\n\n*Consulte um assessor de investimentos certificado.*` },
+    { icon:'🏢', title:'Finanças do negócio', desc:'Fluxo de caixa, custos e precificação',
+      fn:(t,c)=>`Você é CFO especialista em pequenas empresas. Analise e oriente sobre as finanças abaixo.\n\n**Negócio:** ${t}\n\n${c}\n\n**Análise e recomendações:**\n💵 Fluxo de caixa (como organizar e projetar)\n📊 Ponto de equilíbrio (break-even)\n💰 Precificação correta (markup, margem, valor percebido)\n🏦 Capital de giro necessário\n📋 DRE simplificado\n⚠️ Erros financeiros comuns em negócios\n🚀 Como melhorar a saúde financeira em 90 dias` },
+    { icon:'🔍', title:'Análise de viabilidade', desc:'Vale a pena? Estudo completo',
+      fn:(t,c)=>`Faça uma análise de viabilidade financeira completa para o projeto/investimento abaixo.\n\n**Projeto:** ${t}\n\n${c}\n\n**Análise:**\n💰 Investimento inicial estimado\n📅 Projeção de receitas (3 cenários: pessimista, base, otimista)\n💸 Custos fixos e variáveis\n📊 TIR e VPL (retorno esperado)\n⏰ Payback (tempo de recuperação do investimento)\n⚠️ Principais riscos e mitigações\n✅ Conclusão: vale a pena? Por quê?` },
+  ],
+  projetos: [
+    { icon:'🗓️', title:'Cronograma detalhado', desc:'Planejamento com marcos e prazos',
+      fn:(t,c)=>`Você é gerente de projetos sênior. Crie um cronograma detalhado para o projeto abaixo.\n\n**Projeto:** ${t}\n\n${c}\n\n**Cronograma completo:**\n🎯 Objetivo e escopo do projeto\n📋 Fases do projeto (com datas)\n🗓️ Marcos principais (milestones)\n📌 Backlog de tarefas priorizadas\n👥 Responsáveis sugeridos por área\n⚠️ Dependências entre tarefas\n🔴 Caminho crítico (o que não pode atrasar)\n🚨 Plano de contingência para riscos` },
+    { icon:'⚠️', title:'Gestão de riscos', desc:'Identificação e mitigação de riscos',
+      fn:(t,c)=>`Faça uma análise de riscos completa para o projeto abaixo.\n\n**Projeto:** ${t}\n\n${c}\n\n**Matriz de riscos:**\nPara cada risco identifique:\n- Descrição do risco\n- Probabilidade (Alta/Média/Baixa)\n- Impacto (Alto/Médio/Baixo)\n- Nível de risco (Probabilidade × Impacto)\n- Plano de mitigação (como prevenir)\n- Plano de contingência (o que fazer se ocorrer)\n- Responsável pelo monitoramento\n\nOrganize do maior para o menor risco.` },
+    { icon:'📊', title:'Status report', desc:'Relatório de progresso profissional',
+      fn:(t,c)=>`Crie um status report profissional e claro para o projeto abaixo.\n\n**Projeto:** ${t}\n\n**Informações:**\n${c}\n\n**Status Report:**\n📊 Semáforo geral: 🟢 No prazo / 🟡 Atenção / 🔴 Crítico\n✅ O que foi concluído (período)\n🔄 Em andamento (% de conclusão)\n📅 Próximas entregas (próximas 2 semanas)\n⚠️ Riscos e impedimentos ativos\n🆘 Decisões necessárias da liderança\n📈 KPIs do projeto (se definidos)` },
+    { icon:'👥', title:'Alinhamento de equipe', desc:'Comunicação e delegação eficaz',
+      fn:(t,c)=>`Crie uma estratégia de alinhamento e comunicação para a equipe do projeto abaixo.\n\n**Projeto/Equipe:** ${t}\n\n${c}\n\n**Plano de comunicação:**\n📅 Cadência de reuniões (quais, quando, com quem)\n📊 Formato de atualização de progresso\n🎯 Como dividir e delegar tarefas claramente\n💬 Canais de comunicação por tipo de assunto\n🔄 Como dar e recibir feedback\n⚠️ Como lidar com conflitos e bloqueios\n🏆 Como celebrar vitórias e manter motivação` },
+  ],
+  juridico: [
+    { icon:'📄', title:'Análise de contrato', desc:'Identifica riscos e cláusulas críticas',
+      fn:(t,c)=>`Você é advogado especialista em contratos. Analise o contrato/cláusulas abaixo.\n\n**Contrato:** ${t}\n\n${c}\n\n**Análise jurídica:**\n✅ Pontos favoráveis e bem redigidos\n⚠️ Cláusulas de risco ou abusivas\n🔴 Pontos críticos que precisam de negociação\n❓ Termos ambíguos que precisam de clareza\n📋 Obrigações de cada parte\n💡 Sugestões de alteração/adição\n\n*Esta análise é educacional. Consulte um advogado para orientação profissional.*` },
+    { icon:'⚖️', title:'Compliance e LGPD', desc:'Adequação regulatória e proteção de dados',
+      fn:(t,c)=>`Analise a conformidade legal e de proteção de dados para o contexto abaixo.\n\n**Negócio/Processo:** ${t}\n\n${c}\n\n**Análise de compliance:**\n🔒 LGPD: dados coletados, bases legais, direitos dos titulares\n📋 Documentos necessários (Política de Privacidade, Termos de Uso)\n⚙️ Processos a implementar (consentimento, exclusão, portabilidade)\n⚠️ Riscos de não conformidade\n🗓️ Plano de adequação (priorizado)\n\n*Consulte um advogado especializado em proteção de dados.*` },
+    { icon:'📝', title:'Termos e políticas', desc:'Minutas de Termos de Uso e Privacidade',
+      fn:(t,c)=>`Crie uma minuta de Termos de Uso e Política de Privacidade para o negócio abaixo.\n\n**Negócio:** ${t}\n\n${c}\n\n**Crie:**\n📜 TERMOS DE USO:\n- Aceitação dos termos\n- Serviços oferecidos\n- Obrigações do usuário\n- Limitação de responsabilidade\n- Propriedade intelectual\n- Rescisão\n\n🔒 POLÍTICA DE PRIVACIDADE:\n- Dados coletados e finalidade\n- Base legal (LGPD)\n- Compartilhamento de dados\n- Direitos do titular\n- Contato do DPO\n\n*Revise com advogado antes de publicar.*` },
+  ],
+};
+
+let _promptCatAtual = 'geral';
+
+function initPromptPanel() {
+  const catsEl = document.getElementById('promptCats');
+  if (!catsEl) return;
+  catsEl.innerHTML = PROMPT_CATS.map(c =>
+    `<button class="prompt-cat${c.id===_promptCatAtual?' active':''}" onclick="selecionarCatPrompt('${c.id}')">${c.icon} ${c.label}</button>`
+  ).join('');
+  renderPromptButtons();
+}
+
+function selecionarCatPrompt(id) {
+  _promptCatAtual = id;
+  document.querySelectorAll('.prompt-cat').forEach(b => b.classList.toggle('active', b.textContent.includes(PROMPT_CATS.find(c=>c.id===id)?.label||'')));
+  renderPromptButtons();
+  document.getElementById('promptResult').classList.remove('show');
+}
+
+function renderPromptButtons() {
+  const body = document.getElementById('promptBody');
+  if (!body) return;
+  const prompts = PROMPT_LIB[_promptCatAtual] || PROMPT_LIB.geral;
+  body.innerHTML = prompts.map((p, i) =>
+    `<button class="prompt-preset" onclick="gerarPromptLib(${i})">
+      <div class="prompt-preset-icon">${p.icon}</div>
+      <div class="prompt-preset-info">
+        <div class="prompt-preset-title">${p.title}</div>
+        <div class="prompt-preset-desc">${p.desc}</div>
+      </div>
+    </button>`
+  ).join('');
+}
+
+function gerarPromptLib(idx) {
+  const t = document.getElementById('editorTitle').value || '(sem título)';
+  const c = document.getElementById('editorBody').value || '(sem conteúdo)';
+  const p = (PROMPT_LIB[_promptCatAtual] || PROMPT_LIB.geral)[idx];
+  if (!p) return;
+  document.getElementById('promptText').textContent = p.fn(t, c);
+  document.getElementById('promptResult').classList.add('show');
+  document.getElementById('promptCopyBtn').textContent = '📋 Copiar prompt';
+  document.getElementById('promptCopyBtn').classList.remove('copied');
+  document.getElementById('promptSaveBtn').textContent = '💾 Salvar prompt';
+  document.getElementById('promptSaveBtn').classList.remove('saved');
+  document.getElementById('promptSaveBtn').disabled = false;
+}
+
+function autoDetectarCategoria() {
+  const titulo = (document.getElementById('editorTitle').value || '').toLowerCase();
+  const corpo  = (document.getElementById('editorBody').value || '').toLowerCase();
+  const texto  = titulo + ' ' + corpo;
+  let melhorCat = 'geral', melhorScore = 0;
+  PROMPT_CATS.forEach(cat => {
+    if (!cat.kw.length) return;
+    const score = cat.kw.filter(kw => texto.includes(kw)).length;
+    if (score > melhorScore) { melhorScore = score; melhorCat = cat.id; }
+  });
+  selecionarCatPrompt(melhorCat);
+  document.querySelectorAll('.prompt-cat').forEach(b => {
+    const cat = PROMPT_CATS.find(c => c.id === melhorCat);
+    b.classList.toggle('active', cat && b.textContent.includes(cat.label));
+  });
+}
+
+// Keep legacy for compatibility
 const PROMPTS={
   resumo:(t,c)=>`Preciso de um resumo objetivo desta nota.\n\nTítulo: ${t}\n\nConteúdo:\n${c}\n\nResuma em 3-5 pontos principais.`,
   tarefas:(t,c)=>`Liste todas as tarefas desta nota separando pendentes ([ ]) e feitas ([x]).\n\nTítulo: ${t}\n\nConteúdo:\n${c}`,
