@@ -121,27 +121,43 @@ Combine: `projeto:ultravida reunião` → notas do projeto com "reunião"
 
 ## Parte 6 — Gerador de Prompts e Prompts Salvos
 
-### 6.1 Gerando um prompt
+### 6.1 Categorias de prompts
+
+O gerador tem **10 categorias** com 6+ templates profissionais cada:
+
+| Categoria | Ícone | Exemplos de uso |
+|-----------|-------|-----------------|
+| Geral | ⚡ | Resumo, tarefas, revisão, expansão |
+| Marketing | 📊 | Copy, campanhas, estratégia, social media |
+| Negócios | 💼 | Plano de negócios, análise SWOT, pitch |
+| Tech | 💻 | Revisão de código, arquitetura, debugging |
+| Educação | 📚 | Plano de aula, exercícios, explicações |
+| Criativo | 🎨 | Roteiro, storytelling, nomes, brainstorm |
+| Saúde | 🏥 | Protocolo, comunicação, conteúdo saúde |
+| Finanças | 💰 | Análise financeira, investimentos, orçamento |
+| Projetos | 🎯 | Cronograma, riscos, OKRs, retrospectiva |
+| Jurídico | ⚖️ | Análise de contrato, cláusulas, compliance |
+
+### 6.2 Gerando um prompt
 
 1. Abra qualquer nota no editor
-2. No painel direito, escolha o tipo:
-   - 📋 Resumir esta nota
-   - ☑️ Listar tarefas
-   - ✨ Sugerir melhorias
-   - 💻 Explicar o código
-   - ❓ Perguntas de revisão
-   - 📝 Expandir pontos
-3. O prompt é gerado com o conteúdo da nota
-4. Clique em **"📋 Copiar prompt"** e cole na IA
+2. No painel direito (**🤖 Prompts IA**), selecione a categoria desejada
+3. Clique em um dos templates listados
+4. O prompt é gerado automaticamente com o título e conteúdo da nota
+5. Clique em **"📋 Copiar prompt"** e cole na IA (ChatGPT, Claude, Gemini)
 
-### 6.2 Salvando um prompt
+### 6.3 Auto-detecção de categoria
+
+Clique em **"✨ Auto-detectar"** para que o sistema analise o conteúdo da nota e selecione automaticamente a categoria mais adequada. Funciona por correspondência de palavras-chave no título e no corpo da nota.
+
+### 6.4 Salvando um prompt
 
 1. Gere o prompt (passo 6.1)
 2. Clique em **"💾 Salvar prompt"**
 3. O prompt fica salvo na nuvem com o nome da nota como título
 4. Confirmação: **"✅ Salvo!"**
 
-### 6.3 Acessando prompts salvos
+### 6.5 Acessando prompts salvos
 
 1. No menu lateral, clique em **"🤖 Prompts salvos"**
 2. Veja todos os prompts salvos em cards com data
@@ -204,7 +220,7 @@ Sim — qualquer navegador moderno (Chrome, Safari, Firefox, Edge).
 |---|---|
 | Nova nota | Botão "+ Nova Nota" |
 | Salvar nota | Automático (2,5s) |
-| Gerar prompt | Nota aberta → painel direito → tipo de prompt |
+| Gerar prompt | Nota aberta → painel direito → selecionar categoria → clicar no template |
 | Salvar prompt | Gerar → "💾 Salvar prompt" |
 | Ver prompts salvos | Menu "🤖 Prompts salvos" |
 | Buscar | Menu "Busca" |
@@ -216,4 +232,4 @@ Sim — qualquer navegador moderno (Chrome, Safari, Firefox, Edge).
 ---
 
 *RAZEC — Central de Projetos e Conhecimento*
-*Versão 3.1 — Prompts salvos na nuvem + Recuperação de senha*
+*Versão 3.2 — Gerador de prompts inteligente: 10 categorias, 60+ templates, auto-detecção*
