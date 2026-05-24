@@ -177,6 +177,8 @@ a{color:var(--primary);text-decoration:none}
 .prompt-preset{padding:7px 10px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:11px;cursor:pointer;text-align:left;transition:all .15s;line-height:1.4;display:flex;align-items:flex-start;gap:7px}
 .prompt-preset:hover{border-color:var(--primary);color:var(--text);background:rgba(88,166,255,.05)}
 .prompt-preset-icon{font-size:14px;flex-shrink:0;margin-top:1px}
+.prompt-community-sep{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:8px 10px 4px;opacity:.7}
+.prompt-community{border-style:dashed}
 .prompt-preset-info{}
 .prompt-preset-title{font-weight:600;color:var(--text);font-size:11px;margin-bottom:2px}
 .prompt-preset-desc{font-size:10px;color:var(--muted);line-height:1.3}
@@ -1405,13 +1407,50 @@ function initPromptPanel() {
     `<button class="prompt-cat${c.id===_promptCatAtual?' active':''}" onclick="selecionarCatPrompt('${c.id}')">${c.icon} ${c.label}</button>`
   ).join('');
   renderPromptButtons();
+  carregarEMostrarPromptsComunidade(_promptCatAtual);
 }
 
 function selecionarCatPrompt(id) {
   _promptCatAtual = id;
   document.querySelectorAll('.prompt-cat').forEach(b => b.classList.toggle('active', b.textContent.includes(PROMPT_CATS.find(c=>c.id===id)?.label||'')));
   renderPromptButtons();
+  carregarEMostrarPromptsComunidade(id);
   document.getElementById('promptResult').classList.remove('show');
+}
+
+async function carregarEMostrarPromptsComunidade(cat) {
+  const body = document.getElementById('promptBody');
+  if (!body) return;
+  const { data } = await sb.from('prompts_comunidade')
+    .select('id, texto, titulo, uso_count')
+    .eq('categoria', cat)
+    .order('uso_count', { ascending: false })
+    .limit(6);
+  if (!data?.length) return;
+  // Check if promptBody still shows the same category (user may have switched)
+  if (_promptCatAtual !== cat) return;
+  const sep = document.createElement('div');
+  sep.className = 'prompt-community-sep';
+  sep.textContent = '👥 Da comunidade';
+  body.appendChild(sep);
+  data.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'prompt-preset prompt-community';
+    btn.innerHTML = `<div class="prompt-preset-icon">👥</div><div class="prompt-preset-info"><div class="prompt-preset-title">${escH(p.titulo||'Prompt da comunidade')}</div><div class="prompt-preset-desc">Usado ${p.uso_count} vez${p.uso_count!==1?'es':''}</div></div>`;
+    btn.onclick = () => usarPromptComunidade(p.id, p.texto);
+    body.appendChild(btn);
+  });
+}
+
+async function usarPromptComunidade(id, texto) {
+  document.getElementById('promptText').textContent = texto;
+  document.getElementById('promptResult').classList.add('show');
+  document.getElementById('promptCopyBtn').textContent = '📋 Copiar prompt';
+  document.getElementById('promptCopyBtn').classList.remove('copied');
+  document.getElementById('promptSaveBtn').textContent = '💾 Salvar prompt';
+  document.getElementById('promptSaveBtn').classList.remove('saved');
+  document.getElementById('promptSaveBtn').disabled = false;
+  await sb.rpc('increment_uso_prompt', { prompt_id: id });
 }
 
 function renderPromptButtons() {
@@ -1507,6 +1546,13 @@ async function salvarPrompt(){
     _cache.notas.unshift(nota);
     btn.textContent='✅ Salvo!';btn.classList.add('saved');
     render();
+    // Também salva na base da comunidade (fire and forget)
+    const comId='pc_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+    sb.from('prompts_comunidade').insert([{
+      id:comId, user_id:currentUser.id,
+      texto, categoria:_promptCatAtual,
+      titulo:document.getElementById('editorTitle').value||'(sem título)'
+    }]);
     setTimeout(()=>{btn.textContent='💾 Salvar prompt';btn.classList.remove('saved');btn.disabled=false;},2000);
   } else {
     btn.textContent='💾 Salvar prompt';btn.disabled=false;
