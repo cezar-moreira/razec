@@ -177,6 +177,20 @@ a{color:var(--primary);text-decoration:none}
 .prompt-copy{padding:7px;background:var(--primary);color:#000;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;text-align:center;transition:background .15s}
 .prompt-copy:hover{background:#79b8ff}
 .prompt-copy.copied{background:var(--success);color:#fff}
+.prompt-save{padding:7px;background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;text-align:center;transition:all .15s}
+.prompt-save:hover{border-color:var(--success);color:var(--success)}
+.prompt-save.saved{background:rgba(63,185,80,.1);border-color:var(--success);color:var(--success)}
+/* Prompts salvos view */
+.saved-prompt-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px}
+.saved-prompt-card:hover{border-color:var(--primary)}
+.saved-prompt-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.saved-prompt-meta{font-size:11px;color:var(--muted);margin-bottom:8px}
+.saved-prompt-text{font-size:11px;color:var(--muted);line-height:1.5;white-space:pre-wrap;max-height:80px;overflow:hidden;position:relative}
+.saved-prompt-text::after{content:'';position:absolute;bottom:0;left:0;right:0;height:20px;background:linear-gradient(transparent,var(--card))}
+.saved-prompt-actions{display:flex;gap:6px;margin-top:10px}
+.spa-copy{flex:1;padding:5px;background:var(--primary);color:#000;border:none;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600}
+.spa-del{padding:5px 10px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:5px;cursor:pointer;font-size:11px}
+.spa-del:hover{border-color:var(--danger);color:var(--danger)}
 
 /* ── FILES ───────────────────────────────────────────── */
 .files-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
@@ -303,6 +317,7 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
         <div class="nav-item" onclick="showView('files',this)"><span class="icon">📁</span> Arquivos</div>
         <div class="nav-item" onclick="showView('graph',this)"><span class="icon">🕸️</span> Mapa visual</div>
         <div class="nav-item" onclick="showView('search',this)"><span class="icon">🔍</span> Busca</div>
+        <div class="nav-item" onclick="showView('prompts',this)"><span class="icon">🤖</span> Prompts salvos <span class="badge" id="badgePrompts">0</span></div>
       </div>
       <div class="sidebar-section">
         <div class="sidebar-label">Projetos</div>
@@ -389,6 +404,7 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
               <div class="prompt-result" id="promptResult">
                 <div class="prompt-text" id="promptText"></div>
                 <button class="prompt-copy" id="promptCopyBtn" onclick="copiarPrompt()">📋 Copiar prompt</button>
+                <button class="prompt-save" id="promptSaveBtn" onclick="salvarPrompt()">💾 Salvar prompt</button>
               </div>
             </div>
           </div>
@@ -448,6 +464,15 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
           </div>
         </div>
         <div class="search-results" id="searchResults"></div>
+      </div>
+
+      <!-- PROMPTS SALVOS -->
+      <div class="view" id="view-prompts">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+          <h2 style="font-size:1.1rem">🤖 Prompts Salvos</h2>
+          <span style="font-size:12px;color:var(--muted)">Gere um prompt no editor e clique em 💾 Salvar</span>
+        </div>
+        <div id="promptsSalvosLista"></div>
       </div>
 
     </div>
@@ -812,6 +837,7 @@ function render() {
   document.getElementById('statConversas').textContent= conversas.length;
   document.getElementById('badgeNotas').textContent   = notas.length;
   document.getElementById('notaCount').textContent    = notas.length + ' itens';
+  renderPromptsSalvos();
 
   // Sidebar projetos
   document.getElementById('sidebarProjects').innerHTML = projetos.map(p => {
@@ -1020,6 +1046,7 @@ function showView(name, navEl) {
   document.getElementById('view-'+name).classList.add('active');
   if(navEl)navEl.classList.add('active');
   if(name==='graph')setTimeout(renderGraph,100);
+  if(name==='prompts')renderPromptsSalvos();
   render();
 }
 
@@ -1246,6 +1273,74 @@ function copiarPrompt(){
     btn.textContent='✅ Copiado! Cole no Claude ou outra IA';btn.classList.add('copied');
     setTimeout(()=>{btn.textContent='📋 Copiar prompt';btn.classList.remove('copied');},3000);
   });
+}
+
+async function salvarPrompt(){
+  const texto=document.getElementById('promptText').textContent;
+  if(!texto)return;
+  const titulo=document.getElementById('editorTitle').value||'(sem título)';
+  const btn=document.getElementById('promptSaveBtn');
+  btn.disabled=true;btn.textContent='Salvando...';
+  const id='p-'+Date.now();
+  const agora=new Date().toISOString();
+  const nota={
+    id, titulo:`Prompt — ${titulo}`, conteudo:texto,
+    tipo:'prompt', projeto:'', tags:[], fonteIA:'nenhuma',
+    criado:agora, atualizado:agora
+  };
+  const { error }=await sb.from('notas').insert([{
+    id, user_id:currentUser.id, titulo:nota.titulo,
+    conteudo:texto, tipo:'prompt', projeto_id:'',
+    tags:[], fonte_ia:'nenhuma', criado:agora, atualizado:agora
+  }]);
+  if(!error){
+    _cache.notas.unshift(nota);
+    btn.textContent='✅ Salvo!';btn.classList.add('saved');
+    render();
+    setTimeout(()=>{btn.textContent='💾 Salvar prompt';btn.classList.remove('saved');btn.disabled=false;},2000);
+  } else {
+    btn.textContent='💾 Salvar prompt';btn.disabled=false;
+  }
+}
+
+function renderPromptsSalvos(){
+  const lista=_cache.notas.filter(n=>n.tipo==='prompt');
+  const el=document.getElementById('promptsSalvosLista');
+  document.getElementById('badgePrompts').textContent=lista.length;
+  if(!el)return;
+  if(!lista.length){
+    el.innerHTML='<div style="text-align:center;color:var(--muted);padding:3rem;font-size:14px;">Nenhum prompt salvo ainda.<br><br>Abra uma nota, gere um prompt no painel direito e clique em 💾 Salvar.</div>';
+    return;
+  }
+  el.innerHTML=lista.map(p=>`
+    <div class="saved-prompt-card">
+      <div class="saved-prompt-title">
+        <span>${p.titulo}</span>
+      </div>
+      <div class="saved-prompt-meta">${new Date(p.criado).toLocaleString('pt-BR')}</div>
+      <div class="saved-prompt-text">${p.conteudo}</div>
+      <div class="saved-prompt-actions">
+        <button class="spa-copy" onclick="copiarPromptSalvo('${p.id}')">📋 Copiar</button>
+        <button class="spa-del" onclick="deletarPromptSalvo('${p.id}')">🗑️ Excluir</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function copiarPromptSalvo(id){
+  const p=_cache.notas.find(n=>n.id===id);
+  if(!p)return;
+  navigator.clipboard.writeText(p.conteudo).then(()=>{
+    const btns=document.querySelectorAll('.spa-copy');
+    btns.forEach(b=>{if(b.onclick.toString().includes(id)){b.textContent='✅ Copiado!';setTimeout(()=>b.textContent='📋 Copiar',2000);}});
+  });
+}
+
+async function deletarPromptSalvo(id){
+  if(!confirm('Excluir este prompt salvo?'))return;
+  _cache.notas=_cache.notas.filter(n=>n.id!==id);
+  await dbDeleteNota(id);
+  renderPromptsSalvos();
 }
 
 // EXPORT JSON
