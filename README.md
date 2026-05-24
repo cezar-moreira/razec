@@ -25,6 +25,7 @@ Todos os dados ficam salvos na nuvem (Supabase), então você acessa do computad
 | **Busca avançada** | Filtros por `projeto:`, `tag:`, `tipo:` e texto livre |
 | **Mapa de conhecimento** | Visualização gráfica das conexões entre notas e projetos |
 | **Gerador de Prompts** | Gera prompts prontos para usar no ChatGPT, Claude e Gemini |
+| **Prompts Salvos** | Salva prompts gerados na nuvem para reutilizar a qualquer momento |
 | **Sync em tempo real** | Alterações aparecem em todos os dispositivos instantaneamente |
 | **Export JSON** | Faça backup completo dos seus dados |
 | **Auto-save** | Salva automaticamente enquanto você digita |

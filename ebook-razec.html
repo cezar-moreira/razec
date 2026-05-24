@@ -1,0 +1,2104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAZEC — Manual Completo</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #0a0e1a;
+    --sidebar: #0d1525;
+    --card: #0f1729;
+    --border: #1e2d50;
+    --blue: #3b82f6;
+    --blue-dark: #1d4ed8;
+    --green: #10b981;
+    --red: #ef4444;
+    --yellow: #f59e0b;
+    --purple: #8b5cf6;
+    --text: #e2e8f0;
+    --muted: #64748b;
+    --sub: #94a3b8;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: white;
+    color: #1a1a2e;
+  }
+
+  /* ========== PÁGINAS ========== */
+  .page {
+    width: 210mm;
+    min-height: 297mm;
+    position: relative;
+    page-break-after: always;
+    overflow: hidden;
+  }
+
+  /* ========== CAPA ========== */
+  .cover {
+    background: linear-gradient(135deg, #0a0e1a 0%, #0d1b3e 50%, #1a0e3a 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    padding: 60px 40px;
+  }
+
+  .cover-badge {
+    background: rgba(59,130,246,0.15);
+    border: 1px solid rgba(59,130,246,0.4);
+    color: #60a5fa;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  .cover-logo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .cover-lightning {
+    font-size: 72px;
+    filter: drop-shadow(0 0 20px #f59e0b);
+  }
+
+  .cover-title {
+    font-size: 90px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #60a5fa, #a78bfa, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: -4px;
+    line-height: 1;
+  }
+
+  .cover-subtitle {
+    font-size: 22px;
+    color: #94a3b8;
+    margin-bottom: 60px;
+    font-weight: 300;
+    letter-spacing: 1px;
+  }
+
+  .cover-divider {
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    border-radius: 2px;
+    margin: 0 auto 60px;
+  }
+
+  .cover-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+    max-width: 480px;
+    margin-bottom: 60px;
+  }
+
+  .cover-feature {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 16px 12px;
+    text-align: center;
+  }
+
+  .cover-feature-icon { font-size: 24px; margin-bottom: 6px; }
+  .cover-feature-label { font-size: 11px; color: #94a3b8; font-weight: 500; }
+
+  .cover-version {
+    font-size: 13px;
+    color: #475569;
+    margin-top: auto;
+  }
+
+  /* ========== SUMÁRIO ========== */
+  .toc-page {
+    background: #f8fafc;
+    padding: 60px 50px;
+  }
+
+  .toc-header {
+    margin-bottom: 40px;
+  }
+
+  .toc-tag {
+    font-size: 11px;
+    font-weight: 700;
+    color: #3b82f6;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .toc-title {
+    font-size: 36px;
+    font-weight: 800;
+    color: #0f172a;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 0;
+    border-bottom: 1px solid #e2e8f0;
+    cursor: default;
+  }
+
+  .toc-num {
+    width: 36px;
+    height: 36px;
+    background: #3b82f6;
+    color: white;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    margin-right: 16px;
+    flex-shrink: 0;
+  }
+
+  .toc-item-icon { font-size: 20px; margin-right: 12px; }
+  .toc-item-name { font-size: 16px; font-weight: 600; color: #0f172a; flex: 1; }
+  .toc-item-desc { font-size: 12px; color: #64748b; }
+
+  /* ========== CAPÍTULOS ========== */
+  .chapter-page {
+    background: white;
+    padding: 50px 50px 40px;
+  }
+
+  .chapter-header {
+    background: linear-gradient(135deg, #0a0e1a, #0d1b3e);
+    margin: -50px -50px 40px -50px;
+    padding: 40px 50px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .chapter-header::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    top: -40px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(59,130,246,0.2), transparent);
+    border-radius: 50%;
+  }
+
+  .chapter-num {
+    font-size: 11px;
+    font-weight: 700;
+    color: #60a5fa;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  .chapter-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: white;
+    margin-bottom: 8px;
+  }
+
+  .chapter-desc {
+    font-size: 15px;
+    color: #94a3b8;
+  }
+
+  /* ========== MOCKUPS DO APP ========== */
+  .app-frame {
+    background: var(--bg);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin: 24px 0;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+  }
+
+  .app-frame-small { transform: scale(0.85); transform-origin: top left; }
+
+  /* Header do app */
+  .app-header {
+    background: var(--sidebar);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .app-header-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--blue);
+    letter-spacing: 2px;
+  }
+
+  .app-header-logo span { color: #f59e0b; font-size: 20px; }
+
+  .app-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .app-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--green);
+  }
+
+  .app-status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+  }
+
+  .app-email { font-size: 12px; color: var(--sub); }
+
+  .app-btn-logout {
+    background: rgba(239,68,68,0.1);
+    color: #f87171;
+    border: 1px solid rgba(239,68,68,0.2);
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  /* Layout principal */
+  .app-body {
+    display: flex;
+    min-height: 420px;
+  }
+
+  /* Sidebar */
+  .app-sidebar {
+    width: 200px;
+    background: var(--sidebar);
+    border-right: 1px solid var(--border);
+    padding: 16px 12px;
+    flex-shrink: 0;
+  }
+
+  .app-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    margin-bottom: 2px;
+    font-size: 13px;
+    color: var(--sub);
+    cursor: pointer;
+  }
+
+  .app-nav-item.active {
+    background: rgba(59,130,246,0.15);
+    color: var(--blue);
+    font-weight: 600;
+  }
+
+  .app-nav-item:hover:not(.active) { background: rgba(255,255,255,0.03); }
+
+  .app-nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+  /* Conteúdo principal */
+  .app-main {
+    flex: 1;
+    padding: 20px;
+    overflow: hidden;
+  }
+
+  .app-main-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  /* Cards */
+  .app-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 12px;
+  }
+
+  .app-card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .app-card-sub {
+    font-size: 12px;
+    color: var(--sub);
+  }
+
+  /* Stat cards */
+  .app-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .app-stat {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    text-align: center;
+  }
+
+  .app-stat-num {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--blue);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .app-stat-label {
+    font-size: 10px;
+    color: var(--sub);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Botão primário do app */
+  .app-btn-primary {
+    background: var(--blue);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  /* Tags */
+  .app-tag {
+    display: inline-block;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    margin-right: 4px;
+  }
+
+  .tag-blue { background: rgba(59,130,246,0.15); color: #60a5fa; }
+  .tag-green { background: rgba(16,185,129,0.15); color: #34d399; }
+  .tag-purple { background: rgba(139,92,246,0.15); color: #a78bfa; }
+  .tag-orange { background: rgba(245,158,11,0.15); color: #fbbf24; }
+  .tag-red { background: rgba(239,68,68,0.15); color: #f87171; }
+
+  /* ========== TELA DE LOGIN ========== */
+  .login-screen {
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 360px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+  }
+
+  .login-box {
+    background: #0d1525;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px 32px;
+    width: 320px;
+    text-align: center;
+  }
+
+  .login-logo {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--blue);
+    letter-spacing: 3px;
+    margin-bottom: 4px;
+  }
+
+  .login-logo span { color: #f59e0b; }
+
+  .login-tagline {
+    font-size: 12px;
+    color: var(--sub);
+    margin-bottom: 28px;
+  }
+
+  .login-tabs {
+    display: flex;
+    background: var(--card);
+    border-radius: 8px;
+    padding: 3px;
+    margin-bottom: 20px;
+    gap: 3px;
+  }
+
+  .login-tab {
+    flex: 1;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+    color: var(--sub);
+  }
+
+  .login-tab.active {
+    background: var(--blue);
+    color: white;
+    font-weight: 600;
+  }
+
+  .login-input {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text);
+    width: 100%;
+    margin-bottom: 10px;
+    text-align: left;
+  }
+
+  .login-input-label {
+    font-size: 11px;
+    color: var(--sub);
+    text-align: left;
+    margin-bottom: 4px;
+    display: block;
+  }
+
+  .login-btn {
+    background: var(--blue);
+    color: white;
+    padding: 11px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 4px;
+    text-align: center;
+  }
+
+  .login-success {
+    background: rgba(16,185,129,0.1);
+    border: 1px solid rgba(16,185,129,0.3);
+    color: var(--green);
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  /* ========== NOTA EDITOR ========== */
+  .note-editor {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .note-editor-left { padding: 14px; }
+  .note-editor-right {
+    padding: 14px;
+    border-left: 1px solid var(--border);
+    background: rgba(255,255,255,0.02);
+  }
+
+  .note-field-label {
+    font-size: 10px;
+    color: var(--sub);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+    margin-top: 12px;
+  }
+
+  .note-input {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 13px;
+    color: var(--text);
+    width: 100%;
+  }
+
+  .note-textarea {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px;
+    font-size: 12px;
+    color: var(--text);
+    width: 100%;
+    height: 120px;
+    font-family: monospace;
+    line-height: 1.6;
+  }
+
+  .note-preview-text { font-size: 13px; color: var(--text); line-height: 1.6; }
+  .note-preview-h1 { font-size: 18px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+  .note-preview-p { font-size: 13px; color: var(--sub); margin-bottom: 6px; }
+  .note-preview-bold { font-weight: 700; color: var(--text); }
+  .note-preview-list { padding-left: 16px; }
+  .note-preview-list li { font-size: 13px; color: var(--sub); margin-bottom: 4px; }
+
+  /* ========== BUSCA ========== */
+  .search-bar {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 14px;
+    color: var(--text);
+    width: 100%;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .search-icon { font-size: 16px; color: var(--sub); }
+  .search-text { color: var(--sub); flex: 1; font-size: 14px; }
+  .search-tag-filter {
+    background: rgba(59,130,246,0.15);
+    color: #60a5fa;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  /* ========== MAPA ========== */
+  .graph-canvas {
+    background: #060a14;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    height: 260px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .graph-node {
+    position: absolute;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    color: white;
+    font-weight: 700;
+    box-shadow: 0 0 15px currentColor;
+    cursor: pointer;
+  }
+
+  .graph-line {
+    position: absolute;
+    background: rgba(59,130,246,0.2);
+    height: 1px;
+    transform-origin: left center;
+  }
+
+  .graph-label {
+    position: absolute;
+    font-size: 9px;
+    color: var(--sub);
+    white-space: nowrap;
+  }
+
+  /* ========== PROJETOS ========== */
+  .projects-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .project-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .project-card:hover { border-color: var(--blue); }
+
+  .project-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .project-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    background: rgba(59,130,246,0.15);
+  }
+
+  .project-card-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .project-card-desc { font-size: 12px; color: var(--sub); }
+  .project-count { font-size: 11px; color: var(--muted); margin-top: 8px; }
+
+  /* ========== PROMPT GENERATOR ========== */
+  .prompt-select {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--text);
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .prompt-output {
+    background: #060a14;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 12px;
+    color: var(--sub);
+    line-height: 1.7;
+    font-family: monospace;
+    min-height: 100px;
+    position: relative;
+  }
+
+  .prompt-copy-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--blue);
+    color: white;
+    padding: 4px 10px;
+    border-radius: 5px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  /* ========== CONTEÚDO DO CAPÍTULO ========== */
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 20px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 32px;
+    height: 32px;
+    background: var(--blue, #3b82f6);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-content h4 {
+    font-size: 15px;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 4px;
+  }
+
+  .step-content p {
+    font-size: 13px;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .tip-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-left: 4px solid #3b82f6;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 16px 0;
+  }
+
+  .tip-box-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: #1d4ed8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .tip-box p { font-size: 13px; color: #1e40af; line-height: 1.6; }
+
+  .warning-box {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-left: 4px solid #f59e0b;
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 16px 0;
+  }
+
+  .warning-box-title { font-size: 12px; font-weight: 700; color: #92400e; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .warning-box p { font-size: 13px; color: #78350f; line-height: 1.6; }
+
+  .section-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #0f172a;
+    margin: 28px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  .callout {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 13px;
+    color: #14532d;
+    margin: 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .callout-icon { font-size: 18px; }
+
+  /* Tabela de features */
+  .feature-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+  .feature-table th {
+    background: #1e293b;
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .feature-table td {
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #334155;
+    border-bottom: 1px solid #e2e8f0;
+  }
+  .feature-table tr:nth-child(even) td { background: #f8fafc; }
+  .feature-table td:first-child { font-weight: 600; color: #0f172a; }
+
+  /* Markdown chips */
+  .md-table { width: 100%; border-collapse: collapse; margin: 12px 0; }
+  .md-table th { background: #0f172a; color: white; padding: 8px 12px; font-size: 12px; text-align: left; }
+  .md-table td { padding: 8px 12px; font-size: 12px; border-bottom: 1px solid #e2e8f0; }
+  .md-table td:first-child { font-family: monospace; background: #f1f5f9; color: #1e40af; }
+  .md-table td:last-child { color: #334155; }
+
+  /* Highlight inline */
+  .inline-code {
+    background: #f1f5f9;
+    color: #1e40af;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-size: 12px;
+  }
+
+  /* Rodapé */
+  .page-footer {
+    position: absolute;
+    bottom: 20px;
+    left: 50px;
+    right: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #94a3b8;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 10px;
+  }
+
+  /* Print */
+  @media print {
+    .page { page-break-after: always; }
+    @page { margin: 0; size: A4; }
+  }
+
+  /* Lista de notas */
+  .notes-list { }
+  .note-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    margin-bottom: 6px;
+    cursor: pointer;
+  }
+  .note-row:hover { border-color: var(--blue); }
+  .note-row-type {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    background: rgba(59,130,246,0.1);
+    flex-shrink: 0;
+  }
+  .note-row-info { flex: 1; }
+  .note-row-title { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+  .note-row-meta { font-size: 11px; color: var(--sub); }
+  .note-row-tags { display: flex; gap: 4px; flex-shrink: 0; }
+
+  /* Auto-save indicator */
+  .autosave-indicator {
+    font-size: 11px;
+    color: var(--green);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .autosave-dot { width: 6px; height: 6px; background: var(--green); border-radius: 50%; }
+
+</style>
+</head>
+<body>
+
+<!-- ========================= CAPA ========================= -->
+<div class="page cover">
+  <div class="cover-badge">Guia Completo do Usuário</div>
+
+  <div class="cover-logo">
+    <div class="cover-lightning">⚡</div>
+    <div class="cover-title">RAZEC</div>
+  </div>
+
+  <div class="cover-subtitle">Central de Projetos e Conhecimento</div>
+  <div class="cover-divider"></div>
+
+  <div class="cover-features">
+    <div class="cover-feature">
+      <div class="cover-feature-icon">☁️</div>
+      <div class="cover-feature-label">100% na Nuvem</div>
+    </div>
+    <div class="cover-feature">
+      <div class="cover-feature-icon">📱</div>
+      <div class="cover-feature-label">Multi-dispositivo</div>
+    </div>
+    <div class="cover-feature">
+      <div class="cover-feature-icon">⚡</div>
+      <div class="cover-feature-label">Tempo Real</div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; align-items:center; gap:8px; color:#475569; margin-bottom: 40px;">
+    <div style="font-size:15px; color:#94a3b8;">cezar-moreira.github.io/razec</div>
+    <div style="font-size:13px;">Versão 3.0 • Com sincronização via Supabase</div>
+  </div>
+
+  <div class="cover-version">© 2024 RAZEC • Desenvolvido por Cezar Moreira</div>
+</div>
+
+<!-- ========================= SUMÁRIO ========================= -->
+<div class="page toc-page">
+  <div class="toc-header">
+    <div class="toc-tag">Sumário</div>
+    <div class="toc-title">O que você vai aprender</div>
+  </div>
+
+  <div class="toc-item">
+    <div class="toc-num">1</div>
+    <div class="toc-item-icon">🎯</div>
+    <div class="toc-item-name">O que é o RAZEC?</div>
+    <div class="toc-item-desc">Visão geral, funcionalidades e benefícios</div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">2</div>
+    <div class="toc-item-icon">🔐</div>
+    <div class="toc-item-name">Criando sua conta e fazendo login</div>
+    <div class="toc-item-desc">Cadastro, login, recuperação de senha</div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">3</div>
+    <div class="toc-item-icon">🏠</div>
+    <div class="toc-item-name">Dashboard — Visão Geral</div>
+    <div class="toc-item-desc">Painel inicial, estatísticas e notas recentes</div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">4</div>
+    <div class="toc-item-icon">📁</div>
+    <div class="toc-item-name">Projetos</div>
+    <div class="toc-item-desc">Criar, editar e organizar projetos</div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">5</div>
+    <div class="toc-item-icon">📝</div>
+    <div class="toc-item-name">Notas e Editor Markdown</div>
+    <div class="toc-item-desc">Criar notas, editor com preview, auto-save</div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">6</div>
+    <div class="toc-item-icon">🔍</div>
+    <div class="toc-item-name">Busca Avançada</div>
+    <div class="toc-item-desc">Filtros por projeto, tag, tipo e texto livre</div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">7</div>
+    <div class="toc-item-icon">🕸️</div>
+    <div class="toc-item-name">Mapa de Conhecimento</div>
+    <div class="toc-item-desc">Visualização gráfica das suas notas</div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">8</div>
+    <div class="toc-item-icon">🤖</div>
+    <div class="toc-item-name">Gerador de Prompts + Prompts Salvos</div>
+    <div class="toc-item-desc">Gere, salve e reutilize prompts na nuvem</div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">9</div>
+    <div class="toc-item-icon">💾</div>
+    <div class="toc-item-name">Backup e Exportação</div>
+    <div class="toc-item-desc">Export JSON, segurança dos dados</div>
+  </div>
+  <div class="toc-item">
+    <div class="toc-num">10</div>
+    <div class="toc-item-icon">📱</div>
+    <div class="toc-item-name">Usando em outros dispositivos</div>
+    <div class="toc-item-desc">Celular, tablet e sincronização em tempo real</div>
+  </div>
+
+  <div class="page-footer">
+    <span>RAZEC — Manual do Usuário</span>
+    <span>cezar-moreira.github.io/razec</span>
+  </div>
+</div>
+
+<!-- ========================= CAP 1 — O QUE É ========================= -->
+<div class="page chapter-page">
+  <div class="chapter-header">
+    <div class="chapter-num">Capítulo 01</div>
+    <div class="chapter-title">🎯 O que é o RAZEC?</div>
+    <div class="chapter-desc">Conheça o sistema e entenda como ele pode transformar sua organização</div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-icon">💡</div>
+    <div>O RAZEC é o seu <strong>segundo cérebro digital</strong> — um lugar único para guardar projetos, ideias, notas e conhecimento, acessível de qualquer dispositivo.</div>
+  </div>
+
+  <div class="section-title">O que você pode fazer</div>
+
+  <table class="feature-table">
+    <tr><th>Funcionalidade</th><th>O que faz</th></tr>
+    <tr><td>📁 Projetos</td><td>Agrupe suas notas por área (trabalho, estudos, saúde, etc.)</td></tr>
+    <tr><td>📝 Notas</td><td>Escreva com suporte a Markdown — títulos, listas, negrito e mais</td></tr>
+    <tr><td>🔍 Busca Avançada</td><td>Encontre qualquer nota por texto, tag, projeto ou tipo</td></tr>
+    <tr><td>🕸️ Mapa Visual</td><td>Veja como suas notas se conectam em um gráfico interativo</td></tr>
+    <tr><td>🤖 Gerador de Prompts</td><td>Crie prompts prontos para usar no ChatGPT, Claude ou Gemini</td></tr>
+    <tr><td>☁️ Nuvem</td><td>Dados salvos automaticamente — acesse de qualquer lugar</td></tr>
+    <tr><td>⚡ Sync Real-time</td><td>Abra no celular e no PC ao mesmo tempo — tudo sincroniza</td></tr>
+    <tr><td>💾 Backup JSON</td><td>Exporte todos seus dados a qualquer momento</td></tr>
+  </table>
+
+  <div class="section-title">Como os dados ficam seguros?</div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:8px;">
+    <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:14px;">
+      <div style="font-weight:700; color:#15803d; margin-bottom:6px; font-size:13px;">🔒 Isolamento por usuário</div>
+      <div style="font-size:12px; color:#14532d; line-height:1.6;">Cada conta só acessa os próprios dados. Nenhum usuário vê dados de outro.</div>
+    </div>
+    <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:14px;">
+      <div style="font-weight:700; color:#1d4ed8; margin-bottom:6px; font-size:13px;">🔐 HTTPS + Supabase</div>
+      <div style="font-size:12px; color:#1e40af; line-height:1.6;">Conexão criptografada. Senhas armazenadas com hash bcrypt — nunca em texto.</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Capítulo 1 — O que é o RAZEC?</span>
+    <span>cezar-moreira.github.io/razec</span>
+  </div>
+</div>
+
+<!-- ========================= CAP 2 — LOGIN ========================= -->
+<div class="page chapter-page">
+  <div class="chapter-header">
+    <div class="chapter-num">Capítulo 02</div>
+    <div class="chapter-title">🔐 Criando sua conta e fazendo login</div>
+    <div class="chapter-desc">Configure seu acesso em menos de 1 minuto</div>
+  </div>
+
+  <div class="section-title">Criando uma nova conta</div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;">
+    <div>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Acesse o app</h4>
+          <p>Abra o navegador e acesse <span class="inline-code">cezar-moreira.github.io/razec</span></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Clique em "Criar conta"</h4>
+          <p>Selecione a aba <strong>Criar conta</strong> na parte superior do formulário</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Preencha email e senha</h4>
+          <p>Use qualquer email válido. Senha mínima de 6 caracteres</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Clique em "Criar conta"</h4>
+          <p>Você entra automaticamente — sem precisar confirmar email</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="login-screen">
+      <div class="login-box">
+        <div class="login-logo"><span>⚡</span> RAZEC</div>
+        <div class="login-tagline">Central de projetos e conhecimento</div>
+        <div class="login-tabs">
+          <div class="login-tab">Entrar</div>
+          <div class="login-tab active">Criar conta</div>
+        </div>
+        <div style="text-align:left;">
+          <span class="login-input-label">Email</span>
+          <div class="login-input">seuemail@gmail.com</div>
+          <span class="login-input-label">Senha</span>
+          <div class="login-input" style="color:#475569;">••••••••••</div>
+        </div>
+        <div class="login-btn">Criar conta</div>
+        <div class="login-success">✅ Conta criada! Entrando...</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:20px;">Fazendo login (próximas vezes)</div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:8px;">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <h4>Aba "Entrar"</h4>
+        <p>Na tela inicial, certifique-se que a aba <strong>Entrar</strong> está selecionada</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <h4>Email e senha → Entrar</h4>
+        <p>Digite suas credenciais e clique em <strong>Entrar</strong>. O app lembra a sessão automaticamente.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box">
+    <div class="tip-box-title">💡 Dica</div>
+    <p>O app lembra que você está logado. Na próxima vez que abrir, entra direto sem precisar digitar a senha novamente — em qualquer dispositivo onde você já fez login.</p>
+  </div>
+
+  <div class="page-footer">
+    <span>Capítulo 2 — Conta e Login</span>
+    <span>cezar-moreira.github.io/razec</span>
+  </div>
+</div>
+
+<!-- ===== CAP 2b — RECUPERAÇÃO DE SENHA ===== -->
+<div class="page chapter-page">
+  <div class="chapter-header">
+    <div class="chapter-num">Capítulo 02 — continuação</div>
+    <div class="chapter-title">🔑 Recuperação de Senha</div>
+    <div class="chapter-desc">Esqueceu a senha? Redefina em poucos cliques pelo email</div>
+  </div>
+
+  <div style="font-size:14px; color:#475569; margin-bottom:20px; line-height:1.7;">
+    Se você esquecer a senha, o RAZEC envia um <strong>link de redefinição</strong> para o seu email. Ao clicar no link, o app abre automaticamente com um formulário para você criar uma nova senha.
+  </div>
+
+  <div class="section-title">Passo a passo — redefinir senha</div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;">
+    <div>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Clique em "Esqueci minha senha"</h4>
+          <p>O link aparece abaixo do botão <strong>Entrar</strong> na tela de login</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Digite seu email</h4>
+          <p>Informe o email cadastrado na sua conta e clique em <strong>"Enviar link de recuperação"</strong></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Verifique seu email</h4>
+          <p>Chegará um email com um link. Clique nele — ele abre o RAZEC automaticamente</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Digite a nova senha</h4>
+          <p>O app exibe o formulário de <strong>"Nova senha"</strong>. Digite e confirme a nova senha</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h4>Pronto — já entrou!</h4>
+          <p>Após salvar, você é logado automaticamente com a nova senha</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <!-- Mockup: tela de recuperação -->
+      <div class="login-screen" style="min-height:auto; padding:20px;">
+        <div class="login-box" style="padding:20px 20px;">
+          <div class="login-logo" style="font-size:22px; margin-bottom:3px;"><span>⚡</span> RAZEC</div>
+          <div class="login-tagline" style="margin-bottom:14px;">Recuperação de senha</div>
+          <div style="font-size:11px; color:#64748b; margin-bottom:12px; text-align:left; line-height:1.5;">Digite seu email e enviaremos um link para redefinir sua senha.</div>
+          <span class="login-input-label">Email</span>
+          <div class="login-input" style="margin-bottom:10px;">cezarharpa@gmail.com</div>
+          <div class="login-btn" style="font-size:12px; padding:9px;">Enviar link de recuperação</div>
+          <div class="login-success" style="margin-top:10px; font-size:11px;">✅ Link enviado! Verifique seu email.</div>
+          <div style="font-size:11px; color:#60a5fa; text-align:center; margin-top:10px; cursor:pointer;">← Voltar para o login</div>
+        </div>
+      </div>
+
+      <!-- Mockup: tela nova senha -->
+      <div class="login-screen" style="min-height:auto; padding:20px;">
+        <div class="login-box" style="padding:20px 20px;">
+          <div class="login-logo" style="font-size:22px; margin-bottom:3px;"><span>⚡</span> RAZEC</div>
+          <div class="login-tagline" style="margin-bottom:14px;">Defina sua nova senha</div>
+          <span class="login-input-label">Nova senha</span>
+          <div class="login-input" style="margin-bottom:8px; color:#475569;">••••••••••••</div>
+          <span class="login-input-label">Confirmar senha</span>
+          <div class="login-input" style="margin-bottom:10px; color:#475569;">••••••••••••</div>
+          <div class="login-btn" style="font-size:12px; padding:9px;">Salvar nova senha</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warning-box" style="margin-top:16px;">
+    <div class="warning-box-title">📧 Não encontrou o email?</div>
+    <p>Verifique a pasta de <strong>Spam</strong> ou <strong>Lixo eletrônico</strong>. O link expira em 1 hora — se expirar, repita o processo. O link só funciona uma vez.</p>
+  </div>
+
+  <div class="page-footer">
+    <span>Capítulo 2 — Recuperação de Senha</span>
+    <span>cezar-moreira.github.io/razec</span>
+  </div>
+</div>
+
+<!-- ========================= CAP 3 — DASHBOARD ========================= -->
+<div class="page chapter-page">
+  <div class="chapter-header">
+    <div class="chapter-num">Capítulo 03</div>
+    <div class="chapter-title">🏠 Dashboard — Visão Geral</div>
+    <div class="chapter-desc">O painel inicial com um resumo de tudo que você tem</div>
+  </div>
+
+  <div style="font-size:14px; color:#475569; margin-bottom:20px; line-height:1.7;">
+    Após fazer login, você cai no <strong>Dashboard</strong>. Ele mostra um resumo completo do seu sistema: quantos projetos e notas você tem, quais foram as últimas notas modificadas e a distribuição por tipo.
+  </div>
+
+  <!-- Mockup completo do app no Dashboard -->
+  <div class="app-frame">
+    <div class="app-header">
+      <div class="app-header-logo"><span>⚡</span> RAZEC</div>
+      <div class="app-header-right">
+        <div class="app-status"><div class="app-status-dot"></div> Conectado</div>
+        <div class="app-email">cezarharpa@gmail.com</div>
+        <div class="app-btn-logout">Sair</div>
+      </div>
+    </div>
+    <div class="app-body">
+      <div class="app-sidebar">
+        <div class="app-nav-item active"><div class="app-nav-icon">🏠</div> Dashboard</div>
+        <div class="app-nav-item"><div class="app-nav-icon">📁</div> Projetos</div>
+        <div class="app-nav-item"><div class="app-nav-icon">📝</div> Notas</div>
+        <div class="app-nav-item"><div class="app-nav-icon">🔍</div> Busca</div>
+        <div class="app-nav-item"><div class="app-nav-icon">🕸️</div> Mapa</div>
+        <div class="app-nav-item"><div class="app-nav-icon">🤖</div> Prompts</div>
+      </div>
+      <div class="app-main">
+        <div class="app-main-title">Dashboard</div>
+        <div class="app-stats">
+          <div class="app-stat"><div class="app-stat-num">4</div><div class="app-stat-label">Projetos</div></div>
+          <div class="app-stat"><div class="app-stat-num">12</div><div class="app-stat-label">Notas</div></div>
+          <div class="app-stat"><div class="app-stat-num">7</div><div class="app-stat-label">Tarefas</div></div>
+          <div class="app-stat"><div class="app-stat-num">3</div><div class="app-stat-label">Ideias</div></div>
+        </div>
+        <div style="font-size:12px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Notas Recentes</div>
+        <div class="note-row">
+          <div class="note-row-type">📝</div>
+          <div class="note-row-info">
+            <div class="note-row-title">Estratégia de conteúdo Instagram</div>
+            <div class="note-row-meta">instagram • há 5 min</div>
+          </div>
+          <div class="note-row-tags"><span class="app-tag tag-blue">marketing</span></div>
+        </div>
+        <div class="note-row">
+          <div class="note-row-type">✅</div>
+          <div class="note-row-info">
+            <div class="note-row-title">Reunião com cliente — pendências</div>
+            <div class="note-row-meta">ultravida • há 2 horas</div>
+          </div>
+          <div class="note-row-tags"><span class="app-tag tag-orange">tarefa</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box" style="margin-top:16px;">
+    <div class="tip-box-title">💡 O que cada número significa</div>
+    <p><strong>Projetos</strong> = pastas criadas · <strong>Notas</strong> = total de anotações · <strong>Tarefas</strong> = notas do tipo "tarefa" · <strong>Ideias</strong> = notas do tipo "ideia"</p>
+  </div>
+
+  <div class="page-footer">
+    <span>Capítulo 3 — Dashboard</span>
+    <span>cezar-moreira.github.io/razec</span>
+  </div>
+</div>
+
+<!-- ========================= CAP 4 — PROJETOS ========================= -->
+<div class="page chapter-page">
+  <div class="chapter-header">
+    <div class="chapter-num">Capítulo 04</div>
+    <div class="chapter-title">📁 Projetos</div>
+    <div class="chapter-desc">Organize suas notas em projetos temáticos com ícone e cor</div>
+  </div>
+
+  <div style="font-size:14px; color:#475569; margin-bottom:20px; line-height:1.7;">
+    Projetos são como <strong>pastas temáticas</strong>. Antes de criar notas, crie pelo menos um projeto para organizar tudo. Exemplo: "Trabalho", "Estudos", "Saúde", "Finanças".
+  </div>
+
+  <div class="section-title">Criando um projeto</div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start;">
+    <div>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Clique em "Projetos" no menu</h4>
+          <p>No menu lateral esquerdo, clique no item <strong>📁 Projetos</strong></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Clique em "+ Novo Projeto"</h4>
+          <p>O botão azul no topo da lista de projetos</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Preencha nome, ícone e cor</h4>
+          <p>Escolha um emoji e uma cor para identificar visualmente o projeto</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Salve</h4>
+          <p>O projeto aparece instantaneamente na lista e na nuvem</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="app-frame" style="font-size:13px;">
+        <div class="app-header">
+          <div class="app-header-logo"><span>⚡</span> RAZEC</div>
+          <div class="app-header-right">
+            <div class="app-status"><div class="app-status-dot"></div> Conectado</div>
+          </div>
+        </div>
+        <div class="app-body" style="min-height:280px;">
+          <div class="app-sidebar">
+            <div class="app-nav-item"><div class="app-nav-icon">🏠</div> Dashboard</div>
+            <div class="app-nav-item active"><div class="app-nav-icon">📁</div> Projetos</div>
+            <div class="app-nav-item"><div class="app-nav-icon">📝</div> Notas</div>
+          </div>
+          <div class="app-main" style="padding:14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+              <div style="font-size:16px; font-weight:700; color:#e2e8f0;">Projetos</div>
+              <div class="app-btn-primary" style="font-size:11px; padding:6px 12px;">+ Novo Projeto</div>
+            </div>
+            <div class="projects-grid">
+              <div class="project-card">
+                <div class="project-card-header">
+                  <div class="project-icon">📊</div>
+                  <div>
+                    <div class="project-card-name">Instagram</div>
+                    <div class="project-card-desc">Gestão e estratégia</div>
+                  </div>
+                </div>
+                <div class="project-count">5 notas</div>
+              </div>
+              <div class="project-card">
+                <div class="project-card-header">
+                  <div class="project-icon">💊</div>
+                  <div>
+                    <div class="project-card-name">Ultravida</div>
+                    <div class="project-card-desc">Projeto Ultravida</div>
+                  </div>
+                </div>
+                <div class="project-count">3 notas</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warning-box" style="margin-top:16px;">
+    <div class="warning-box-title">⚠️ Atenção</div>
+    <p>Excluir um projeto <strong>não exclui as notas</strong> dentro dele. As notas ficam sem projeto associado e você pode reassociá-las depois.</p>
+  </div>
+
+  <div class="page-footer">
+    <span>Capítulo 4 — Projetos</span>
+    <span>cezar-moreira.github.io/razec</span>
+  </div>
+</div>
+
+<!-- ========================= CAP 5 — NOTAS ========================= -->
+<div class="page chapter-page">
+  <div class="chapter-header">
+    <div class="chapter-num">Capítulo 05</div>
+    <div class="chapter-title">📝 Notas e Editor Markdown</div>
+    <div class="chapter-desc">Crie, edite e organize suas anotações com formatação profissional</div>
+  </div>
+
+  <div class="section-title">Criando uma nota</div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; margin-bottom:20px;">
+    <div>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Clique em "Notas" no menu</h4>
+          <p>Acesse a seção de notas pelo menu lateral</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Clique em "+ Nova Nota"</h4>
+          <p>Um formulário é aberto para preencher os dados</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Preencha título, tipo e projeto</h4>
+          <p>Escolha o <strong>tipo</strong> (nota, tarefa, ideia, resumo, referência) e o <strong>projeto</strong> ao qual pertence</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Escreva o conteúdo</h4>
+          <p>Use Markdown para formatar. O preview aparece ao lado enquanto você digita</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h4>Auto-save cuida do resto</h4>
+          <p>Salva automaticamente na nuvem 2,5 segundos após parar de digitar</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="app-frame">
+        <div class="app-header">
+          <div class="app-header-logo"><span>⚡</span> RAZEC</div>
+          <div class="app-header-right">
+            <div class="autosave-indicator"><div class="autosave-dot"></div> Salvo</div>
+          </div>
+        </div>
+        <div class="app-main" style="padding:14px; background:#0a0e1a;">
+          <div style="font-size:14px; font-weight:700; color:#e2e8f0; margin-bottom:12px;">Nova Nota</div>
+          <div class="note-editor">
+            <div class="note-editor-left">
+              <div class="note-field-label" style="margin-top:0;">Título</div>
+              <div class="note-input">Estratégia de conteúdo</div>
+              <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div>
+                  <div class="note-field-label">Tipo</div>
+                  <div class="note-input">📝 nota</div>
+                </div>
+                <div>
+                  <div class="note-field-label">Projeto</div>
+                  <div class="note-input">📊 Instagram</div>
+                </div>
+              </div>
+              <div class="note-field-label">Tags</div>
+              <div class="note-input">marketing, conteúdo</div>
+              <div class="note-field-label">Conteúdo (Markdown)</div>
+              <div class="note-textarea"># Estratégia Instagram
+
+**Objetivo:** aumentar engajamento
+
+- Postar 3x por semana
+- Usar Reels
+- Responder comentários</div>
+            </div>
+            <div class="note-editor-right">
+              <div style="font-size:10px; color:#64748b; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;">Preview</div>
+              <div class="note-preview-h1">Estratégia Instagram</div>
+              <div class="note-preview-p"><span class="note-preview-bold">Objetivo:</span> aumentar engajamento</div>
+              <ul class="note-preview-list">
+                <li>Postar 3x por semana</li>
+                <li>Usar Reels</li>
+                <li>Responder comentários</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Formatação Markdown</div>
+  <table class="md-table">
+    <tr><th>O que você digita</th><th>Como aparece no preview</th></tr>
+    <tr><td># Título</td><td>Título grande (H1)</td></tr>
+    <tr><td>## Subtítulo</td><td>Subtítulo (H2)</td></tr>
+    <tr><td>**negrito**</td><td><strong>negrito</strong></td></tr>
+    <tr><td>*itálico*</td><td><em>itálico</em></td></tr>
+    <tr><td>- item</td><td>• item (lista com marcador)</td></tr>
+    <tr><td>1. item</td><td>1. item (lista numerada)</td></tr>
+    <tr><td>`código`</td><td>código (fonte mono)</td></tr>
+  </table>
+
+  <div class="page-footer">
+    <span>Capítulo 5 — Notas</span>
+    <span>cezar-moreira.github.io/razec</span>
+  </div>
+</div>
+
+<!-- ========================= CAP 6 — BUSCA ========================= -->
+<div class="page chapter-page">
+  <div class="chapter-header">
+    <div class="chapter-num">Capítulo 06</div>
+    <div class="chapter-title">🔍 Busca Avançada</div>
+    <div class="chapter-desc">Encontre qualquer nota em segundos com filtros inteligentes</div>
+  </div>
+
+  <div style="font-size:14px; color:#475569; margin-bottom:20px; line-height:1.7;">
+    A busca do RAZEC vai além de uma pesquisa simples. Você pode usar <strong>filtros especiais</strong> com prefixos para encontrar exatamente o que procura.
+  </div>
+
+  <div class="section-title">Como usar a busca</div>
+
+  <div class="app-frame">
+    <div class="app-header">
+      <div class="app-header-logo"><span>⚡</span> RAZEC</div>
+      <div class="app-header-right">
+        <div class="app-status"><div class="app-status-dot"></div> Conectado</div>
+      </div>
+    </div>
+    <div class="app-body" style="min-height:300px;">
+      <div class="app-sidebar">
+        <div class="app-nav-item"><div class="app-nav-icon">🏠</div> Dashboard</div>
+        <div class="app-nav-item"><div class="app-nav-icon">📁</div> Projetos</div>
+        <div class="app-nav-item"><div class="app-nav-icon">📝</div> Notas</div>
+        <div class="app-nav-item active"><div class="app-nav-icon">🔍</div> Busca</div>
+        <div class="app-nav-item"><div class="app-nav-icon">🕸️</div> Mapa</div>
+      </div>
+      <div class="app-main" style="padding:14px;">
+        <div style="font-size:16px; font-weight:700; color:#e2e8f0; margin-bottom:14px;">Busca Avançada</div>
+        <div class="search-bar">
+          <div class="search-icon">🔍</div>
+          <div class="search-text">tag:marketing instagram</div>
+          <div class="search-tag-filter">tag: marketing</div>
+        </div>
+        <div style="font-size:11px; color:#64748b; margin-bottom:10px;">2 resultados encontrados</div>
+        <div class="note-row">
+          <div class="note-row-type">📝</div>
+          <div class="note-row-info">
+            <div class="note-row-title">Estratégia de conteúdo Instagram</div>
+            <div class="note-row-meta">instagram • tag: marketing</div>
+          </div>
+          <div class="note-row-tags"><span class="app-tag tag-blue">marketing</span></div>
+        </div>
+        <div class="note-row">
+          <div class="note-row-type">💡</div>
+          <div class="note-row-info">
+            <div class="note-row-title">Ideias para campanha de verão</div>
+            <div class="note-row-meta">instagram • tag: marketing</div>
+          </div>
+          <div class="note-row-tags"><span class="app-tag tag-blue">marketing</span><span class="app-tag tag-orange">ideia</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:20px;">Filtros disponíveis</div>
+
+  <table class="feature-table">
+    <tr><th>Filtro</th><th>Exemplo</th><th>O que faz</th></tr>
+    <tr><td>projeto:</td><td><span class="inline-code">projeto:instagram</span></td><td>Notas apenas do projeto especificado</td></tr>
+    <tr><td>tag:</td><td><span class="inline-code">tag:marketing</span></td><td>Notas que contêm essa tag</td></tr>
+    <tr><td>tipo:</td><td><span class="inline-code">tipo:tarefa</span></td><td>Notas de um tipo específico</td></tr>
+    <tr><td>texto livre</td><td><span class="inline-code">reunião cliente</span></td><td>Busca em títulos e conteúdos</td></tr>
+  </table>
+
+  <div class="tip-box">
+    <div class="tip-box-title">💡 Combinando filtros</div>
+    <p>Você pode combinar filtros com texto: <span class="inline-code">projeto:ultravida reunião</span> mostra apenas notas do projeto Ultravida que mencionam "reunião".</p>
+  </div>
+
+  <div class="page-footer">
+    <span>Capítulo 6 — Busca Avançada</span>
+    <span>cezar-moreira.github.io/razec</span>
+  </div>
+</div>
+
+<!-- ========================= CAP 7 — MAPA ========================= -->
+<div class="page chapter-page">
+  <div class="chapter-header">
+    <div class="chapter-num">Capítulo 07</div>
+    <div class="chapter-title">🕸️ Mapa de Conhecimento</div>
+    <div class="chapter-desc">Visualize como suas notas e projetos se conectam</div>
+  </div>
+
+  <div style="font-size:14px; color:#475569; margin-bottom:16px; line-height:1.7;">
+    O Mapa de Conhecimento exibe todas as suas notas e projetos como um <strong>gráfico interativo</strong>. Você vê de forma visual quais projetos têm mais notas e como o conhecimento está distribuído.
+  </div>
+
+  <!-- Mockup do mapa -->
+  <div class="app-frame">
+    <div class="app-header">
+      <div class="app-header-logo"><span>⚡</span> RAZEC</div>
+    </div>
+    <div class="app-body" style="min-height:330px;">
+      <div class="app-sidebar">
+        <div class="app-nav-item"><div class="app-nav-icon">🏠</div> Dashboard</div>
+        <div class="app-nav-item"><div class="app-nav-icon">📁</div> Projetos</div>
+        <div class="app-nav-item"><div class="app-nav-icon">📝</div> Notas</div>
+        <div class="app-nav-item"><div class="app-nav-icon">🔍</div> Busca</div>
+        <div class="app-nav-item active"><div class="app-nav-icon">🕸️</div> Mapa</div>
+      </div>
+      <div class="app-main" style="padding:14px;">
+        <div style="font-size:16px; font-weight:700; color:#e2e8f0; margin-bottom:12px;">Mapa de Conhecimento</div>
+        <div class="graph-canvas">
+          <!-- Linhas de conexão (SVG) -->
+          <svg style="position:absolute;width:100%;height:100%;top:0;left:0;">
+            <line x1="160" y1="100" x2="260" y2="60" stroke="rgba(59,130,246,0.3)" stroke-width="1.5"/>
+            <line x1="160" y1="100" x2="280" y2="100" stroke="rgba(59,130,246,0.25)" stroke-width="1.5"/>
+            <line x1="160" y1="100" x2="230" y2="150" stroke="rgba(59,130,246,0.2)" stroke-width="1.5"/>
+            <line x1="360" y1="130" x2="430" y2="80" stroke="rgba(139,92,246,0.3)" stroke-width="1.5"/>
+            <line x1="360" y1="130" x2="460" y2="150" stroke="rgba(139,92,246,0.25)" stroke-width="1.5"/>
+            <line x1="360" y1="130" x2="410" y2="190" stroke="rgba(139,92,246,0.2)" stroke-width="1.5"/>
+            <line x1="160" y1="210" x2="100" y2="160" stroke="rgba(16,185,129,0.3)" stroke-width="1.5"/>
+            <line x1="160" y1="210" x2="120" y2="240" stroke="rgba(16,185,129,0.25)" stroke-width="1.5"/>
+          </svg>
+
+          <!-- Nós de projeto (maiores) -->
+          <div class="graph-node" style="width:48px;height:48px;background:#3b82f6;left:136px;top:76px;font-size:11px;">📊</div>
+          <div class="graph-label" style="left:115px;top:128px;color:#60a5fa;">Instagram</div>
+
+          <div class="graph-node" style="width:44px;height:44px;background:#8b5cf6;left:338px;top:108px;font-size:11px;">💊</div>
+          <div class="graph-label" style="left:320px;top:156px;color:#a78bfa;">Ultravida</div>
+
+          <div class="graph-node" style="width:40px;height:40px;background:#10b981;left:140px;top:190px;font-size:11px;">👔</div>
+          <div class="graph-label" style="left:125px;top:234px;color:#34d399;">Trabalho</div>
+
+          <!-- Nós de nota (menores) -->
+          <div class="graph-node" style="width:22px;height:22px;background:#1d4ed8;left:249px;top:49px;"></div>
+          <div class="graph-node" style="width:20px;height:20px;background:#1e40af;left:269px;top:90px;"></div>
+          <div class="graph-node" style="width:18px;height:18px;background:#1d4ed8;left:221px;top:141px;"></div>
+          <div class="graph-node" style="width:22px;height:22px;background:#6d28d9;left:419px;top:69px;"></div>
+          <div class="graph-node" style="width:18px;height:18px;background:#5b21b6;left:449px;top:140px;"></div>
+          <div class="graph-node" style="width:20px;height:20px;background:#7c3aed;left:400px;top:180px;"></div>
+          <div class="graph-node" style="width:18px;height:18px;background:#065f46;left:90px;top:150px;"></div>
+          <div class="graph-node" style="width:16px;height:16px;background:#047857;left:110px;top:230px;"></div>
+
+          <div style="position:absolute;bottom:10px;right:12px;font-size:10px;color:#475569;">● Projetos &nbsp; • Notas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:16px;">
+    <div class="tip-box" style="margin:0;">
+      <div class="tip-box-title">🖱️ Clique em um nó</div>
+      <p>Clique em um <strong>nó de projeto</strong> para filtrar as notas daquele projeto. Clique em um <strong>nó de nota</strong> para abrir a nota diretamente.</p>
+    </div>
+    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:14px;">
+      <div style="font-size:12px; font-weight:700; color:#475569; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Legenda</div>
+      <div style="font-size:12px; color:#334155; margin-bottom:6px;"><span style="color:#3b82f6;">●</span> <strong>Nós grandes coloridos</strong> = Projetos</div>
+      <div style="font-size:12px; color:#334155; margin-bottom:6px;"><span style="color:#1e40af;">•</span> <strong>Nós pequenos</strong> = Notas</div>
+      <div style="font-size:12px; color:#334155;"><span style="color:#94a3b8;">—</span> <strong>Linhas</strong> = Conexão nota → projeto</div>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>Capítulo 7 — Mapa de Conhecimento</span>
+    <span>cezar-moreira.github.io/razec</span>
+  </div>
+</div>
+
+<!-- ========================= CAP 8 — PROMPTS ========================= -->
+<div class="page chapter-page">
+  <div class="chapter-header">
+    <div class="chapter-num">Capítulo 08</div>
+    <div class="chapter-title">🤖 Gerador de Prompts para IA</div>
+    <div class="chapter-desc">Crie prompts prontos para usar no ChatGPT, Claude e Gemini</div>
+  </div>
+
+  <div style="font-size:14px; color:#475569; margin-bottom:16px; line-height:1.7;">
+    O Gerador de Prompts transforma suas notas em <strong>instruções prontas para IAs</strong>. Você escolhe o tipo de tarefa, seleciona uma nota de referência e o RAZEC monta o prompt — é só copiar e colar na IA.
+  </div>
+
+  <div class="app-frame">
+    <div class="app-header">
+      <div class="app-header-logo"><span>⚡</span> RAZEC</div>
+    </div>
+    <div class="app-body" style="min-height:300px;">
+      <div class="app-sidebar">
+        <div class="app-nav-item"><div class="app-nav-icon">🏠</div> Dashboard</div>
+        <div class="app-nav-item"><div class="app-nav-icon">📁</div> Projetos</div>
+        <div class="app-nav-item"><div class="app-nav-icon">📝</div> Notas</div>
+        <div class="app-nav-item active"><div class="app-nav-icon">🤖</div> Prompts</div>
+      </div>
+      <div class="app-main" style="padding:14px;">
+        <div style="font-size:16px; font-weight:700; color:#e2e8f0; margin-bottom:14px;">Gerador de Prompts</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+          <div>
+            <div style="font-size:11px; color:#94a3b8; margin-bottom:5px;">Tipo de tarefa</div>
+            <div class="prompt-select">📋 Criar plano de ação</div>
+          </div>
+          <div>
+            <div style="font-size:11px; color:#94a3b8; margin-bottom:5px;">Nota de referência</div>
+            <div class="prompt-select">📝 Estratégia Instagram</div>
+          </div>
+        </div>
+        <div class="app-btn-primary">🤖 Gerar Prompt</div>
+        <div class="prompt-output">
+          <div class="prompt-copy-btn">📋 Copiar</div>
+Você é um especialista em planejamento estratégico. Crie um plano de ação detalhado com base nas informações abaixo.
+
+<strong>Contexto da nota "Estratégia Instagram":</strong>
+Objetivo: aumentar engajamento
+- Postar 3x por semana
+- Usar Reels
+
+<strong>Instruções:</strong> Crie um plano de ação com etapas semanais, metas mensuráveis e indicadores de sucesso para os próximos 30 dias.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:20px;">Tipos de prompts disponíveis</div>
+
+  <table class="feature-table">
+    <tr><th>Tipo</th><th>Para que serve</th></tr>
+    <tr><td>📋 Resumir esta nota</td><td>Resume o conteúdo da nota em 3-5 pontos principais</td></tr>
+    <tr><td>☑️ Listar tarefas</td><td>Extrai tarefas pendentes e feitas da nota</td></tr>
+    <tr><td>✨ Sugerir melhorias</td><td>Pede sugestões para aprimorar o conteúdo</td></tr>
+    <tr><td>💻 Explicar o código</td><td>Explica trechos de código presentes na nota</td></tr>
+    <tr><td>❓ Perguntas de revisão</td><td>Gera perguntas para fixar o aprendizado</td></tr>
+    <tr><td>📝 Expandir pontos</td><td>Desenvolve os pontos da nota com mais detalhes</td></tr>
+  </table>
+
+  <div class="section-title" style="margin-top:20px;">Salvando e reutilizando prompts</div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start;">
+    <div>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Gere o prompt normalmente</h4>
+          <p>Escolha o tipo no painel direito do editor</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Clique em "💾 Salvar prompt"</h4>
+          <p>O botão aparece abaixo de "Copiar prompt". O prompt é salvo na nuvem instantaneamente.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Acesse em "🤖 Prompts salvos"</h4>
+          <p>Menu lateral → Prompts salvos. Todos os prompts aparecem em cards com data e prévia.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Copie ou exclua</h4>
+          <p><strong>📋 Copiar</strong> — copia o texto para colar na IA<br><strong>🗑️ Excluir</strong> — remove o prompt salvo</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mockup prompts salvos -->
+    <div class="app-frame">
+      <div class="app-header">
+        <div class="app-header-logo"><span>⚡</span> RAZEC</div>
+      </div>
+      <div class="app-body" style="min-height:240px;">
+        <div class="app-sidebar">
+          <div class="app-nav-item"><div class="app-nav-icon">🏠</div> Dashboard</div>
+          <div class="app-nav-item"><div class="app-nav-icon">📝</div> Notas</div>
+          <div class="app-nav-item active"><div class="app-nav-icon">🤖</div> Prompts salvos <span style="background:#1e2d50;color:#94a3b8;font-size:9px;padding:1px 5px;border-radius:99px;margin-left:auto;">3</span></div>
+        </div>
+        <div class="app-main" style="padding:12px;">
+          <div style="font-size:14px;font-weight:700;color:#e2e8f0;margin-bottom:10px;">🤖 Prompts Salvos</div>
+          <div style="background:#0f1729;border:1px solid #1e2d50;border-radius:8px;padding:10px;margin-bottom:8px;">
+            <div style="font-size:12px;font-weight:600;color:#e2e8f0;margin-bottom:2px;">Prompt — Estratégia Instagram</div>
+            <div style="font-size:10px;color:#64748b;margin-bottom:6px;">24/05/2024 14:30</div>
+            <div style="font-size:10px;color:#94a3b8;line-height:1.5;overflow:hidden;max-height:32px;">Preciso de um resumo objetivo desta nota. Título: Estratégia...</div>
+            <div style="display:flex;gap:6px;margin-top:8px;">
+              <div style="flex:1;background:#3b82f6;color:#000;border-radius:4px;padding:4px;font-size:10px;font-weight:600;text-align:center;">📋 Copiar</div>
+              <div style="background:transparent;border:1px solid #1e2d50;border-radius:4px;padding:4px 8px;font-size:10px;color:#64748b;text-align:center;">🗑️</div>
+            </div>
+          </div>
+          <div style="background:#0f1729;border:1px solid #1e2d50;border-radius:8px;padding:10px;">
+            <div style="font-size:12px;font-weight:600;color:#e2e8f0;margin-bottom:2px;">Prompt — Reunião pendências</div>
+            <div style="font-size:10px;color:#64748b;margin-bottom:6px;">24/05/2024 10:15</div>
+            <div style="font-size:10px;color:#94a3b8;line-height:1.5;overflow:hidden;max-height:32px;">Liste todas as tarefas desta nota separando pendentes...</div>
+            <div style="display:flex;gap:6px;margin-top:8px;">
+              <div style="flex:1;background:#3b82f6;color:#000;border-radius:4px;padding:4px;font-size:10px;font-weight:600;text-align:center;">📋 Copiar</div>
+              <div style="background:transparent;border:1px solid #1e2d50;border-radius:4px;padding:4px 8px;font-size:10px;color:#64748b;text-align:center;">🗑️</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip-box" style="margin-top:16px;">
+    <div class="tip-box-title">💡 Como usar</div>
+    <p>Depois de gerar e salvar um prompt, abra <strong>Prompts salvos</strong> no menu, clique em <strong>Copiar</strong>, e cole diretamente no ChatGPT (chat.openai.com), Claude (claude.ai) ou Gemini.</p>
+  </div>
+
+  <div class="page-footer">
+    <span>Capítulo 8 — Prompts + Prompts Salvos</span>
+    <span>cezar-moreira.github.io/razec</span>
+  </div>
+</div>
+
+<!-- ========================= CAP 9 — BACKUP ========================= -->
+<div class="page chapter-page">
+  <div class="chapter-header">
+    <div class="chapter-num">Capítulo 09</div>
+    <div class="chapter-title">💾 Backup e Exportação de Dados</div>
+    <div class="chapter-desc">Seus dados estão seguros na nuvem — e você pode baixar uma cópia quando quiser</div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-bottom:20px;">
+    <div>
+      <div class="section-title" style="margin-top:0;">Onde ficam seus dados?</div>
+      <div style="font-size:13px; color:#475569; line-height:1.8; margin-bottom:16px;">
+        Todos os dados ficam no <strong>Supabase</strong> — um banco de dados PostgreSQL na nuvem. Isso significa que:
+      </div>
+      <div class="callout"><div class="callout-icon">✅</div> Não dependem do seu computador</div>
+      <div class="callout" style="margin-top:8px;"><div class="callout-icon">✅</div> Ficam salvos mesmo se você fechar o navegador</div>
+      <div class="callout" style="margin-top:8px;"><div class="callout-icon">✅</div> Acessíveis de qualquer dispositivo</div>
+      <div class="callout" style="margin-top:8px;"><div class="callout-icon">✅</div> Auto-save a cada 2,5 segundos enquanto você digita</div>
+    </div>
+
+    <div>
+      <div class="section-title" style="margin-top:0;">Exportar backup JSON</div>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Encontre o botão de exportar</h4>
+          <p>No menu ou configurações do app, procure "Exportar dados" ou "Backup JSON"</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Clique em "Exportar JSON"</h4>
+          <p>Um arquivo <span class="inline-code">razec-backup.json</span> é baixado automaticamente</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Guarde o arquivo</h4>
+          <p>Salve em local seguro (Google Drive, Dropbox, HD externo)</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">O que o arquivo JSON contém?</div>
+
+  <div style="background:#0f172a; border-radius:10px; padding:16px; font-family:monospace; font-size:11px; color:#94a3b8; margin-bottom:20px; line-height:1.8;">
+    <span style="color:#60a5fa;">{</span><br>
+    &nbsp;&nbsp;<span style="color:#34d399;">"exportado_em"</span>: <span style="color:#fbbf24;">"2024-01-15T10:30:00Z"</span>,<br>
+    &nbsp;&nbsp;<span style="color:#34d399;">"projetos"</span>: [<span style="color:#94a3b8;">{ nome, ícone, cor, criado... }</span>],<br>
+    &nbsp;&nbsp;<span style="color:#34d399;">"notas"</span>: [<span style="color:#94a3b8;">{ titulo, conteudo, tipo, tags, projeto... }</span>]<br>
+    <span style="color:#60a5fa;">}</span>
+  </div>
+
+  <div class="warning-box">
+    <div class="warning-box-title">💡 Recomendação</div>
+    <p>Faça um backup manual <strong>uma vez por mês</strong>. Os dados estão seguros na nuvem, mas ter uma cópia local dá tranquilidade adicional.</p>
+  </div>
+
+  <div class="page-footer">
+    <span>Capítulo 9 — Backup</span>
+    <span>cezar-moreira.github.io/razec</span>
+  </div>
+</div>
+
+<!-- ========================= CAP 10 — MULTI-DISPOSITIVO ========================= -->
+<div class="page chapter-page">
+  <div class="chapter-header">
+    <div class="chapter-num">Capítulo 10</div>
+    <div class="chapter-title">📱 Usando em outros dispositivos</div>
+    <div class="chapter-desc">Acesse do celular, tablet e outros computadores com sincronização em tempo real</div>
+  </div>
+
+  <div class="section-title">Acessando pelo celular</div>
+
+  <div style="display:grid; grid-template-columns:2fr 1fr; gap:24px; align-items:start; margin-bottom:20px;">
+    <div>
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <h4>Abra o navegador</h4>
+          <p>Use Chrome, Safari ou qualquer navegador moderno no seu celular</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <h4>Digite o endereço</h4>
+          <p>Acesse: <span class="inline-code">cezar-moreira.github.io/razec</span></p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <h4>Faça login</h4>
+          <p>Use o mesmo email e senha que você usa no computador</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-content">
+          <h4>Tudo sincronizado!</h4>
+          <p>Todas as suas notas e projetos aparecem instantaneamente</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mockup de celular -->
+    <div style="display:flex; justify-content:center;">
+      <div style="width:130px; background:#0a0e1a; border-radius:24px; border:6px solid #1e2d50; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.4);">
+        <div style="background:#0d1525; padding:10px 8px; border-bottom:1px solid #1e2d50;">
+          <div style="font-size:8px; font-weight:800; color:#3b82f6; text-align:center; letter-spacing:2px;">⚡ RAZEC</div>
+        </div>
+        <div style="padding:8px 6px;">
+          <div style="font-size:7px; color:#94a3b8; margin-bottom:6px; font-weight:600;">NOTAS RECENTES</div>
+          <div style="background:#0f1729; border:1px solid #1e2d50; border-radius:5px; padding:7px; margin-bottom:5px;">
+            <div style="font-size:7px; font-weight:600; color:#e2e8f0; margin-bottom:2px;">Estratégia Instagram</div>
+            <div style="font-size:6px; color:#64748b;">instagram • marketing</div>
+          </div>
+          <div style="background:#0f1729; border:1px solid #1e2d50; border-radius:5px; padding:7px; margin-bottom:5px;">
+            <div style="font-size:7px; font-weight:600; color:#e2e8f0; margin-bottom:2px;">Reunião — pendências</div>
+            <div style="font-size:6px; color:#64748b;">ultravida • tarefa</div>
+          </div>
+          <div style="background:#0f1729; border:1px solid #1e2d50; border-radius:5px; padding:7px;">
+            <div style="font-size:7px; font-weight:600; color:#e2e8f0; margin-bottom:2px;">Ideia campanha verão</div>
+            <div style="font-size:6px; color:#64748b;">instagram • ideia</div>
+          </div>
+          <div style="display:flex; justify-content:space-around; margin-top:10px; padding-top:8px; border-top:1px solid #1e2d50;">
+            <div style="font-size:9px; text-align:center;">🏠</div>
+            <div style="font-size:9px; text-align:center; color:#3b82f6;">📝</div>
+            <div style="font-size:9px; text-align:center;">🔍</div>
+            <div style="font-size:9px; text-align:center;">🕸️</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Sincronização em tempo real</div>
+
+  <div style="background:#0f172a; border-radius:12px; padding:20px; display:grid; grid-template-columns:1fr auto 1fr; gap:16px; align-items:center; margin-bottom:20px;">
+    <div style="text-align:center;">
+      <div style="font-size:32px; margin-bottom:8px;">💻</div>
+      <div style="font-size:12px; font-weight:600; color:#e2e8f0; margin-bottom:4px;">Computador</div>
+      <div style="font-size:11px; color:#94a3b8;">Você cria uma nota</div>
+    </div>
+    <div style="text-align:center; color:#3b82f6; font-size:24px; font-weight:700;">⟺</div>
+    <div style="text-align:center;">
+      <div style="font-size:32px; margin-bottom:8px;">📱</div>
+      <div style="font-size:12px; font-weight:600; color:#e2e8f0; margin-bottom:4px;">Celular</div>
+      <div style="font-size:11px; color:#94a3b8;">Aparece em segundos</div>
+    </div>
+  </div>
+
+  <div class="callout">
+    <div class="callout-icon">⚡</div>
+    <div>Você pode ter o app aberto no computador e no celular <strong>ao mesmo tempo</strong>. Uma alteração em um dispositivo aparece automaticamente no outro — sem precisar recarregar a página.</div>
+  </div>
+
+  <div class="page-footer">
+    <span>Capítulo 10 — Multi-dispositivos</span>
+    <span>cezar-moreira.github.io/razec</span>
+  </div>
+</div>
+
+<!-- ========================= FAQ / DICAS FINAIS ========================= -->
+<div class="page chapter-page">
+  <div class="chapter-header">
+    <div class="chapter-num">Dicas &amp; FAQ</div>
+    <div class="chapter-title">✨ Dicas e Perguntas Frequentes</div>
+    <div class="chapter-desc">Tudo que você precisa saber para aproveitar ao máximo</div>
+  </div>
+
+  <div class="section-title">Atalhos e dicas rápidas</div>
+
+  <table class="feature-table">
+    <tr><th>Ação</th><th>Como fazer</th></tr>
+    <tr><td>Nova nota rapidamente</td><td>Menu "Notas" → botão "+ Nova Nota"</td></tr>
+    <tr><td>Salvar nota</td><td>Automático — espere 2,5s após digitar</td></tr>
+    <tr><td>Buscar por projeto</td><td>Digite <span class="inline-code">projeto:nomeDoProjeto</span> na busca</td></tr>
+    <tr><td>Buscar por tag</td><td>Digite <span class="inline-code">tag:nomeDaTag</span> na busca</td></tr>
+    <tr><td>Ver mapa de conexões</td><td>Menu "Mapa" no menu lateral</td></tr>
+    <tr><td>Gerar prompt para IA</td><td>Menu "Prompts" → escolha tipo → Gerar</td></tr>
+    <tr><td>Gerar prompt</td><td>Abrir nota → painel direito → escolher tipo</td></tr>
+    <tr><td>Salvar prompt</td><td>Gerar prompt → "💾 Salvar prompt"</td></tr>
+    <tr><td>Ver prompts salvos</td><td>Menu "🤖 Prompts salvos" no menu lateral</td></tr>
+    <tr><td>Fazer backup</td><td>Configurações → "Exportar JSON"</td></tr>
+    <tr><td>Redefinir senha</td><td>Tela de login → "Esqueci minha senha" → email → link</td></tr>
+    <tr><td>Sair (logout)</td><td>Botão "Sair" no topo direito</td></tr>
+  </table>
+
+  <div class="section-title">Perguntas frequentes</div>
+
+  <div style="display:flex;flex-direction:column;gap:12px;">
+    <div style="background:#f8fafc;border-radius:8px;padding:14px;border-left:3px solid #ef4444;">
+      <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:4px;">Esqueci minha senha, o que faço?</div>
+      <div style="font-size:12px;color:#475569;line-height:1.6;">Na tela de login clique em <strong>"Esqueci minha senha"</strong>, informe seu email e clique em <strong>"Enviar link"</strong>. Chegará um email — clique no link e defina uma nova senha. Verifique o spam se não encontrar.</div>
+    </div>
+    <div style="background:#f8fafc;border-radius:8px;padding:14px;border-left:3px solid #3b82f6;">
+      <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:4px;">Posso usar sem internet?</div>
+      <div style="font-size:12px;color:#475569;line-height:1.6;">O app precisa de conexão para carregar e salvar dados. Sem internet, os dados não são exibidos.</div>
+    </div>
+    <div style="background:#f8fafc;border-radius:8px;padding:14px;border-left:3px solid #10b981;">
+      <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:4px;">Quantas notas posso criar?</div>
+      <div style="font-size:12px;color:#475569;line-height:1.6;">O plano gratuito do Supabase suporta 500MB — o suficiente para centenas de milhares de notas de texto.</div>
+    </div>
+    <div style="background:#f8fafc;border-radius:8px;padding:14px;border-left:3px solid #f59e0b;">
+      <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:4px;">Minhas notas são privadas?</div>
+      <div style="font-size:12px;color:#475569;line-height:1.6;">Sim. O sistema usa Row Level Security — apenas você acessa seus dados com suas credenciais.</div>
+    </div>
+    <div style="background:#f8fafc;border-radius:8px;padding:14px;border-left:3px solid #8b5cf6;">
+      <div style="font-size:13px;font-weight:700;color:#0f172a;margin-bottom:4px;">O app funciona no iPhone/Android?</div>
+      <div style="font-size:12px;color:#475569;line-height:1.6;">Sim. Funciona em qualquer navegador moderno — Chrome, Safari, Firefox, Edge. Sem instalar nada.</div>
+    </div>
+  </div>
+
+  <!-- Rodapé final -->
+  <div style="margin-top:30px; text-align:center; padding:20px; background:linear-gradient(135deg,#0a0e1a,#0d1b3e); border-radius:12px; color:white;">
+    <div style="font-size:24px;margin-bottom:6px;">⚡ RAZEC</div>
+    <div style="font-size:13px;color:#94a3b8;margin-bottom:10px;">Central de Projetos e Conhecimento</div>
+    <div style="font-size:12px;color:#60a5fa;">cezar-moreira.github.io/razec</div>
+    <div style="font-size:11px;color:#475569;margin-top:8px;">Versão 3.0 • Desenvolvido por Cezar Moreira</div>
+  </div>
+
+  <div class="page-footer">
+    <span>RAZEC — Fim do Manual</span>
+    <span>cezar-moreira.github.io/razec</span>
+  </div>
+</div>
+
+</body>
+</html>
