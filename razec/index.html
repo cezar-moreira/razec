@@ -46,6 +46,8 @@ a{color:var(--primary);text-decoration:none}
 .auth-msg{font-size:12px;text-align:center;margin-top:10px;padding:8px;border-radius:6px;display:none}
 .auth-msg.error{background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.2);color:var(--danger);display:block}
 .auth-msg.success{background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.2);color:var(--success);display:block}
+.auth-link{font-size:12px;color:var(--muted);text-align:center;margin-top:10px;cursor:pointer;display:block;background:none;border:none;width:100%}
+.auth-link:hover{color:var(--primary)}
 
 /* ── LOADING ─────────────────────────────────────────── */
 #loadingScreen{
@@ -247,10 +249,30 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
       <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Entrar</button>
       <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">Criar conta</button>
     </div>
-    <div class="auth-field"><label>Email</label><input id="authEmail" type="email" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')submitAuth()"></div>
-    <div class="auth-field"><label>Senha</label><input id="authPass" type="password" placeholder="Mínimo 6 caracteres" onkeydown="if(event.key==='Enter')submitAuth()"></div>
-    <button class="auth-btn" id="authBtn" onclick="submitAuth()">Entrar</button>
-    <div id="authMsg" class="auth-msg"></div>
+    <!-- painel login/signup -->
+    <div id="loginPanel">
+      <div class="auth-field"><label>Email</label><input id="authEmail" type="email" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')submitAuth()"></div>
+      <div class="auth-field" id="passField"><label>Senha</label><input id="authPass" type="password" placeholder="Mínimo 6 caracteres" onkeydown="if(event.key==='Enter')submitAuth()"></div>
+      <button class="auth-btn" id="authBtn" onclick="submitAuth()">Entrar</button>
+      <div id="authMsg" class="auth-msg"></div>
+      <button class="auth-link" id="forgotLink" onclick="switchTab('recover')">Esqueci minha senha</button>
+    </div>
+    <!-- painel recuperação -->
+    <div id="recoverPanel" style="display:none">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;text-align:center;">Digite seu email e enviaremos um link para redefinir sua senha.</p>
+      <div class="auth-field"><label>Email</label><input id="recoverEmail" type="email" placeholder="seu@email.com"></div>
+      <button class="auth-btn" id="recoverBtn" onclick="enviarRecuperacao()">Enviar link de recuperação</button>
+      <div id="recoverMsg" class="auth-msg"></div>
+      <button class="auth-link" onclick="switchTab('login')">← Voltar para o login</button>
+    </div>
+    <!-- painel nova senha (após clicar no link do email) -->
+    <div id="newPassPanel" style="display:none">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;text-align:center;">Defina sua nova senha abaixo.</p>
+      <div class="auth-field"><label>Nova senha</label><input id="newPass1" type="password" placeholder="Mínimo 6 caracteres"></div>
+      <div class="auth-field"><label>Confirmar senha</label><input id="newPass2" type="password" placeholder="Repita a senha"></div>
+      <button class="auth-btn" id="newPassBtn" onclick="confirmarNovaSenha()">Salvar nova senha</button>
+      <div id="newPassMsg" class="auth-msg"></div>
+    </div>
   </div>
 </div>
 
@@ -577,7 +599,10 @@ async function init() {
   }
 
   sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN' && session?.user) {
+    if (event === 'PASSWORD_RECOVERY') {
+      mostrarAuth();
+      mostrarPainel('newPass');
+    } else if (event === 'SIGNED_IN' && session?.user) {
       currentUser = session.user;
       await mostrarApp();
     } else if (event === 'SIGNED_OUT') {
@@ -605,12 +630,52 @@ async function mostrarApp() {
 }
 
 let _authMode = 'login';
+function mostrarPainel(painel) {
+  document.getElementById('loginPanel').style.display  = painel === 'login'   ? '' : 'none';
+  document.getElementById('recoverPanel').style.display = painel === 'recover' ? '' : 'none';
+  document.getElementById('newPassPanel').style.display = painel === 'newPass' ? '' : 'none';
+  document.getElementById('authMsg').className = 'auth-msg';
+}
 function switchTab(mode) {
   _authMode = mode;
+  if (mode === 'recover') {
+    document.getElementById('tabLogin').classList.remove('active');
+    document.getElementById('tabSignup').classList.remove('active');
+    mostrarPainel('recover');
+    return;
+  }
+  mostrarPainel('login');
   document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
   document.getElementById('tabSignup').classList.toggle('active', mode === 'signup');
   document.getElementById('authBtn').textContent = mode === 'login' ? 'Entrar' : 'Criar conta';
-  document.getElementById('authMsg').className = 'auth-msg';
+  document.getElementById('forgotLink').style.display = mode === 'login' ? '' : 'none';
+}
+
+async function enviarRecuperacao() {
+  const email = document.getElementById('recoverEmail').value.trim();
+  const btn   = document.getElementById('recoverBtn');
+  const msg   = document.getElementById('recoverMsg');
+  if (!email) { msg.textContent = 'Digite seu email.'; msg.className = 'auth-msg error'; return; }
+  btn.disabled = true; btn.textContent = 'Enviando...';
+  const { error } = await sb.auth.resetPasswordForEmail(email, {
+    redirectTo: 'https://cezar-moreira.github.io/razec/'
+  });
+  btn.disabled = false; btn.textContent = 'Enviar link de recuperação';
+  if (error) { msg.textContent = 'Erro ao enviar. Verifique o email e tente novamente.'; msg.className = 'auth-msg error'; }
+  else { msg.textContent = '✅ Link enviado! Verifique seu email (cheque o spam também).'; msg.className = 'auth-msg success'; }
+}
+
+async function confirmarNovaSenha() {
+  const p1  = document.getElementById('newPass1').value;
+  const p2  = document.getElementById('newPass2').value;
+  const btn = document.getElementById('newPassBtn');
+  const msg = document.getElementById('newPassMsg');
+  if (p1.length < 6) { msg.textContent = 'Senha deve ter pelo menos 6 caracteres.'; msg.className = 'auth-msg error'; return; }
+  if (p1 !== p2)     { msg.textContent = 'As senhas não coincidem.'; msg.className = 'auth-msg error'; return; }
+  btn.disabled = true; btn.textContent = 'Salvando...';
+  const { error } = await sb.auth.updateUser({ password: p1 });
+  if (error) { msg.textContent = 'Erro ao salvar senha. Tente novamente.'; msg.className = 'auth-msg error'; btn.disabled = false; btn.textContent = 'Salvar nova senha'; }
+  else { msg.textContent = '✅ Senha alterada! Entrando...'; msg.className = 'auth-msg success'; }
 }
 
 async function submitAuth() {
