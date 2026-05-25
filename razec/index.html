@@ -12,11 +12,12 @@
   --warning:#d29922;--danger:#f85149;--purple:#bc8cff;--orange:#ffa657;
   --radius:8px;--font:'Segoe UI',system-ui,sans-serif;
 }
-body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
+html{height:100%;overflow:hidden}
+body{font-family:var(--font);background:var(--bg);color:var(--text);height:100%;display:flex;flex-direction:column;overflow:hidden}
 a{color:var(--primary);text-decoration:none}
 
 /* TOPBAR */
-.topbar{height:52px;background:var(--sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1rem;gap:12px;position:sticky;top:0;z-index:100}
+.topbar{height:52px;background:var(--sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1rem;gap:12px;flex-shrink:0;z-index:100}
 .logo{font-size:1.1rem;font-weight:700;color:var(--primary);white-space:nowrap}
 .logo span{color:var(--text)}
 .search-wrap{flex:1;max-width:480px;position:relative}
@@ -29,8 +30,23 @@ a{color:var(--primary);text-decoration:none}
 .btn-primary{background:var(--primary);color:#000;border-color:transparent;font-weight:600}
 .btn-primary:hover{background:#79b8ff;color:#000}
 
+/* TAB BAR */
+.tab-bar{height:36px;background:var(--sidebar);border-bottom:1px solid var(--border);display:none;align-items:flex-end;overflow-x:auto;padding:0 8px 0;flex-shrink:0;gap:2px}
+.tab-bar::-webkit-scrollbar{height:3px}
+.tab-bar.has-tabs{display:flex}
+.tab{display:flex;align-items:center;gap:5px;padding:5px 10px 5px;border-radius:6px 6px 0 0;font-size:12px;cursor:pointer;color:var(--muted);white-space:nowrap;max-width:160px;background:transparent;border:1px solid transparent;border-bottom:none;transition:all .15s;flex-shrink:0;user-select:none}
+.tab:hover{color:var(--text)}
+.tab.active{background:var(--bg);color:var(--text);border-color:var(--border)}
+.tab-ico{font-size:11px}
+.tab-lbl{overflow:hidden;text-overflow:ellipsis;max-width:100px}
+.tab-x{font-size:11px;opacity:0;cursor:pointer;padding:0 3px;border-radius:3px;border:none;background:transparent;color:inherit;flex-shrink:0;line-height:1}
+.tab:hover .tab-x,.tab.active .tab-x{opacity:.5}
+.tab-x:hover{opacity:1!important;background:rgba(248,81,73,.25);color:var(--danger)}
+.tab-new-btn{padding:0 10px 5px;font-size:18px;cursor:pointer;color:var(--muted);border:none;background:transparent;opacity:.5;flex-shrink:0;line-height:1.8}
+.tab-new-btn:hover{opacity:1;color:var(--primary)}
+
 /* LAYOUT */
-.layout{display:flex;flex:1;overflow:hidden;height:calc(100vh - 52px)}
+.layout{display:flex;flex:1;overflow:hidden;min-height:0}
 
 /* SIDEBAR */
 .sidebar{width:240px;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
@@ -80,8 +96,8 @@ a{color:var(--primary);text-decoration:none}
 .ri-date{font-size:11px;color:var(--muted);white-space:nowrap}
 
 /* EDITOR */
-.editor-view{flex:1;display:flex;gap:0}
-.editor-panel{flex:1;display:flex;flex-direction:column;padding:1.5rem}
+.editor-view{flex:1;display:flex;gap:0;overflow:hidden}
+.editor-panel{flex:1;display:flex;flex-direction:column;padding:1.5rem;overflow-y:auto}
 .editor-toolbar{display:flex;align-items:center;gap:6px;margin-bottom:12px;flex-wrap:wrap}
 .tb-btn{padding:5px 10px;border-radius:5px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;cursor:pointer}
 .tb-btn:hover{color:var(--text);border-color:var(--text)}
@@ -123,9 +139,6 @@ a{color:var(--primary);text-decoration:none}
 
 /* GRAPH VIEW */
 .graph-container{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);position:relative;overflow:hidden;min-height:400px}
-.graph-node{position:absolute;background:var(--primary);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#000;font-weight:700;font-size:10px;transition:transform .2s;text-align:center}
-.graph-node:hover{transform:scale(1.2);z-index:10}
-.graph-label{position:absolute;font-size:10px;color:var(--muted);white-space:nowrap;pointer-events:none}
 canvas#graphCanvas{position:absolute;inset:0;width:100%;height:100%}
 
 /* SEARCH RESULTS */
@@ -138,9 +151,9 @@ canvas#graphCanvas{position:absolute;inset:0;width:100%;height:100%}
 mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0 2px}
 
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:center;justify-content:center}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:center;justify-content:center;padding:16px}
 .modal-overlay.show{display:flex}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;width:100%;max-width:460px}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;width:100%;max-width:460px;max-height:90vh;overflow-y:auto}
 .modal h3{margin-bottom:1rem;font-size:15px}
 .field{margin-bottom:12px}
 .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
@@ -157,6 +170,38 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
+/* STATUS BAR */
+.status-bar{height:24px;background:var(--sidebar);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 14px;font-size:11px;color:var(--muted);flex-shrink:0;gap:8px;transition:all .25s}
+.sb-msg{flex:1;transition:color .25s}
+.sb-right{display:flex;gap:16px;opacity:.5;font-size:10px}
+.status-bar.ok .sb-msg{color:var(--success)}
+.status-bar.err .sb-msg{color:var(--danger)}
+.status-bar.info .sb-msg{color:var(--primary)}
+.status-bar.warn .sb-msg{color:var(--warning)}
+
+/* KEYBOARD SHORTCUTS MODAL */
+.kbd-grid{display:grid;grid-template-columns:1fr 1fr;gap:0 24px;margin-top:8px}
+.kbd-row{display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(48,54,61,.6);font-size:12px}
+.kbd-row:last-child{border-bottom:none}
+.kbd-desc{color:var(--muted)}
+kbd{background:var(--card);border:1px solid var(--border);border-bottom-width:2px;border-radius:4px;padding:1px 6px;font-size:11px;font-family:monospace;white-space:nowrap;color:var(--text)}
+
+/* CONFLICT MODAL */
+.conflict-opts{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.conflict-opt{display:flex;gap:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;transition:border-color .15s;align-items:flex-start}
+.conflict-opt:hover{border-color:var(--primary)}
+.conflict-opt-ico{font-size:20px;flex-shrink:0;line-height:1.4}
+.conflict-opt-title{font-size:13px;font-weight:500;color:var(--text)}
+.conflict-opt-desc{font-size:11px;color:var(--muted);margin-top:2px}
+
+/* DRAG & DROP */
+.dragging-over{outline:2px dashed var(--primary)!important;outline-offset:-4px;background:rgba(88,166,255,.04)!important}
+
+/* LANG SELECTOR */
+.lang-sel{font-size:11px;padding:3px 7px;background:transparent;border:1px solid var(--border);border-radius:var(--radius);color:var(--muted);cursor:pointer;-webkit-appearance:none;text-align:center}
+.lang-sel:hover{color:var(--text);border-color:var(--text)}
+.lang-sel option{background:var(--card)}
+
 /* BOTTOM NAV MOBILE */
 .bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:60px;background:var(--sidebar);border-top:1px solid var(--border);z-index:200;justify-content:space-around;align-items:center;padding:0 4px}
 .bn-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 12px;cursor:pointer;border-radius:var(--radius);flex:1;border:none;background:transparent}
@@ -167,8 +212,9 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
 .fab-menu{display:none;position:fixed;bottom:132px;right:16px;flex-direction:column;gap:8px;z-index:201}
 .fab-menu.open{display:flex}
 .fab-opt{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--card);border:1px solid var(--border);border-radius:20px;font-size:13px;color:var(--text);cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+
 /* RESPONSIVE */
-@media(max-width:640px){
+@media(max-width:768px){
   .sidebar{display:none}
   .preview-panel{display:none!important}
   .ai-panel{display:none}
@@ -176,15 +222,16 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
   .fab{display:flex}
   .topbar-right{display:none}
   .search-wrap{max-width:100%}
-  .layout{height:calc(100vh - 52px - 60px)}
   .view{padding:12px}
   .stats-grid{grid-template-columns:1fr 1fr;gap:8px}
   .stat-card{padding:.75rem}
   .stat-val{font-size:1.3rem}
   .projects-grid{grid-template-columns:1fr}
-  .modal{margin:12px;max-width:calc(100vw - 24px)}
+  .modal{margin:0}
   .editor-panel{padding:12px}
   .files-grid{grid-template-columns:1fr 1fr}
+  .status-bar{margin-bottom:60px}
+  .kbd-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
@@ -195,14 +242,23 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
   <div class="logo">⚡ RAZEC<span> AI</span></div>
   <div class="search-wrap">
     <span class="si">🔍</span>
-    <input type="text" id="globalSearch" placeholder="Buscar notas, scripts, projetos..." oninput="buscarGlobal(this.value)">
+    <input type="text" id="globalSearch" placeholder="Buscar notas, scripts, projetos... (Ctrl+F)" oninput="buscarGlobal(this.value)">
   </div>
   <div class="topbar-right">
+    <select class="lang-sel" id="langSel" onchange="setLang(this.value)" title="Idioma (Ctrl+L)">
+      <option value="pt-BR">🇧🇷 PT</option>
+      <option value="en">🇺🇸 EN</option>
+      <option value="es">🇪🇸 ES</option>
+    </select>
+    <button class="btn" onclick="showModal('modalAtalhos')" title="Atalhos de teclado (Ctrl+/)">⌨️</button>
     <button class="btn" onclick="showModal('modalNota')">+ Nova nota</button>
     <button class="btn btn-primary" onclick="showModal('modalProjeto')">+ Projeto</button>
-    <button class="btn" onclick="syncGitHub()" title="Sincronizar GitHub">⬆ GitHub</button>
+    <button class="btn" onclick="syncGitHub()" title="Sincronizar GitHub (Ctrl+G)">⬆ GitHub</button>
   </div>
 </div>
+
+<!-- TAB BAR -->
+<div class="tab-bar" id="tabBar"></div>
 
 <div class="layout">
 
@@ -241,10 +297,8 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
         <div class="stat-card"><div class="stat-label">Scripts</div><div class="stat-val" id="statScripts">0</div><div class="stat-sub">arquivos de código</div></div>
         <div class="stat-card"><div class="stat-label">Conversas</div><div class="stat-val" id="statConversas">0</div><div class="stat-sub">salvas</div></div>
       </div>
-
       <div class="section-title">Projetos</div>
       <div class="projects-grid" id="projectsGrid"></div>
-
       <div class="section-title">Recentes</div>
       <div class="recent-list" id="recentList"></div>
     </div>
@@ -263,8 +317,8 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
             <button class="tb-btn" onclick="fmt('- ','')">Lista</button>
             <button class="tb-btn" onclick="fmt('[[',']]')">[[Link]]</button>
             <div style="margin-left:auto;display:flex;gap:6px">
-              <button class="tb-btn" onclick="togglePreview()">👁 Preview</button>
-              <button class="btn btn-primary" onclick="salvarNota()">💾 Salvar</button>
+              <button class="tb-btn" onclick="togglePreview()" title="Ctrl+P">👁 Preview</button>
+              <button class="btn btn-primary" onclick="salvarNota()" title="Ctrl+S">💾 Salvar</button>
             </div>
           </div>
           <input class="editor-title" id="editorTitle" placeholder="Título da nota...">
@@ -289,11 +343,11 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
       </div>
     </div>
 
-    <!-- FILES -->
+    <!-- FILES (drag-drop enabled) -->
     <div class="view" id="view-files">
       <div class="files-header">
         <h2 style="font-size:1.1rem;flex:1">📁 Arquivos e Scripts</h2>
-        <button class="btn" onclick="showModal('modalUpload')">⬆ Upload</button>
+        <button class="btn" onclick="showModal('modalUpload')" title="Ctrl+U">⬆ Upload</button>
         <button class="btn btn-primary" onclick="novoScript()">+ Novo script</button>
       </div>
       <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap" id="filterTabs">
@@ -307,6 +361,9 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
         <button class="btn" onclick="filtrarFiles('ia_chatgpt',this)">🟢 ChatGPT</button>
         <button class="btn" onclick="filtrarFiles('ia_gemini',this)">🔵 Gemini</button>
         <button class="btn" onclick="filtrarFiles('ia_grok',this)">⚫ Grok</button>
+      </div>
+      <div id="dropHint" style="display:none;text-align:center;padding:2rem;color:var(--muted);border:2px dashed var(--border);border-radius:var(--radius);margin-bottom:1rem;font-size:13px">
+        📥 Solte os arquivos aqui para importar
       </div>
       <div class="files-grid" id="filesGrid"></div>
     </div>
@@ -339,12 +396,22 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
   </div>
 </div>
 
-<!-- MODAIS -->
+<!-- STATUS BAR -->
+<div class="status-bar" id="statusBar">
+  <span class="sb-msg" id="sbMsg">Pronto</span>
+  <span class="sb-right">
+    <span id="sbCount"></span>
+    <span>RAZEC v2.0</span>
+    <span id="sbLang">PT</span>
+  </span>
+</div>
+
+<!-- MODAIS EXISTENTES -->
 <div class="modal-overlay" id="modalNota">
   <div class="modal">
     <h3>✏️ Nova nota</h3>
     <div class="field"><label>Título</label><input id="novoTitulo" placeholder="Ex: Análise do sistema 4Medic"></div>
-    <div class="field"><label>Projeto</label><select id="novoProjetoNota" onchange=""></select></div>
+    <div class="field"><label>Projeto</label><select id="novoProjetoNota"></select></div>
     <div class="field"><label>Tipo</label>
       <select id="novoTipo">
         <option value="nota">📝 Nota</option>
@@ -420,33 +487,86 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
   </div>
 </div>
 
+<!-- MODAL: ATALHOS DE TECLADO -->
+<div class="modal-overlay" id="modalAtalhos">
+  <div class="modal" style="max-width:560px">
+    <h3>⌨️ Atalhos de teclado</h3>
+    <div class="kbd-grid">
+      <div class="kbd-row"><span class="kbd-desc">Nova nota</span><kbd>Ctrl N</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Novo projeto</span><kbd>Ctrl Shift P</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Salvar nota</span><kbd>Ctrl S</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Buscar</span><kbd>Ctrl F</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Upload arquivo</span><kbd>Ctrl U</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Sync GitHub</span><kbd>Ctrl G</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Preview Markdown</span><kbd>Ctrl P</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Fechar aba</span><kbd>Ctrl W</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Dashboard</span><kbd>Ctrl 1</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Editor</span><kbd>Ctrl 2</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Arquivos</span><kbd>Ctrl 3</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Mapa visual</span><kbd>Ctrl 4</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Busca avançada</span><kbd>Ctrl 5</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Mudar idioma</span><kbd>Ctrl L</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Atalhos</span><kbd>Ctrl /</kbd></div>
+      <div class="kbd-row"><span class="kbd-desc">Fechar modal</span><kbd>Esc</kbd></div>
+    </div>
+    <div class="modal-actions" style="margin-top:1.2rem">
+      <button class="btn btn-primary" onclick="hideModal('modalAtalhos')">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CONFLITO DE NOME -->
+<div class="modal-overlay" id="modalConflito">
+  <div class="modal" style="max-width:400px">
+    <h3>⚠️ Nota com mesmo título</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:4px">Já existe uma nota chamada "<strong id="conflictTitleSpan" style="color:var(--text)"></strong>".</p>
+    <div class="conflict-opts">
+      <div class="conflict-opt" onclick="resolverConflito('substituir')">
+        <div class="conflict-opt-ico">🔄</div>
+        <div>
+          <div class="conflict-opt-title">Substituir</div>
+          <div class="conflict-opt-desc">Remove a nota existente e cria a nova no lugar</div>
+        </div>
+      </div>
+      <div class="conflict-opt" onclick="resolverConflito('manter_ambos')">
+        <div class="conflict-opt-ico">📋</div>
+        <div>
+          <div class="conflict-opt-title">Manter ambas</div>
+          <div class="conflict-opt-desc">Cria a nova nota mantendo a existente (mesmo título)</div>
+        </div>
+      </div>
+      <div class="conflict-opt" onclick="resolverConflito('cancelar')">
+        <div class="conflict-opt-ico">✕</div>
+        <div>
+          <div class="conflict-opt-title">Cancelar</div>
+          <div class="conflict-opt-desc">Não cria — volta para editar o título</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 // ═══════════════════════════════════════════════════════════
-// STORAGE — tudo no localStorage (funciona offline)
+// STORAGE
 // ═══════════════════════════════════════════════════════════
-
 const DB = {
   get: (k, def=[]) => { try { return JSON.parse(localStorage.getItem('razec_'+k)) ?? def } catch { return def } },
   set: (k, v) => localStorage.setItem('razec_'+k, JSON.stringify(v)),
 };
 
-// Dados iniciais de exemplo
 function inicializarDados() {
   if (DB.get('init', false)) return;
-
   const projetos = [
-    { id: 'ultravida', nome: 'Ultravida — Painel TV', desc: 'Sistema de chamadas Flask/SocketIO com painel LED e sala de espera', icon: '🏥', cor: 'blue', criado: new Date().toISOString() },
-    { id: 'clinicaos', nome: 'ClinicaOS', desc: 'Sistema completo de gestão clínica com IA, LGPD e deploy Railway', icon: '⚕️', cor: 'green', criado: new Date().toISOString() },
-    { id: 'paulojose', nome: 'Paulo José — @paulojose.missao', desc: 'Direção musical, composição Suno AI, estratégia Instagram', icon: '🎵', cor: 'purple', criado: new Date().toISOString() },
-    { id: 'instagram', nome: 'Instagram Growth', desc: 'Estratégias orgânicas, Reels, Collabs, SEO de perfil', icon: '📱', cor: 'orange', criado: new Date().toISOString() },
+    { id:'ultravida', nome:'Ultravida — Painel TV', desc:'Sistema de chamadas Flask/SocketIO com painel LED e sala de espera', icon:'🏥', cor:'blue', criado:new Date().toISOString() },
+    { id:'clinicaos', nome:'ClinicaOS', desc:'Sistema completo de gestão clínica com IA, LGPD e deploy Railway', icon:'⚕️', cor:'green', criado:new Date().toISOString() },
+    { id:'paulojose', nome:'Paulo José — @paulojose.missao', desc:'Direção musical, composição Suno AI, estratégia Instagram', icon:'🎵', cor:'purple', criado:new Date().toISOString() },
+    { id:'instagram', nome:'Instagram Growth', desc:'Estratégias orgânicas, Reels, Collabs, SEO de perfil', icon:'📱', cor:'orange', criado:new Date().toISOString() },
   ];
-
   const notas = [
-    { id: n(), titulo: 'Bugs Ultravida — relatórios e ticker LED', projeto: 'ultravida', tipo: 'nota', tags: ['bug','flask','socketio'], conteudo: '# Bugs em aberto — Ultravida\n\n## Bug 1: Página de relatórios\n- Não carrega ao acessar\n- Verificar rota Flask e template\n\n## Bug 2: Ticker LED (footer)\n- Funciona no monitor padrão\n- Não renderiza na TV\n- Investigar: CSS scroll, resolução TV, fullscreen API\n\n## Próximos passos\n- [ ] Diagnosticar login/localStorage em `atendente_ultravida.html`\n- [ ] Corrigir rota de relatórios\n- [ ] Testar ticker em TV 1080p', criado: new Date().toISOString(), atualizado: new Date().toISOString() },
-    { id: n(), titulo: 'ClinicaOS — Arquitetura e deploy', projeto: 'clinicaos', tipo: 'doc', tags: ['fastapi','postgresql','railway','lgpd'], conteudo: '# ClinicaOS — Arquitetura\n\n## Stack\n- **Backend**: FastAPI + Python 3.12\n- **Banco**: PostgreSQL (Supabase gratuito)\n- **Cache**: Redis (Upstash gratuito)\n- **Deploy**: Railway (gratuito)\n- **IA**: Anthropic Claude API\n\n## Módulos implementados\n- [x] Autenticação JWT + 2FA\n- [x] Pacientes com criptografia AES-256\n- [x] Prontuário com IA\n- [x] WebSocket sala de espera\n- [x] Painel TV\n- [ ] Dashboard completo\n- [ ] Módulo de agenda\n\n## LGPD\n- CPF, email, telefone → criptografados\n- Audit log completo\n- Soft delete\n- Consentimento obrigatório', criado: new Date().toISOString(), atualizado: new Date().toISOString() },
-    { id: n(), titulo: 'Análise 4Medic — Engenharia reversa', projeto: 'clinicaos', tipo: 'nota', tags: ['analise','4medic','concorrente'], conteudo: '# Engenharia Reversa — 4Medic\n\n## Prós\n- Transcrição IA de consultas\n- Assinatura digital CFM\n- Modelos prontos de documentos\n- Teleconsulta integrada\n- LGPD com criptografia\n\n## Contras\n- Mobile limitado\n- Sem CRM/marketing automático\n- Sem painel TV nativo\n- Sem API pública\n- Relatórios básicos\n- Caro para clínicas grandes\n\n## Diferencial do ClinicaOS\n- Painel TV com WebSocket nativo\n- IA de risco cardiovascular\n- CRM automático WhatsApp\n- API pública documentada\n- Deploy gratuito', criado: new Date().toISOString(), atualizado: new Date().toISOString() },
+    { id:uid(), titulo:'Bugs Ultravida — relatórios e ticker LED', projeto:'ultravida', tipo:'nota', tags:['bug','flask','socketio'], fonteIA:'nenhuma', conteudo:'# Bugs em aberto — Ultravida\n\n## Bug 1: Página de relatórios\n- Não carrega ao acessar\n\n## Bug 2: Ticker LED (footer)\n- Não renderiza na TV\n\n## Próximos passos\n- [ ] Diagnosticar login\n- [ ] Corrigir rota de relatórios\n- [ ] Testar ticker em TV 1080p', criado:new Date().toISOString(), atualizado:new Date().toISOString() },
+    { id:uid(), titulo:'ClinicaOS — Arquitetura e deploy', projeto:'clinicaos', tipo:'doc', tags:['fastapi','postgresql','railway','lgpd'], fonteIA:'nenhuma', conteudo:'# ClinicaOS — Arquitetura\n\n## Stack\n- **Backend**: FastAPI + Python 3.12\n- **Banco**: PostgreSQL\n- **Deploy**: Railway\n- **IA**: Claude API\n\n## Status\n- [x] Autenticação JWT\n- [x] Prontuário com IA\n- [ ] Dashboard completo', criado:new Date().toISOString(), atualizado:new Date().toISOString() },
   ];
-
   DB.set('projetos', projetos);
   DB.set('notas', notas);
   DB.set('init', true);
@@ -454,93 +574,149 @@ function inicializarDados() {
   DB.set('ghRepo', 'razec');
 }
 
-function n() { return 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2,6) }
+function uid() { return 'n_'+Date.now()+'_'+Math.random().toString(36).slice(2,6) }
+function escH(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+
+// ═══════════════════════════════════════════════════════════
+// I18N
+// ═══════════════════════════════════════════════════════════
+const TEXTS = {
+  'pt-BR': { ready:'Pronto', saved:'✅ Nota salva', created:'✅ Nota criada', projCreated:'✅ Projeto criado', uploaded:'📥 arquivo(s) importado(s)', synced:'✅ Sincronizado com GitHub!', syncErr:'⚠️ Configure o token GitHub primeiro', noTitle:'Sem título' },
+  'en':    { ready:'Ready', saved:'✅ Note saved', created:'✅ Note created', projCreated:'✅ Project created', uploaded:'📥 file(s) imported', synced:'✅ Synced with GitHub!', syncErr:'⚠️ Configure GitHub token first', noTitle:'Untitled' },
+  'es':    { ready:'Listo', saved:'✅ Nota guardada', created:'✅ Nota creada', projCreated:'✅ Proyecto creado', uploaded:'📥 archivo(s) importado(s)', synced:'✅ Sincronizado con GitHub!', syncErr:'⚠️ Configure el token de GitHub primero', noTitle:'Sin título' },
+};
+let _lang = DB.get('lang','pt-BR') || 'pt-BR';
+function t(k) { return TEXTS[_lang]?.[k] || TEXTS['pt-BR'][k] || k }
+function setLang(l) {
+  _lang = l; DB.set('lang', l);
+  document.documentElement.lang = l;
+  document.getElementById('langSel').value = l;
+  document.getElementById('sbLang').textContent = l === 'pt-BR' ? 'PT' : l === 'en' ? 'EN' : 'ES';
+  setStatus(t('ready'));
+}
+function cicleLang() {
+  const ls = ['pt-BR','en','es'];
+  setLang(ls[(ls.indexOf(_lang)+1) % ls.length]);
+}
+
+// ═══════════════════════════════════════════════════════════
+// STATUS BAR
+// ═══════════════════════════════════════════════════════════
+let _sbTimer;
+function setStatus(msg, type='', dur=3000) {
+  const bar = document.getElementById('statusBar');
+  const el  = document.getElementById('sbMsg');
+  if (!bar || !el) return;
+  bar.className = 'status-bar' + (type ? ' '+type : '');
+  el.textContent = msg;
+  clearTimeout(_sbTimer);
+  if (dur > 0) _sbTimer = setTimeout(() => { bar.className='status-bar'; el.textContent=t('ready'); }, dur);
+}
+
+// ═══════════════════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════════════════
+let _tabs = [], _tabAtual = null;
+const TICO = { nota:'📝', script:'💻', conversa:'💬', doc:'📄' };
+
+function renderTabs() {
+  const bar = document.getElementById('tabBar');
+  if (!bar) return;
+  const hasTabs = _tabs.length > 0;
+  bar.classList.toggle('has-tabs', hasTabs);
+  if (!hasTabs) { bar.innerHTML=''; return; }
+  bar.innerHTML = _tabs.map(tab =>
+    `<div class="tab${tab.id===_tabAtual?' active':''}" onclick="abrirNota('${tab.id}')">
+      <span class="tab-ico">${TICO[tab.tipo]||'📝'}</span>
+      <span class="tab-lbl">${escH(tab.titulo)}</span>
+      <button class="tab-x" onclick="event.stopPropagation();fecharAba('${tab.id}')" title="Fechar (Ctrl+W)">✕</button>
+    </div>`
+  ).join('') + `<button class="tab-new-btn" onclick="showModal('modalNota')" title="Nova nota (Ctrl+N)">＋</button>`;
+}
+
+function fecharAba(id) {
+  const idx = _tabs.findIndex(t => t.id === id);
+  _tabs = _tabs.filter(t => t.id !== id);
+  if (_tabAtual === id) {
+    const next = _tabs[idx] || _tabs[idx-1];
+    if (next) abrirNota(next.id);
+    else { _tabAtual = null; showView('dashboard'); }
+  }
+  renderTabs();
+}
 
 // ═══════════════════════════════════════════════════════════
 // RENDER
 // ═══════════════════════════════════════════════════════════
-
 let notaAtual = null;
 
 function render() {
   const projetos = DB.get('projetos', []);
-  const notas = DB.get('notas', []);
-  const scripts = notas.filter(n => n.tipo === 'script');
-  const conversas = notas.filter(n => n.tipo === 'conversa');
+  const notas    = DB.get('notas', []);
+  const scripts  = notas.filter(n => n.tipo === 'script');
+  const conversas= notas.filter(n => n.tipo === 'conversa');
 
-  // Stats
-  document.getElementById('statNotas').textContent = notas.length;
+  document.getElementById('statNotas').textContent    = notas.length;
   document.getElementById('statProjetos').textContent = projetos.length;
-  document.getElementById('statScripts').textContent = scripts.length;
-  document.getElementById('statConversas').textContent = conversas.length;
-  document.getElementById('badgeNotas').textContent = notas.length;
+  document.getElementById('statScripts').textContent  = scripts.length;
+  document.getElementById('statConversas').textContent= conversas.length;
+  document.getElementById('badgeNotas').textContent   = notas.length;
+  document.getElementById('sbCount').textContent      = notas.length + ' notas';
 
-  // Storage
   const used = JSON.stringify(localStorage).length;
-  const max = 5 * 1024 * 1024;
-  const pct = Math.round(used / max * 100);
+  const max  = 5 * 1024 * 1024;
+  const pct  = Math.round(used / max * 100);
   document.getElementById('storageBar').style.width = pct + '%';
   document.getElementById('storageTxt').textContent = `${(used/1024).toFixed(0)}KB / 5MB (${pct}%)`;
 
-  // Sidebar projetos
   const corMap = { blue:'#58a6ff', green:'#3fb950', purple:'#bc8cff', orange:'#ffa657', red:'#f85149' };
-  document.getElementById('sidebarProjects').innerHTML = projetos.map(p => `
-    <div class="project-item" onclick="filtrarPorProjeto('${p.id}')">
+  document.getElementById('sidebarProjects').innerHTML = projetos.map(p =>
+    `<div class="project-item" onclick="filtrarPorProjeto('${p.id}')">
       <div class="dot" style="background:${corMap[p.cor]||'#58a6ff'}"></div>
-      ${p.icon} ${p.nome.split('—')[0].trim()}
-    </div>
-  `).join('');
-
-  // Sidebar tags
-  const todasTags = [...new Set(notas.flatMap(n => n.tags || []))];
-  document.getElementById('sidebarTags').innerHTML = todasTags.map(t =>
-    `<span class="tag" style="cursor:pointer" onclick="buscarAvancado('${t}');showView('search')">${t}</span>`
+      ${escH(p.icon)} ${escH(p.nome.split('—')[0].trim())}
+    </div>`
   ).join('');
 
-  // Projects grid
+  const todasTags = [...new Set(notas.flatMap(n => n.tags || []))];
+  document.getElementById('sidebarTags').innerHTML = todasTags.map(tg =>
+    `<span class="tag" style="cursor:pointer" onclick="buscarAvancado('${escH(tg)}');showView('search')">${escH(tg)}</span>`
+  ).join('');
+
   document.getElementById('projectsGrid').innerHTML = projetos.map(p => {
     const pNotas = notas.filter(n => n.projeto === p.id);
     const tagClass = { blue:'', green:'green', purple:'purple', orange:'orange' }[p.cor] || '';
-    return `
-      <div class="proj-card" onclick="filtrarPorProjeto('${p.id}')">
-        <div class="proj-header">
-          <div class="proj-icon" style="background:rgba(88,166,255,.1)">${p.icon}</div>
-          <div>
-            <div class="proj-name">${p.nome}</div>
-            <div style="font-size:11px;color:var(--muted)">${pNotas.length} itens</div>
-          </div>
-        </div>
-        <div class="proj-desc">${p.desc}</div>
-        <div class="proj-tags">
-          <span class="tag ${tagClass}">${p.cor}</span>
-          ${pNotas.slice(0,2).map(n => `<span class="tag">${n.tipo}</span>`).join('')}
+    return `<div class="proj-card" onclick="filtrarPorProjeto('${p.id}')">
+      <div class="proj-header">
+        <div class="proj-icon" style="background:rgba(88,166,255,.1)">${escH(p.icon)}</div>
+        <div>
+          <div class="proj-name">${escH(p.nome)}</div>
+          <div style="font-size:11px;color:var(--muted)">${pNotas.length} itens</div>
         </div>
       </div>
-    `;
+      <div class="proj-desc">${escH(p.desc)}</div>
+      <div class="proj-tags">
+        <span class="tag ${tagClass}">${p.cor}</span>
+        ${pNotas.slice(0,2).map(n => `<span class="tag">${n.tipo}</span>`).join('')}
+      </div>
+    </div>`;
   }).join('');
 
-  // Recent
-  const recentes = [...notas].sort((a,b) => new Date(b.atualizado) - new Date(a.atualizado)).slice(0,6);
-  const tipoIcon = { nota:'📝', script:'💻', conversa:'💬', doc:'📄' };
+  const recentes = [...notas].sort((a,b) => new Date(b.atualizado)-new Date(a.atualizado)).slice(0,6);
   document.getElementById('recentList').innerHTML = recentes.map(n => {
     const proj = projetos.find(p => p.id === n.projeto);
-    return `
-      <div class="recent-item" onclick="abrirNota('${n.id}')">
-        <div class="ri-icon">${tipoIcon[n.tipo]||'📝'}</div>
-        <div class="ri-body">
-          <div class="ri-title">${n.titulo}</div>
-          <div class="ri-meta">${proj?.icon||''} ${proj?.nome||'Sem projeto'} · ${(n.tags||[]).join(', ')}</div>
-        </div>
-        <div class="ri-date">${formatDate(n.atualizado)}</div>
+    return `<div class="recent-item" onclick="abrirNota('${n.id}')">
+      <div class="ri-icon">${TICO[n.tipo]||'📝'}</div>
+      <div class="ri-body">
+        <div class="ri-title">${escH(n.titulo)}</div>
+        <div class="ri-meta">${proj?escH(proj.icon):''}  ${proj?escH(proj.nome):'Sem projeto'} · ${(n.tags||[]).join(', ')}</div>
       </div>
-    `;
+      <div class="ri-date">${formatDate(n.atualizado)}</div>
+    </div>`;
   }).join('');
 
-  // Files grid
-  renderFiles(DB.get('_fileFilter', 'todos'));
+  renderFiles(DB.get('_fileFilter','todos'));
 
-  // Selects dos modais
-  const optProjetos = '<option value="">Sem projeto</option>' + projetos.map(p => `<option value="${p.id}">${p.icon} ${p.nome}</option>`).join('');
+  const optProjetos = '<option value="">Sem projeto</option>' + projetos.map(p => `<option value="${p.id}">${escH(p.icon)} ${escH(p.nome)}</option>`).join('');
   ['novoProjetoNota','uploadProjeto'].forEach(id => {
     const el = document.getElementById(id);
     if (el) el.innerHTML = optProjetos;
@@ -549,51 +725,38 @@ function render() {
 
 function selecionarFonte(btn, fonte) {
   document.querySelectorAll('.fonte-btn').forEach(b => {
-    b.style.borderColor = 'var(--border)';
-    b.style.color = 'var(--muted)';
-    b.style.background = 'var(--bg)';
+    b.style.borderColor='var(--border)'; b.style.color='var(--muted)'; b.style.background='var(--bg)';
   });
-  btn.style.borderColor = 'var(--primary)';
-  btn.style.color = 'var(--primary)';
-  btn.style.background = 'rgba(88,166,255,.1)';
+  btn.style.borderColor='var(--primary)'; btn.style.color='var(--primary)'; btn.style.background='rgba(88,166,255,.1)';
   document.getElementById('fonteIA').value = fonte;
 }
 
 function renderFiles(filtro) {
   DB.set('_fileFilter', filtro);
-  const notas = DB.get('notas', []);
+  const notas    = DB.get('notas', []);
   const projetos = DB.get('projetos', []);
-  const tipoIcon = { nota:'📝', script:'💻', conversa:'💬', doc:'📄' };
   const fonteIcon = { claude:'🟠', chatgpt:'🟢', gemini:'🔵', grok:'⚫', outro:'➕', nenhuma:'' };
 
   let items = notas;
-  if (filtro === 'todos') {
-    items = notas;
-  } else if (filtro.startsWith('ia_')) {
-    const ia = filtro.replace('ia_', '');
-    items = notas.filter(n => n.fonteIA === ia);
-  } else if (['python','html','js','sql'].includes(filtro)) {
-    items = notas.filter(n => n.tipo === 'script' && (n.tags||[]).includes(filtro));
-  } else {
-    items = notas.filter(n => n.tipo === filtro);
-  }
+  if (filtro === 'todos') items = notas;
+  else if (filtro.startsWith('ia_')) items = notas.filter(n => n.fonteIA === filtro.replace('ia_',''));
+  else if (['python','html','js','sql'].includes(filtro)) items = notas.filter(n => n.tipo==='script' && (n.tags||[]).includes(filtro));
+  else items = notas.filter(n => n.tipo === filtro);
 
   const grid = document.getElementById('filesGrid');
-  if (!items.length) { grid.innerHTML = '<div style="color:var(--muted);font-size:13px;grid-column:1/-1">Nenhum arquivo encontrado</div>'; return; }
+  if (!items.length) { grid.innerHTML='<div style="color:var(--muted);font-size:13px;grid-column:1/-1;padding:2rem;text-align:center">Nenhum arquivo encontrado.<br><small style="font-size:11px;opacity:.6">Arraste arquivos para cá para importar</small></div>'; return; }
 
   grid.innerHTML = items.map(n => {
     const proj = projetos.find(p => p.id === n.projeto);
-    const ext = n.tipo === 'script' ? (n.tags?.find(t => ['py','js','html','sql','python'].includes(t)) || 'txt') : 'md';
-    const fi = fonteIcon[n.fonteIA] || '';
-    return `
-      <div class="file-card" onclick="abrirNota('${n.id}')">
-        <div class="file-icon">${tipoIcon[n.tipo]||'📄'} ${fi}</div>
-        <div class="file-name">${n.titulo}</div>
-        <div class="file-meta">${proj?.nome||'Sem projeto'} · .${ext}</div>
-        ${n.fonteIA && n.fonteIA !== 'nenhuma' ? `<div class="file-meta" style="color:var(--primary)">${fi} ${n.fonteIA}</div>` : ''}
-        <div class="file-meta">${formatDate(n.atualizado)}</div>
-      </div>
-    `;
+    const ext  = n.tipo==='script' ? (n.tags?.find(tg => ['py','js','html','sql','python'].includes(tg))||'txt') : 'md';
+    const fi   = fonteIcon[n.fonteIA] || '';
+    return `<div class="file-card" onclick="abrirNota('${n.id}')">
+      <div class="file-icon">${TICO[n.tipo]||'📄'} ${fi}</div>
+      <div class="file-name">${escH(n.titulo)}</div>
+      <div class="file-meta">${proj?escH(proj.nome):'Sem projeto'} · .${ext}</div>
+      ${n.fonteIA&&n.fonteIA!=='nenhuma'?`<div class="file-meta" style="color:var(--primary)">${fi} ${n.fonteIA}</div>`:''}
+      <div class="file-meta">${formatDate(n.atualizado)}</div>
+    </div>`;
   }).join('');
 }
 
@@ -605,74 +768,44 @@ function filtrarFiles(filtro, btn) {
 
 function renderGraph() {
   const canvas = document.getElementById('graphCanvas');
-  const container = document.getElementById('graphContainer');
-  canvas.width = container.offsetWidth;
-  canvas.height = container.offsetHeight;
+  const cont   = document.getElementById('graphContainer');
+  canvas.width = cont.offsetWidth; canvas.height = cont.offsetHeight;
   const ctx = canvas.getContext('2d');
-  const notas = DB.get('notas', []);
+  const notas    = DB.get('notas', []);
   const projetos = DB.get('projetos', []);
   const W = canvas.width, H = canvas.height;
-
   ctx.clearRect(0, 0, W, H);
 
-  // Posiciona nós
   const nodes = projetos.map((p, i) => {
     const angle = (i / projetos.length) * Math.PI * 2;
-    const r = Math.min(W, H) * 0.3;
-    return { id: p.id, label: p.icon + ' ' + p.nome.split('—')[0].trim(), x: W/2 + Math.cos(angle)*r, y: H/2 + Math.sin(angle)*r, size: 14+notas.filter(n=>n.projeto===p.id).length*2, color: '#58a6ff' };
+    const r = Math.min(W,H) * 0.3;
+    return { id:p.id, label:p.icon+' '+p.nome.split('—')[0].trim(), x:W/2+Math.cos(angle)*r, y:H/2+Math.sin(angle)*r, size:14+notas.filter(n=>n.projeto===p.id).length*2, color:'#58a6ff' };
   });
-
-  // Nós de notas (menores)
-  const notaNodes = notas.slice(0, 20).map((n, i) => {
+  const notaNodes = notas.slice(0,20).map((n,i) => {
     const proj = nodes.find(nd => nd.id === n.projeto);
-    const angle = (i / 20) * Math.PI * 2;
-    const r = 60 + Math.random() * 80;
-    const bx = proj ? proj.x : W/2;
-    const by = proj ? proj.y : H/2;
-    return { id: n.id, label: n.titulo.slice(0,20), x: bx + Math.cos(angle)*r, y: by + Math.sin(angle)*r, size: 6, color: '#3fb950', parentId: n.projeto };
+    const angle = (i/20)*Math.PI*2, r = 60+Math.random()*80;
+    return { id:n.id, label:n.titulo.slice(0,20), x:(proj?proj.x:W/2)+Math.cos(angle)*r, y:(proj?proj.y:H/2)+Math.sin(angle)*r, size:6, color:'#3fb950', parentId:n.projeto };
   });
 
-  // Desenha arestas
-  ctx.strokeStyle = 'rgba(48,54,61,0.8)';
-  ctx.lineWidth = 1;
+  ctx.strokeStyle='rgba(48,54,61,.8)'; ctx.lineWidth=1;
   notaNodes.forEach(nd => {
-    const parent = nodes.find(n => n.id === nd.parentId);
-    if (parent) {
-      ctx.beginPath();
-      ctx.moveTo(parent.x, parent.y);
-      ctx.lineTo(nd.x, nd.y);
-      ctx.stroke();
-    }
+    const parent = nodes.find(n => n.id===nd.parentId);
+    if (parent) { ctx.beginPath(); ctx.moveTo(parent.x,parent.y); ctx.lineTo(nd.x,nd.y); ctx.stroke(); }
   });
-
-  // Desenha nós de projeto
   nodes.forEach(nd => {
-    ctx.fillStyle = nd.color;
-    ctx.shadowColor = nd.color;
-    ctx.shadowBlur = 10;
-    ctx.beginPath();
-    ctx.arc(nd.x, nd.y, nd.size, 0, Math.PI*2);
-    ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = '#e6edf3';
-    ctx.font = '11px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText(nd.label, nd.x, nd.y + nd.size + 14);
+    ctx.fillStyle=nd.color; ctx.shadowColor=nd.color; ctx.shadowBlur=10;
+    ctx.beginPath(); ctx.arc(nd.x,nd.y,nd.size,0,Math.PI*2); ctx.fill();
+    ctx.shadowBlur=0; ctx.fillStyle='#e6edf3'; ctx.font='11px sans-serif'; ctx.textAlign='center';
+    ctx.fillText(nd.label, nd.x, nd.y+nd.size+14);
   });
-
-  // Nós de notas
   notaNodes.forEach(nd => {
-    ctx.fillStyle = nd.color;
-    ctx.beginPath();
-    ctx.arc(nd.x, nd.y, nd.size, 0, Math.PI*2);
-    ctx.fill();
+    ctx.fillStyle=nd.color; ctx.beginPath(); ctx.arc(nd.x,nd.y,nd.size,0,Math.PI*2); ctx.fill();
   });
 }
 
 // ═══════════════════════════════════════════════════════════
 // AÇÕES
 // ═══════════════════════════════════════════════════════════
-
 function showView(name, navEl) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -682,10 +815,7 @@ function showView(name, navEl) {
   render();
 }
 
-function showModal(id) {
-  document.getElementById(id).classList.add('show');
-  render();
-}
+function showModal(id) { document.getElementById(id).classList.add('show'); render(); }
 function hideModal(id) { document.getElementById(id).classList.remove('show'); }
 
 function criarProjeto() {
@@ -693,141 +823,174 @@ function criarProjeto() {
   if (!nome) return;
   const projetos = DB.get('projetos', []);
   const id = nome.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
-  projetos.push({
-    id, nome,
-    desc: document.getElementById('projDesc').value,
-    icon: document.getElementById('projIcon').value || '📁',
-    cor: document.getElementById('projCor').value,
-    criado: new Date().toISOString()
-  });
+  projetos.push({ id, nome, desc:document.getElementById('projDesc').value, icon:document.getElementById('projIcon').value||'📁', cor:document.getElementById('projCor').value, criado:new Date().toISOString() });
   DB.set('projetos', projetos);
   hideModal('modalProjeto');
-  document.getElementById('projNome').value = '';
-  document.getElementById('projDesc').value = '';
+  document.getElementById('projNome').value=''; document.getElementById('projDesc').value='';
   render();
+  setStatus(t('projCreated'), 'ok');
 }
+
+// Conflict resolution state
+let _conflictTitulo='', _conflictExistente=null, _conflictFormData=null;
 
 function criarNota() {
   const titulo = document.getElementById('novoTitulo').value.trim();
   if (!titulo) return;
   const notas = DB.get('notas', []);
-  const fonteIA = document.getElementById('fonteIA')?.value || 'nenhuma';
+
+  // Detect conflict
+  const existente = notas.find(n => n.titulo.toLowerCase() === titulo.toLowerCase());
+  if (existente) {
+    _conflictTitulo   = titulo;
+    _conflictExistente = existente;
+    _conflictFormData = {
+      projeto: document.getElementById('novoProjetoNota').value,
+      tipo:    document.getElementById('novoTipo').value,
+      tags:    document.getElementById('novasTags').value,
+      fonteIA: document.getElementById('fonteIA').value,
+    };
+    hideModal('modalNota');
+    document.getElementById('conflictTitleSpan').textContent = titulo;
+    showModal('modalConflito');
+    return;
+  }
+  _finalizarCriarNota(titulo, null);
+}
+
+function resolverConflito(acao) {
+  hideModal('modalConflito');
+  if (acao === 'cancelar') { showModal('modalNota'); return; }
+  if (acao === 'substituir') {
+    const notas = DB.get('notas', []);
+    const idx = notas.findIndex(n => n.id === _conflictExistente.id);
+    if (idx >= 0) notas.splice(idx, 1);
+    DB.set('notas', notas);
+    // Also remove from tabs
+    _tabs = _tabs.filter(t => t.id !== _conflictExistente.id);
+    if (_tabAtual === _conflictExistente.id) _tabAtual = null;
+    renderTabs();
+  }
+  _finalizarCriarNota(_conflictTitulo, _conflictFormData);
+}
+
+function _finalizarCriarNota(titulo, formData) {
+  const notas   = DB.get('notas', []);
+  const fonteIA = formData ? formData.fonteIA : (document.getElementById('fonteIA')?.value||'nenhuma');
   const nova = {
-    id: n(),
-    titulo,
-    projeto: document.getElementById('novoProjetoNota').value,
-    tipo: document.getElementById('novoTipo').value,
-    tags: document.getElementById('novasTags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    id:uid(), titulo,
+    projeto: formData ? formData.projeto : document.getElementById('novoProjetoNota').value,
+    tipo:    formData ? formData.tipo    : document.getElementById('novoTipo').value,
+    tags:    formData ? formData.tags.split(',').map(t=>t.trim()).filter(Boolean) : document.getElementById('novasTags').value.split(',').map(t=>t.trim()).filter(Boolean),
     fonteIA,
-    conteudo: `# ${titulo}\n\n${fonteIA !== 'nenhuma' ? `> 🤖 Fonte: ${fonteIA.toUpperCase()}\n\n` : ''}`,
-    criado: new Date().toISOString(),
-    atualizado: new Date().toISOString(),
+    conteudo:`# ${titulo}\n\n${fonteIA!=='nenhuma'?`> 🤖 Fonte: ${fonteIA.toUpperCase()}\n\n`:''}`,
+    criado:new Date().toISOString(), atualizado:new Date().toISOString(),
   };
   notas.push(nova);
   DB.set('notas', notas);
   hideModal('modalNota');
-  // Reset fonte
-  document.getElementById('fonteIA').value = 'nenhuma';
-  document.querySelectorAll('.fonte-btn').forEach(b => b.style.borderColor = 'var(--border)');
+  document.getElementById('fonteIA').value='nenhuma';
+  document.querySelectorAll('.fonte-btn').forEach(b => b.style.borderColor='var(--border)');
+  document.getElementById('novoTitulo').value='';
+  document.getElementById('novasTags').value='';
   abrirNota(nova.id);
   render();
+  setStatus(t('created'), 'ok');
 }
 
 function abrirNota(id) {
   const notas = DB.get('notas', []);
-  const nota = notas.find(n => n.id === id);
+  const nota  = notas.find(n => n.id === id);
   if (!nota) return;
   notaAtual = id;
   document.getElementById('editorTitle').value = nota.titulo;
-  document.getElementById('editorBody').value = nota.conteudo;
-  document.getElementById('metaTags').textContent = (nota.tags||[]).join(', ') || 'Sem tags';
-  document.getElementById('metaData').textContent = formatDate(nota.atualizado);
-  const proj = DB.get('projetos', []).find(p => p.id === nota.projeto);
+  document.getElementById('editorBody').value  = nota.conteudo;
+  document.getElementById('metaTags').textContent    = (nota.tags||[]).join(', ') || 'Sem tags';
+  document.getElementById('metaData').textContent    = formatDate(nota.atualizado);
+  const proj = DB.get('projetos',[]).find(p => p.id===nota.projeto);
   document.getElementById('metaProjeto').textContent = proj ? proj.nome : 'Sem projeto';
+
+  // Add/activate tab
+  if (!_tabs.find(t => t.id === id)) {
+    _tabs.push({ id, titulo:nota.titulo, tipo:nota.tipo||'nota' });
+    if (_tabs.length > 10) _tabs.shift();
+  }
+  _tabAtual = id;
+  renderTabs();
+
   showView('editor');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.querySelectorAll('.nav-item')[1].classList.add('active');
+  document.querySelectorAll('.nav-item')[1]?.classList.add('active');
+  setStatus(`📝 ${nota.titulo}`, 'info', 2000);
 }
 
 function salvarNota() {
-  const titulo = document.getElementById('editorTitle').value.trim();
+  const titulo   = document.getElementById('editorTitle').value.trim();
   const conteudo = document.getElementById('editorBody').value;
   if (!titulo) return;
   const notas = DB.get('notas', []);
   let nota;
   if (notaAtual) {
     nota = notas.find(n => n.id === notaAtual);
-    if (nota) { nota.titulo = titulo; nota.conteudo = conteudo; nota.atualizado = new Date().toISOString(); }
+    if (nota) { nota.titulo=titulo; nota.conteudo=conteudo; nota.atualizado=new Date().toISOString(); }
   } else {
-    nota = { id: n(), titulo, conteudo, tipo: 'nota', tags: [], criado: new Date().toISOString(), atualizado: new Date().toISOString() };
+    nota = { id:uid(), titulo, conteudo, tipo:'nota', tags:[], fonteIA:'nenhuma', criado:new Date().toISOString(), atualizado:new Date().toISOString() };
     notas.push(nota);
     notaAtual = nota.id;
   }
   DB.set('notas', notas);
+
+  // Update tab title
+  const tab = _tabs.find(t => t.id === notaAtual);
+  if (tab) { tab.titulo = titulo; renderTabs(); }
+
   render();
-  // Flash feedback
-  const btn = document.querySelector('.btn-primary[onclick="salvarNota()"]');
-  const orig = btn.textContent;
-  btn.textContent = '✅ Salvo!';
-  setTimeout(() => btn.textContent = orig, 1500);
+  setStatus(t('saved'), 'ok');
 }
 
-function novoScript() {
-  document.getElementById('novoTipo').value = 'script';
-  showModal('modalNota');
-}
+function novoScript() { document.getElementById('novoTipo').value='script'; showModal('modalNota'); }
 
-function fazerUpload() {
-  const files = document.getElementById('uploadFile').files;
-  const projetoId = document.getElementById('uploadProjeto').value;
+function _importarArquivos(files, projetoId) {
   const notas = DB.get('notas', []);
-
+  let count = 0;
   Array.from(files).forEach(file => {
     const reader = new FileReader();
     reader.onload = e => {
       const ext = file.name.split('.').pop().toLowerCase();
       const tipoMap = { py:'script', js:'script', html:'script', css:'script', sql:'script', md:'nota', txt:'nota' };
-      notas.push({
-        id: n(),
-        titulo: file.name,
-        projeto: projetoId,
-        tipo: tipoMap[ext] || 'nota',
-        tags: [ext],
-        conteudo: ext === 'md' ? e.target.result : '```'+ext+'\n'+e.target.result+'\n```',
-        criado: new Date().toISOString(),
-        atualizado: new Date().toISOString(),
-      });
+      notas.push({ id:uid(), titulo:file.name, projeto:projetoId||'', tipo:tipoMap[ext]||'nota', tags:[ext], fonteIA:'nenhuma', conteudo:ext==='md'?e.target.result:'```'+ext+'\n'+e.target.result+'\n```', criado:new Date().toISOString(), atualizado:new Date().toISOString() });
       DB.set('notas', notas);
+      count++;
       render();
     };
     reader.readAsText(file);
   });
+  setTimeout(() => setStatus(`${count} ${t('uploaded')}`, 'ok'), 200);
+}
+
+function fazerUpload() {
+  const files     = document.getElementById('uploadFile').files;
+  const projetoId = document.getElementById('uploadProjeto').value;
+  _importarArquivos(files, projetoId);
   hideModal('modalUpload');
 }
 
 function togglePreview() {
   const panel = document.getElementById('previewPanel');
-  const show = !panel.classList.contains('show');
-  panel.classList.toggle('show', show);
-  if (show) renderPreview();
+  panel.classList.toggle('show', !panel.classList.contains('show'));
+  if (panel.classList.contains('show')) renderPreview();
 }
 
 function renderPreview() {
   const md = document.getElementById('editorBody').value;
   let html = md
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code class="lang-$1">$2</code></pre>')
-    .replace(/^- (.+)$/gm, '<li>$1</li>')
-    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
-    .replace(/\[\[(.+?)\]\]/g, '<a href="#">[[$1]]</a>')
-    .replace(/\[x\]/g, '✅').replace(/\[ \]/g, '⬜')
-    .replace(/\n\n/g, '</p><p>');
-  document.getElementById('previewPanel').innerHTML = '<p>' + html + '</p>';
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/`([^`]+)`/g,'<code>$1</code>').replace(/```(\w*)\n([\s\S]*?)```/g,'<pre><code>$2</code></pre>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>').replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/\[\[(.+?)\]\]/g,'<a href="#">[[$1]]</a>').replace(/\[x\]/g,'✅').replace(/\[ \]/g,'⬜')
+    .replace(/\n\n/g,'</p><p>');
+  document.getElementById('previewPanel').innerHTML = '<p>'+html+'</p>';
 }
 
 document.getElementById('editorBody').addEventListener('input', () => {
@@ -836,181 +999,182 @@ document.getElementById('editorBody').addEventListener('input', () => {
 
 function fmt(before, after) {
   const ta = document.getElementById('editorBody');
-  const start = ta.selectionStart, end = ta.selectionEnd;
-  const sel = ta.value.substring(start, end);
-  ta.value = ta.value.substring(0, start) + before + sel + after + ta.value.substring(end);
-  ta.focus();
+  const s = ta.selectionStart, e = ta.selectionEnd;
+  ta.value = ta.value.substring(0,s)+before+ta.value.substring(s,e)+after+ta.value.substring(e);
+  ta.focus(); ta.selectionStart=s+before.length; ta.selectionEnd=e+before.length;
 }
 
 function filtrarPorProjeto(projetoId) {
-  const notas = DB.get('notas', []).filter(n => n.projeto === projetoId);
-  const proj = DB.get('projetos', []).find(p => p.id === projetoId);
-  document.getElementById('advSearch').value = '';
-  const results = document.getElementById('searchResults');
-  results.innerHTML = `<div style="margin-bottom:12px;font-size:14px;font-weight:600;color:var(--text)">${proj?.icon||'📁'} ${proj?.nome}</div>` +
-    notas.map(n => `
-      <div class="sr-item" onclick="abrirNota('${n.id}')">
-        <div class="sr-title">${n.titulo}</div>
-        <div class="sr-excerpt">${n.conteudo.slice(0,120).replace(/[#*`]/g,'')}...</div>
-        <div class="sr-path">${n.tipo} · ${(n.tags||[]).join(', ')}</div>
-      </div>
-    `).join('');
+  const notas = DB.get('notas',[]).filter(n => n.projeto===projetoId);
+  const proj  = DB.get('projetos',[]).find(p => p.id===projetoId);
+  document.getElementById('advSearch').value='';
+  document.getElementById('searchResults').innerHTML =
+    `<div style="margin-bottom:12px;font-size:14px;font-weight:600;color:var(--text)">${proj?escH(proj.icon):'📁'} ${proj?escH(proj.nome):''}</div>`+
+    notas.map(n => `<div class="sr-item" onclick="abrirNota('${n.id}')">
+      <div class="sr-title">${escH(n.titulo)}</div>
+      <div class="sr-excerpt">${escH(n.conteudo.slice(0,120).replace(/[#*\`]/g,''))}...</div>
+      <div class="sr-path">${n.tipo} · ${(n.tags||[]).join(', ')}</div>
+    </div>`).join('');
   showView('search');
 }
 
-function buscarGlobal(q) {
-  if (!q || q.length < 2) return;
-  buscarAvancado(q);
-  showView('search');
-}
+function buscarGlobal(q) { if (!q||q.length<2) return; buscarAvancado(q); showView('search'); }
 
 function buscarAvancado(q) {
   const notas = DB.get('notas', []);
-  const resultados = q.length < 2 ? notas : notas.filter(n =>
+  const res = q.length<2 ? notas : notas.filter(n =>
     n.titulo.toLowerCase().includes(q.toLowerCase()) ||
     n.conteudo.toLowerCase().includes(q.toLowerCase()) ||
-    (n.tags||[]).some(t => t.toLowerCase().includes(q.toLowerCase()))
+    (n.tags||[]).some(tg => tg.toLowerCase().includes(q.toLowerCase()))
   );
-  const hl = (text, q) => text.replace(new RegExp(q, 'gi'), m => `<mark>${m}</mark>`);
-  document.getElementById('searchResults').innerHTML = resultados.length
-    ? resultados.map(n => `
-        <div class="sr-item" onclick="abrirNota('${n.id}')">
-          <div class="sr-title">${q ? hl(n.titulo, q) : n.titulo}</div>
-          <div class="sr-excerpt">${q ? hl(n.conteudo.slice(0,150).replace(/[#*`]/g,''), q) : n.conteudo.slice(0,150)}...</div>
-          <div class="sr-path">📁 ${n.projeto || 'sem projeto'} · ${n.tipo} · ${(n.tags||[]).join(', ')}</div>
-        </div>
-      `).join('')
-    : '<div style="color:var(--muted);font-size:13px">Nenhum resultado para "'+q+'"</div>';
+  const hl = (text, q) => escH(text).replace(new RegExp(escH(q),'gi'), m=>`<mark>${m}</mark>`);
+  document.getElementById('searchResults').innerHTML = res.length
+    ? res.map(n => `<div class="sr-item" onclick="abrirNota('${n.id}')">
+        <div class="sr-title">${q?hl(n.titulo,q):escH(n.titulo)}</div>
+        <div class="sr-excerpt">${q?hl(n.conteudo.slice(0,150).replace(/[#*\`]/g,''),q):escH(n.conteudo.slice(0,150))}...</div>
+        <div class="sr-path">📁 ${n.projeto||'sem projeto'} · ${n.tipo} · ${(n.tags||[]).join(', ')}</div>
+      </div>`).join('')
+    : `<div style="color:var(--muted);font-size:13px">Nenhum resultado para "${escH(q)}"</div>`;
 }
 
 function filtroSearch(tipo) {
   document.getElementById('advSearch').focus();
-  const hints = { projeto:'projeto:', tag:'tag:', tipo:'tipo:', data:'data:' };
-  document.getElementById('advSearch').value = hints[tipo] || '';
+  document.getElementById('advSearch').value = { projeto:'projeto:', tag:'tag:', tipo:'tipo:', data:'data:' }[tipo]||'';
 }
 
 // ═══════════════════════════════════════════════════════════
-// IA — Anthropic Claude API
+// IA — Claude API
 // ═══════════════════════════════════════════════════════════
-
 async function enviarIA() {
   const input = document.getElementById('aiInput');
   const q = input.value.trim();
   if (!q) return;
-  input.value = '';
-
+  input.value='';
   const msgs = document.getElementById('aiMessages');
-  msgs.innerHTML += `<div class="ai-msg user">${q}</div>`;
-  msgs.innerHTML += `<div class="ai-msg loading" id="aiLoading">✨ Pensando...</div>`;
-  msgs.scrollTop = msgs.scrollHeight;
-
-  const conteudoAtual = document.getElementById('editorBody').value;
-  const tituloAtual = document.getElementById('editorTitle').value;
-
+  msgs.innerHTML+=`<div class="ai-msg user">${escH(q)}</div>`;
+  msgs.innerHTML+=`<div class="ai-msg loading" id="aiLoading">✨ Pensando...</div>`;
+  msgs.scrollTop=msgs.scrollHeight;
+  const c=document.getElementById('editorBody').value, tl=document.getElementById('editorTitle').value;
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: `Você é um assistente de base de conhecimento pessoal. 
-O usuário está editando uma nota chamada "${tituloAtual}".
-Conteúdo atual da nota:\n\n${conteudoAtual}\n\nAjude a expandir, resumir, corrigir ou gerar conteúdo relacionado.`,
-        messages: [{ role: 'user', content: q }]
-      })
-    });
-    const data = await res.json();
-    const resposta = data.content?.[0]?.text || 'Sem resposta.';
-    document.getElementById('aiLoading').remove();
-    msgs.innerHTML += `<div class="ai-msg assistant">${resposta.replace(/\n/g,'<br>')}</div>`;
-  } catch (e) {
-    document.getElementById('aiLoading').textContent = '⚠️ Erro ao conectar à IA. Configure a API key.';
-  }
-  msgs.scrollTop = msgs.scrollHeight;
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:`Você é um assistente de base de conhecimento pessoal. Nota atual: "${tl}"\n\n${c}`,messages:[{role:'user',content:q}]})});
+    const data=await res.json();
+    document.getElementById('aiLoading')?.remove();
+    msgs.innerHTML+=`<div class="ai-msg assistant">${(data.content?.[0]?.text||'Sem resposta.').replace(/\n/g,'<br>')}</div>`;
+  } catch { document.getElementById('aiLoading').textContent='⚠️ Erro ao conectar à IA. Configure a API key.'; }
+  msgs.scrollTop=msgs.scrollHeight;
 }
 
 // ═══════════════════════════════════════════════════════════
 // GITHUB SYNC
 // ═══════════════════════════════════════════════════════════
-
 function syncGitHub() {
-  const token = DB.get('ghToken', '');
+  const token = DB.get('ghToken','');
   if (!token) { showModal('modalGithub'); return; }
   fazerSync();
 }
-
 function salvarGithubConfig() {
-  DB.set('ghUser', document.getElementById('ghUser').value);
-  DB.set('ghToken', document.getElementById('ghToken').value);
-  DB.set('ghRepo', document.getElementById('ghRepo').value);
-  hideModal('modalGithub');
-  fazerSync();
+  DB.set('ghUser',document.getElementById('ghUser').value);
+  DB.set('ghToken',document.getElementById('ghToken').value);
+  DB.set('ghRepo',document.getElementById('ghRepo').value);
+  hideModal('modalGithub'); fazerSync();
 }
-
 async function fazerSync() {
-  const user = DB.get('ghUser', 'cezar-moreira');
-  const token = DB.get('ghToken', '');
-  const repo = DB.get('ghRepo', 'razec');
-  if (!token) return;
-
-  const notas = DB.get('notas', []);
-  const projetos = DB.get('projetos', []);
-
-  // Gera README
-  const readme = `# RAZEC — Base de Conhecimento\n\nAtualizado: ${new Date().toLocaleString('pt-BR')}\n\n## Projetos\n\n${projetos.map(p=>`- ${p.icon} **${p.nome}** — ${p.desc}`).join('\n')}\n\n## Estatísticas\n\n- 📝 ${notas.length} notas\n- 📁 ${projetos.length} projetos\n- 💻 ${notas.filter(n=>n.tipo==='script').length} scripts\n`;
-
-  await pushToGitHub(user, token, repo, 'README.md', btoa(unescape(encodeURIComponent(readme))));
-
-  // Salva notas por projeto
+  const user=DB.get('ghUser','cezar-moreira'), token=DB.get('ghToken',''), repo=DB.get('ghRepo','razec');
+  if (!token) { setStatus(t('syncErr'),'warn'); return; }
+  setStatus('⏳ Sincronizando com GitHub...','info',-1);
+  const notas=DB.get('notas',[]), projetos=DB.get('projetos',[]);
+  const readme=`# RAZEC — Base de Conhecimento\n\nAtualizado: ${new Date().toLocaleString('pt-BR')}\n\n## Projetos\n\n${projetos.map(p=>`- ${p.icon} **${p.nome}** — ${p.desc}`).join('\n')}\n\n## Stats\n\n- 📝 ${notas.length} notas · 📁 ${projetos.length} projetos\n`;
+  await pushToGitHub(user,token,repo,'README.md',btoa(unescape(encodeURIComponent(readme))));
   for (const proj of projetos) {
-    const notasDoProjeto = notas.filter(n => n.projeto === proj.id);
-    for (const nota of notasDoProjeto) {
-      const path = `projetos/${proj.id}/${nota.titulo.replace(/[^a-zA-Z0-9\s-]/g,'').replace(/\s+/g,'-')}.md`;
-      const content = btoa(unescape(encodeURIComponent(nota.conteudo)));
-      await pushToGitHub(user, token, repo, path, content);
+    for (const nota of notas.filter(n=>n.projeto===proj.id)) {
+      await pushToGitHub(user,token,repo,`projetos/${proj.id}/${nota.titulo.replace(/[^a-zA-Z0-9\s-]/g,'').replace(/\s+/g,'-')}.md`,btoa(unescape(encodeURIComponent(nota.conteudo))));
     }
   }
-
-  alert('✅ Sincronizado com GitHub!\ngithub.com/' + user + '/' + repo);
+  setStatus(t('synced'),'ok');
 }
-
-async function pushToGitHub(user, token, repo, path, content) {
+async function pushToGitHub(user,token,repo,path,content) {
   try {
-    // Verifica se arquivo existe
-    let sha = null;
-    try {
-      const check = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${path}`, {
-        headers: { 'Authorization': 'token ' + token }
-      });
-      if (check.ok) { const d = await check.json(); sha = d.sha; }
-    } catch {}
-
-    await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${path}`, {
-      method: 'PUT',
-      headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: `chore: sync RAZEC ${new Date().toISOString()}`, content, ...(sha ? { sha } : {}) })
-    });
-  } catch (e) { console.error('GitHub sync error:', e); }
+    let sha=null;
+    try { const c=await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${path}`,{headers:{'Authorization':'token '+token}}); if(c.ok){const d=await c.json();sha=d.sha;} } catch{}
+    await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${path}`,{method:'PUT',headers:{'Authorization':'token '+token,'Content-Type':'application/json'},body:JSON.stringify({message:`chore: sync RAZEC ${new Date().toISOString()}`,content,...(sha?{sha}:{})})});
+  } catch(e){console.error('GitHub sync error:',e);}
 }
 
 // ═══════════════════════════════════════════════════════════
 // UTILS
 // ═══════════════════════════════════════════════════════════
-
 function formatDate(iso) {
   if (!iso) return '—';
-  const d = new Date(iso);
-  const diff = Date.now() - d;
-  if (diff < 60000) return 'agora';
-  if (diff < 3600000) return Math.round(diff/60000) + 'min';
-  if (diff < 86400000) return Math.round(diff/3600000) + 'h';
+  const d=new Date(iso), diff=Date.now()-d;
+  if(diff<60000) return 'agora';
+  if(diff<3600000) return Math.round(diff/60000)+'min';
+  if(diff<86400000) return Math.round(diff/3600000)+'h';
   return d.toLocaleDateString('pt-BR');
 }
 
+// ═══════════════════════════════════════════════════════════
+// KEYBOARD SHORTCUTS
+// ═══════════════════════════════════════════════════════════
+document.addEventListener('keydown', e => {
+  const ctrl = e.ctrlKey || e.metaKey;
+  if (document.querySelectorAll('.modal-overlay.show').length) {
+    if (e.key==='Escape') document.querySelectorAll('.modal-overlay.show').forEach(m=>m.classList.remove('show'));
+    return;
+  }
+  if (ctrl && e.key==='n')  { e.preventDefault(); showModal('modalNota'); }
+  if (ctrl && e.key==='s')  { e.preventDefault(); salvarNota(); }
+  if (ctrl && e.key==='f')  { e.preventDefault(); document.getElementById('globalSearch').focus(); }
+  if (ctrl && e.key==='/')  { e.preventDefault(); showModal('modalAtalhos'); }
+  if (ctrl && e.key==='w')  { e.preventDefault(); if(_tabAtual) fecharAba(_tabAtual); }
+  if (ctrl && e.key==='p')  { e.preventDefault(); togglePreview(); }
+  if (ctrl && e.key==='u')  { e.preventDefault(); showModal('modalUpload'); }
+  if (ctrl && e.key==='g')  { e.preventDefault(); syncGitHub(); }
+  if (ctrl && e.key==='l')  { e.preventDefault(); cicleLang(); }
+  if (ctrl && e.shiftKey && e.key==='P') { e.preventDefault(); showModal('modalProjeto'); }
+  if (ctrl && e.key==='1')  { e.preventDefault(); showView('dashboard'); }
+  if (ctrl && e.key==='2')  { e.preventDefault(); showView('editor'); }
+  if (ctrl && e.key==='3')  { e.preventDefault(); showView('files'); }
+  if (ctrl && e.key==='4')  { e.preventDefault(); showView('graph'); }
+  if (ctrl && e.key==='5')  { e.preventDefault(); showView('search'); }
+  if (e.key==='Escape') document.querySelectorAll('.modal-overlay.show').forEach(m=>m.classList.remove('show'));
+});
+
+// ═══════════════════════════════════════════════════════════
+// DRAG & DROP (Files view)
+// ═══════════════════════════════════════════════════════════
+(function initDragDrop() {
+  const view = document.getElementById('view-files');
+  let dragCount = 0;
+
+  view.addEventListener('dragenter', e => {
+    e.preventDefault(); dragCount++;
+    view.classList.add('dragging-over');
+    document.getElementById('dropHint').style.display='block';
+  });
+  view.addEventListener('dragleave', e => {
+    dragCount--;
+    if (dragCount <= 0) {
+      dragCount=0; view.classList.remove('dragging-over');
+      document.getElementById('dropHint').style.display='none';
+    }
+  });
+  view.addEventListener('dragover', e => e.preventDefault());
+  view.addEventListener('drop', e => {
+    e.preventDefault(); dragCount=0;
+    view.classList.remove('dragging-over');
+    document.getElementById('dropHint').style.display='none';
+    const files = e.dataTransfer.files;
+    if (files.length) _importarArquivos(files, '');
+  });
+})();
+
+// ═══════════════════════════════════════════════════════════
 // INIT
+// ═══════════════════════════════════════════════════════════
 inicializarDados();
+setLang(_lang);
 render();
+setStatus(t('ready'));
 </script>
 
 <!-- BOTTOM NAV MOBILE -->
@@ -1044,22 +1208,17 @@ render();
 <script>
 function setActiveNav(id) {
   document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
-  const el = document.getElementById(id);
-  if (el) el.classList.add('active');
+  document.getElementById(id)?.classList.add('active');
 }
-
 function toggleFab() {
-  const menu = document.getElementById('fabMenu');
-  const btn = document.getElementById('fabBtn');
-  const open = menu.classList.toggle('open');
-  btn.textContent = open ? '✕' : '＋';
+  const menu=document.getElementById('fabMenu'), btn=document.getElementById('fabBtn');
+  const open=menu.classList.toggle('open');
+  btn.textContent=open?'✕':'＋';
 }
-
-// Fecha fab ao clicar fora
 document.addEventListener('click', e => {
-  if (!e.target.closest('.fab') && !e.target.closest('.fab-menu')) {
+  if (!e.target.closest('.fab')&&!e.target.closest('.fab-menu')) {
     document.getElementById('fabMenu').classList.remove('open');
-    document.getElementById('fabBtn').textContent = '＋';
+    document.getElementById('fabBtn').textContent='＋';
   }
 });
 </script>
