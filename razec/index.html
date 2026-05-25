@@ -116,17 +116,6 @@ a{color:var(--primary);text-decoration:none}
 .preview-panel blockquote{border-left:3px solid var(--primary);padding-left:1rem;color:var(--muted);font-style:italic;margin-bottom:.75rem}
 
 /* AI PANEL */
-.ai-panel{width:320px;border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--sidebar)}
-.ai-header{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
-.ai-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
-.ai-msg{font-size:13px;line-height:1.6;padding:10px 12px;border-radius:var(--radius)}
-.ai-msg.user{background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.2);color:var(--text);margin-left:20px}
-.ai-msg.assistant{background:var(--card);border:1px solid var(--border);color:#cdd9e5;margin-right:20px}
-.ai-msg.loading{color:var(--muted);font-style:italic}
-.ai-input-row{padding:10px;border-top:1px solid var(--border);display:flex;gap:6px}
-.ai-input{flex:1;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px}
-.ai-input:focus{outline:none;border-color:var(--primary)}
-.ai-send{padding:8px 12px;background:var(--primary);color:#000;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:13px}
 
 /* FILES VIEW */
 .files-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
@@ -236,7 +225,7 @@ kbd{background:var(--card);border:1px solid var(--border);border-bottom-width:2p
 @media(max-width:768px){
   .sidebar{display:none}
   .preview-panel{display:none!important}
-  .ai-panel{display:none}
+
   .bottom-nav{display:flex}
   .fab{display:flex}
   .topbar-right{display:none}
@@ -355,16 +344,6 @@ kbd{background:var(--card);border:1px solid var(--border);border-bottom-width:2p
           <textarea class="editor-body" id="editorBody" placeholder="Escreva em Markdown...&#10;&#10;Use [[nome]] para linkar outras notas&#10;Use ```python para blocos de código"></textarea>
         </div>
         <div class="preview-panel" id="previewPanel"></div>
-        <div class="ai-panel">
-          <div class="ai-header">🤖 IA Assistente <button onclick="showModal('modalApiKey')" style="margin-left:auto;background:transparent;border:none;cursor:pointer;font-size:16px;color:var(--muted)" title="Configurar API key">⚙️</button></div>
-          <div class="ai-messages" id="aiMessages">
-            <div class="ai-msg assistant">Olá! Posso ajudar com suas notas. Pergunte sobre o conteúdo atual, peça resumos, ou gere código.<br><br><small style="color:var(--muted)">Configure sua API key clicando em ⚙️ acima.</small></div>
-          </div>
-          <div class="ai-input-row">
-            <input class="ai-input" id="aiInput" placeholder="Pergunte algo..." onkeydown="if(event.key==='Enter')enviarIA()">
-            <button class="ai-send" onclick="enviarIA()">→</button>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -550,23 +529,6 @@ kbd{background:var(--card);border:1px solid var(--border);border-bottom-width:2p
   </div>
 </div>
 
-<div class="modal-overlay" id="modalApiKey">
-  <div class="modal">
-    <h3>⚙️ Configurar IA Assistente</h3>
-    <div class="field">
-      <label>Claude API Key (Anthropic)</label>
-      <input id="claudeApiKey" type="password" placeholder="sk-ant-...">
-    </div>
-    <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6">
-      Obtenha sua chave em: <strong>console.anthropic.com</strong> → API Keys → Create Key.<br>
-      A chave fica salva localmente no navegador.
-    </div>
-    <div class="modal-actions">
-      <button class="btn" onclick="hideModal('modalApiKey')">Cancelar</button>
-      <button class="btn btn-primary" onclick="salvarApiKey()">Salvar</button>
-    </div>
-  </div>
-</div>
 
 <div class="modal-overlay" id="modalGithub">
   <div class="modal">
@@ -1099,10 +1061,6 @@ function showView(name, navEl) {
 
 function showModal(id) {
   document.getElementById(id).classList.add('show');
-  if (id==='modalApiKey') {
-    const saved = DB.get('claudeApiKey','');
-    document.getElementById('claudeApiKey').value = saved;
-  }
   render();
 }
 function hideModal(id) { document.getElementById(id).classList.remove('show'); }
@@ -1373,62 +1331,6 @@ function filtroSearch(tipo) {
   document.getElementById('advSearch').value = { projeto:'projeto:', tag:'tag:', tipo:'tipo:', data:'data:' }[tipo]||'';
 }
 
-// ═══════════════════════════════════════════════════════════
-// IA — Claude API
-// ═══════════════════════════════════════════════════════════
-function salvarApiKey() {
-  const key = document.getElementById('claudeApiKey').value.trim();
-  if (!key) return;
-  DB.set('claudeApiKey', key);
-  hideModal('modalApiKey');
-  setStatus('API key salva!', 'ok');
-}
-
-async function enviarIA() {
-  const input = document.getElementById('aiInput');
-  const q = input.value.trim();
-  if (!q) return;
-  const apiKey = DB.get('claudeApiKey', '');
-  if (!apiKey) {
-    document.getElementById('claudeApiKey').value = '';
-    showModal('modalApiKey');
-    return;
-  }
-  input.value='';
-  const msgs = document.getElementById('aiMessages');
-  msgs.innerHTML+=`<div class="ai-msg user">${escH(q)}</div>`;
-  msgs.innerHTML+=`<div class="ai-msg loading" id="aiLoading">✨ Pensando...</div>`;
-  msgs.scrollTop=msgs.scrollHeight;
-  const c=document.getElementById('editorBody').value, tl=document.getElementById('editorTitle').value;
-  try {
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body:JSON.stringify({
-        model:'claude-haiku-4-5-20251001',
-        max_tokens:1024,
-        system:`Você é um assistente pessoal de conhecimento. Responda de forma objetiva e em português. Nota atual: "${tl}"\n\n${c}`,
-        messages:[{role:'user',content:q}]
-      })
-    });
-    const data=await res.json();
-    document.getElementById('aiLoading')?.remove();
-    if (data.error) {
-      msgs.innerHTML+=`<div class="ai-msg" style="color:var(--danger)">⚠️ ${escH(data.error.message||'Erro na API.')}</div>`;
-    } else {
-      msgs.innerHTML+=`<div class="ai-msg assistant">${(data.content?.[0]?.text||'Sem resposta.').replace(/\n/g,'<br>')}</div>`;
-    }
-  } catch(e) {
-    const el=document.getElementById('aiLoading');
-    if(el) el.textContent='⚠️ Erro de conexão. Verifique sua API key em ⚙️.';
-  }
-  msgs.scrollTop=msgs.scrollHeight;
-}
 
 // ═══════════════════════════════════════════════════════════
 // GITHUB SYNC
