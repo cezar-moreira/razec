@@ -99,18 +99,6 @@ a{color:var(--primary);text-decoration:none}
 .preview-panel ul,.preview-panel ol{padding-left:1.5rem;margin-bottom:.75rem;color:#cdd9e5;line-height:1.8}
 .preview-panel blockquote{border-left:3px solid var(--primary);padding-left:1rem;color:var(--muted);font-style:italic;margin-bottom:.75rem}
 
-/* AI PANEL */
-.ai-panel{width:320px;border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--sidebar)}
-.ai-header{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
-.ai-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
-.ai-msg{font-size:13px;line-height:1.6;padding:10px 12px;border-radius:var(--radius)}
-.ai-msg.user{background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.2);color:var(--text);margin-left:20px}
-.ai-msg.assistant{background:var(--card);border:1px solid var(--border);color:#cdd9e5;margin-right:20px}
-.ai-msg.loading{color:var(--muted);font-style:italic}
-.ai-input-row{padding:10px;border-top:1px solid var(--border);display:flex;gap:6px}
-.ai-input{flex:1;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px}
-.ai-input:focus{outline:none;border-color:var(--primary)}
-.ai-send{padding:8px 12px;background:var(--primary);color:#000;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:13px}
 
 /* FILES VIEW */
 .files-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
@@ -171,7 +159,6 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
 @media(max-width:640px){
   .sidebar{display:none}
   .preview-panel{display:none!important}
-  .ai-panel{display:none}
   .bottom-nav{display:flex}
   .fab{display:flex}
   .topbar-right{display:none}
@@ -276,16 +263,6 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
           <textarea class="editor-body" id="editorBody" placeholder="Escreva em Markdown...&#10;&#10;Use [[nome]] para linkar outras notas&#10;Use ```python para blocos de código"></textarea>
         </div>
         <div class="preview-panel" id="previewPanel"></div>
-        <div class="ai-panel">
-          <div class="ai-header">🤖 IA Assistente</div>
-          <div class="ai-messages" id="aiMessages">
-            <div class="ai-msg assistant">Olá! Posso ajudar com suas notas. Pergunte sobre o conteúdo atual, peça resumos, ou gere código.</div>
-          </div>
-          <div class="ai-input-row">
-            <input class="ai-input" id="aiInput" placeholder="Pergunte algo..." onkeydown="if(event.key==='Enter')enviarIA()">
-            <button class="ai-send" onclick="enviarIA()">→</button>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -945,46 +922,6 @@ function filtroSearch(tipo) {
   document.getElementById('advSearch').value = hints[tipo] || '';
 }
 
-// ═══════════════════════════════════════════════════════════
-// IA — Anthropic Claude API
-// ═══════════════════════════════════════════════════════════
-
-async function enviarIA() {
-  const input = document.getElementById('aiInput');
-  const q = input.value.trim();
-  if (!q) return;
-  input.value = '';
-
-  const msgs = document.getElementById('aiMessages');
-  msgs.innerHTML += `<div class="ai-msg user">${q}</div>`;
-  msgs.innerHTML += `<div class="ai-msg loading" id="aiLoading">✨ Pensando...</div>`;
-  msgs.scrollTop = msgs.scrollHeight;
-
-  const conteudoAtual = document.getElementById('editorBody').value;
-  const tituloAtual = document.getElementById('editorTitle').value;
-
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: `Você é um assistente de base de conhecimento pessoal. 
-O usuário está editando uma nota chamada "${tituloAtual}".
-Conteúdo atual da nota:\n\n${conteudoAtual}\n\nAjude a expandir, resumir, corrigir ou gerar conteúdo relacionado.`,
-        messages: [{ role: 'user', content: q }]
-      })
-    });
-    const data = await res.json();
-    const resposta = data.content?.[0]?.text || 'Sem resposta.';
-    document.getElementById('aiLoading').remove();
-    msgs.innerHTML += `<div class="ai-msg assistant">${resposta.replace(/\n/g,'<br>')}</div>`;
-  } catch (e) {
-    document.getElementById('aiLoading').textContent = '⚠️ Erro ao conectar à IA. Configure a API key.';
-  }
-  msgs.scrollTop = msgs.scrollHeight;
-}
 
 // ═══════════════════════════════════════════════════════════
 // GITHUB SYNC
