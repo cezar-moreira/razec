@@ -155,7 +155,7 @@ a{color:var(--primary);text-decoration:none}
 .g-node:hover circle{filter:brightness(1.35)}
 .g-node.hl circle{filter:brightness(1.4) drop-shadow(0 0 6px currentColor)}
 .g-node.dim{opacity:.15}
-.g-label{font-size:10px;fill:#7d8590;pointer-events:none;text-anchor:middle;dominant-baseline:hanging;user-select:none}
+.g-label{font-size:13px;fill:#c9d1d9;pointer-events:none;text-anchor:middle;dominant-baseline:hanging;user-select:none;font-weight:500}
 .graph-tooltip{position:fixed;display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:9px 13px;font-size:12px;color:var(--text);pointer-events:none;z-index:500;max-width:230px;box-shadow:0 4px 20px rgba(0,0,0,.5)}
 .gt-title{font-weight:600;margin-bottom:5px;color:var(--text)}
 .gt-meta{color:var(--muted);font-size:11px;line-height:1.6}
@@ -289,6 +289,11 @@ kbd{background:var(--card);border:1px solid var(--border);border-bottom-width:2p
       <div class="nav-item" onclick="showView('files',this)"><span class="icon">📁</span> Arquivos</div>
       <div class="nav-item" onclick="showView('graph',this)"><span class="icon">🕸️</span> Mapa visual</div>
       <div class="nav-item" onclick="showView('search',this)"><span class="icon">🔍</span> Busca avançada</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Atalhos rápidos</div>
+      <div class="nav-item" onclick="showView('files',this);setTimeout(()=>filtrarFiles('python',document.querySelector('#view-files .btn[onclick*=python]')),50)"><span class="icon">💻</span> Scripts <span class="badge" id="badgeScripts">0</span></div>
+      <div class="nav-item" onclick="showView('files',this);setTimeout(()=>filtrarFiles('conversa',document.querySelector('#view-files .btn[onclick*=conversa]')),50)"><span class="icon">💬</span> Conversas <span class="badge" id="badgeConversas">0</span></div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-label">Projetos</div>
@@ -708,6 +713,8 @@ function render() {
   document.getElementById('statScripts').textContent  = scripts.length;
   document.getElementById('statConversas').textContent= conversas.length;
   document.getElementById('badgeNotas').textContent   = notas.length;
+  document.getElementById('badgeScripts').textContent  = scripts.length;
+  document.getElementById('badgeConversas').textContent = conversas.length;
   document.getElementById('sbCount').textContent      = notas.length + ' notas';
 
   const used = JSON.stringify(localStorage).length;
@@ -841,14 +848,14 @@ function renderGraph() {
     ...projetos.map(p => ({
       id:'p_'+p.id, tipo:'projeto', label:p.icon+' '+p.nome.split('—')[0].trim(),
       ref:p.id, color:NODE_COLOR.projeto,
-      r: Math.min(26, 12 + notas.filter(n=>n.projeto===p.id).length * 1.5),
+      r: Math.min(40, 22 + notas.filter(n=>n.projeto===p.id).length * 2),
       x: saved['p_'+p.id]?.x ?? (W/2 + (Math.random()-.5)*200),
       y: saved['p_'+p.id]?.y ?? (H/2 + (Math.random()-.5)*200),
     })),
     ...notas.map(n => ({
       id:n.id, tipo:n.tipo||'nota', label:n.titulo,
       ref:n.id, projetoId:n.projeto, tags:n.tags||[],
-      color:NODE_COLOR[n.tipo||'nota']||NODE_COLOR.nota, r:7,
+      color:NODE_COLOR[n.tipo||'nota']||NODE_COLOR.nota, r: n.tipo==='script' ? 15 : n.tipo==='conversa' ? 13 : 11,
       x: saved[n.id]?.x ?? (W/2 + (Math.random()-.5)*350),
       y: saved[n.id]?.y ?? (H/2 + (Math.random()-.5)*350),
     }))
@@ -873,8 +880,8 @@ function renderGraph() {
   // Simulation
   _sim = d3.forceSimulation(nodes)
     .force('link', d3.forceLink(links).id(d=>d.id).distance(d => (d.source.tipo==='projeto'||d.target?.tipo==='projeto') ? 130 : 80).strength(.6))
-    .force('charge', d3.forceManyBody().strength(d => d.tipo==='projeto' ? -900 : -220))
-    .force('center', d3.forceCenter(W/2, H/2).strength(.05))
+    .force('charge', d3.forceManyBody().strength(d => d.tipo==='projeto' ? -1200 : -320))
+    .force('center', d3.forceCenter(W/2, H/2).strength(.12))
     .force('collide', d3.forceCollide().radius(d => d.r+10).strength(.8))
     .alphaDecay(.015);
 
@@ -914,7 +921,7 @@ function renderGraph() {
 
   node.append('text').attr('class','g-label')
     .attr('dy', d=>d.r+4)
-    .text(d=>d.label.length>24 ? d.label.slice(0,22)+'…' : d.label);
+    .text(d=>d.label.length>20 ? d.label.slice(0,18)+'…' : d.label);
 
   _sim.on('tick', () => {
     link.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y)
