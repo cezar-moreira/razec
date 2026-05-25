@@ -342,6 +342,7 @@ kbd{background:var(--card);border:1px solid var(--border);border-bottom-width:2p
             <button class="tb-btn" onclick="fmt('[[',']]')">[[Link]]</button>
             <div style="margin-left:auto;display:flex;gap:6px">
               <button class="tb-btn" onclick="togglePreview()" title="Ctrl+P">👁 Preview</button>
+              <button class="btn" style="color:var(--danger);border-color:var(--danger)" onclick="confirmarExcluirNota()" title="Excluir nota">🗑️</button>
               <button class="btn btn-primary" onclick="salvarNota()" title="Ctrl+S">💾 Salvar</button>
             </div>
           </div>
@@ -522,6 +523,17 @@ kbd{background:var(--card);border:1px solid var(--border);border-bottom-width:2p
     <div class="modal-actions">
       <button class="btn" onclick="hideModal('modalExcluirProjeto')">Cancelar</button>
       <button class="btn" style="background:var(--danger);color:#fff;border-color:transparent" onclick="excluirProjeto()">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalExcluirNota">
+  <div class="modal">
+    <h3>🗑️ Excluir nota</h3>
+    <p style="color:var(--muted);margin-bottom:16px">Tem certeza que quer excluir <strong id="excluirNotaNome" style="color:var(--text)"></strong>? Esta ação não pode ser desfeita.</p>
+    <div class="modal-actions">
+      <button class="btn" onclick="hideModal('modalExcluirNota')">Cancelar</button>
+      <button class="btn" style="background:var(--danger);color:#fff;border-color:transparent" onclick="excluirNota()">Excluir</button>
     </div>
   </div>
 </div>
@@ -822,7 +834,10 @@ function renderFiles(filtro) {
     const proj = projetos.find(p => p.id === n.projeto);
     const ext  = n.tipo==='script' ? (n.tags?.find(tg => ['py','js','html','sql','python'].includes(tg))||'txt') : 'md';
     const fi   = fonteIcon[n.fonteIA] || '';
-    return `<div class="file-card" onclick="abrirNota('${n.id}')">
+    return `<div class="file-card" onclick="abrirNota('${n.id}')" style="position:relative">
+      <button onclick="event.stopPropagation();confirmarExcluirNota('${n.id}','${escH(n.titulo)}')"
+        style="position:absolute;top:6px;right:6px;background:transparent;border:none;cursor:pointer;color:var(--muted);font-size:14px;line-height:1;padding:2px 4px;border-radius:4px"
+        title="Excluir nota" onmouseover="this.style.color='var(--danger)'" onmouseout="this.style.color='var(--muted)'">🗑️</button>
       <div class="file-icon">${TICO[n.tipo]||'📄'} ${fi}</div>
       <div class="file-name">${escH(n.titulo)}</div>
       <div class="file-meta">${proj?escH(proj.nome):'Sem projeto'} · .${ext}</div>
@@ -1066,6 +1081,32 @@ function showView(name, navEl) {
 
 function showModal(id) { document.getElementById(id).classList.add('show'); render(); }
 function hideModal(id) { document.getElementById(id).classList.remove('show'); }
+
+let _excluirNotaId = null;
+function confirmarExcluirNota(id, nome) {
+  // chamado sem args = excluir nota aberta no editor
+  _excluirNotaId = id || notaAtual;
+  if (!_excluirNotaId) return;
+  if (!nome) {
+    const n = DB.get('notas',[]).find(n=>n.id===_excluirNotaId);
+    nome = n ? n.titulo : 'esta nota';
+  }
+  document.getElementById('excluirNotaNome').textContent = nome;
+  showModal('modalExcluirNota');
+}
+function excluirNota() {
+  if (!_excluirNotaId) return;
+  const notas = DB.get('notas',[]).filter(n => n.id !== _excluirNotaId);
+  DB.set('notas', notas);
+  if (notaAtual === _excluirNotaId) {
+    notaAtual = null;
+    fecharAba(_excluirNotaId);
+  }
+  hideModal('modalExcluirNota');
+  _excluirNotaId = null;
+  render();
+  setStatus('Nota excluída', 'ok');
+}
 
 let _excluirProjetoId = null;
 function confirmarExcluirProjeto(id, nome) {
