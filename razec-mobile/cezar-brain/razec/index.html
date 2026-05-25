@@ -82,8 +82,8 @@ a{color:var(--primary);text-decoration:none}
 /* EDITOR */
 .editor-view{flex:1;display:flex;gap:0}
 .editor-panel{flex:1;display:flex;flex-direction:column;padding:1.5rem}
-.editor-toolbar{display:flex;align-items:center;gap:6px;margin-bottom:12px;overflow-x:auto;flex-wrap:nowrap;padding-bottom:6px;-webkit-overflow-scrolling:touch}
-.tb-btn{padding:8px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;cursor:pointer;white-space:nowrap;font-weight:500}
+.editor-toolbar{display:flex;align-items:center;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tb-btn{padding:5px 10px;border-radius:5px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;cursor:pointer}
 .tb-btn:hover{color:var(--text);border-color:var(--text)}
 .editor-title{font-size:1.4rem;font-weight:700;background:transparent;border:none;color:var(--text);width:100%;margin-bottom:8px;outline:none;font-family:var(--font)}
 .editor-meta{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
@@ -254,17 +254,17 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
       <div class="editor-view">
         <div class="editor-panel">
           <div class="editor-toolbar">
-            <button class="tb-btn" onclick="fmt('**','**')">𝐍egrito</button>
-            <button class="tb-btn" onclick="fmt('*','*')">Itálico</button>
-            <button class="tb-btn" onclick="fmt('`','`')">💡 Código</button>
-            <button class="tb-btn" onclick="fmt('\n```\n','\n```')">📦 Bloco código</button>
-            <button class="tb-btn" onclick="fmt('# ','')">📌 Título</button>
-            <button class="tb-btn" onclick="fmt('## ','')">📎 Subtítulo</button>
-            <button class="tb-btn" onclick="fmt('- ','')">📋 Lista</button>
-            <button class="tb-btn" onclick="fmt('[[',']]')">🔗 Linkar nota</button>
+            <button class="tb-btn" onclick="fmt('**','**')"><b>B</b></button>
+            <button class="tb-btn" onclick="fmt('*','*')"><i>I</i></button>
+            <button class="tb-btn" onclick="fmt('`','`')">Code</button>
+            <button class="tb-btn" onclick="fmt('\n```\n','\n```')">Block</button>
+            <button class="tb-btn" onclick="fmt('# ','')">H1</button>
+            <button class="tb-btn" onclick="fmt('## ','')">H2</button>
+            <button class="tb-btn" onclick="fmt('- ','')">Lista</button>
+            <button class="tb-btn" onclick="fmt('[[',']]')">[[Link]]</button>
             <div style="margin-left:auto;display:flex;gap:6px">
-              <button class="tb-btn" onclick="togglePreview()">👁 Visualizar</button>
-              <button class="btn btn-primary" onclick="salvarNota()">💾 Salvar nota</button>
+              <button class="tb-btn" onclick="togglePreview()">👁 Preview</button>
+              <button class="btn btn-primary" onclick="salvarNota()">💾 Salvar</button>
             </div>
           </div>
           <input class="editor-title" id="editorTitle" placeholder="Título da nota...">
@@ -334,62 +334,6 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
         </div>
       </div>
       <div class="search-results" id="searchResults"></div>
-    </div>
-
-
-    <!-- AJUDA -->
-    <div class="view" id="view-ajuda">
-      <div style="max-width:600px;margin:0 auto;padding-bottom:2rem">
-        <div style="text-align:center;margin-bottom:1.5rem">
-          <div style="font-size:3rem">⚡</div>
-          <h1 style="font-size:1.4rem;font-weight:700;color:var(--primary)">RAZEC AI</h1>
-          <p style="font-size:13px;color:var(--muted);margin-top:4px">Guia completo de uso</p>
-        </div>
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:12px">
-          <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px">Tipos de nota</div>
-          <div style="display:flex;flex-direction:column;gap:12px">
-            <div style="display:flex;gap:12px"><div style="font-size:1.8rem;flex-shrink:0">📝</div><div><div style="font-size:14px;font-weight:600;color:var(--text)">Nota</div><div style="font-size:12px;color:var(--muted);line-height:1.6">Para qualquer texto — ideias, análises, planejamentos, reuniões.<br>Ex: "Ideias para Paulo José", "Bugs do Ultravida".</div></div></div>
-            <div style="display:flex;gap:12px"><div style="font-size:1.8rem;flex-shrink:0">💻</div><div><div style="font-size:14px;font-weight:600;color:var(--text)">Script / Código</div><div style="font-size:12px;color:var(--muted);line-height:1.6">Para códigos — Python, HTML, JavaScript, SQL.<br>Ex: código do painel Ultravida, scripts do ClinicaOS.</div></div></div>
-            <div style="display:flex;gap:12px"><div style="font-size:1.8rem;flex-shrink:0">💬</div><div><div style="font-size:14px;font-weight:600;color:var(--text)">Conversa</div><div style="font-size:12px;color:var(--muted);line-height:1.6">Para salvar conversas com IAs. Cole o texto e escolha a fonte (Claude, ChatGPT, Gemini, Grok). Nunca perde uma conversa importante.</div></div></div>
-            <div style="display:flex;gap:12px"><div style="font-size:1.8rem;flex-shrink:0">📄</div><div><div style="font-size:14px;font-weight:600;color:var(--text)">Documentação</div><div style="font-size:12px;color:var(--muted);line-height:1.6">Para guias e manuais de referência.<br>Ex: "Como usar o ClinicaOS", "Deploy do Ultravida".</div></div></div>
-          </div>
-        </div>
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:12px">
-          <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px">O que usar em cada situação</div>
-          <div style="display:flex;flex-direction:column;gap:6px">
-            <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--bg);border-radius:8px;gap:8px"><span style="font-size:12px;color:var(--muted)">Ideia musical para Paulo José</span><span style="font-size:12px;color:var(--text);white-space:nowrap">📝 Nota</span></div>
-            <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--bg);border-radius:8px;gap:8px"><span style="font-size:12px;color:var(--muted)">Código Python do Ultravida</span><span style="font-size:12px;color:var(--text);white-space:nowrap">💻 Script</span></div>
-            <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--bg);border-radius:8px;gap:8px"><span style="font-size:12px;color:var(--muted)">Conversa com Claude</span><span style="font-size:12px;color:var(--text);white-space:nowrap">💬 🟠 Claude</span></div>
-            <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--bg);border-radius:8px;gap:8px"><span style="font-size:12px;color:var(--muted)">Resposta do ChatGPT</span><span style="font-size:12px;color:var(--text);white-space:nowrap">💬 🟢 ChatGPT</span></div>
-            <div style="display:flex;justify-content:space-between;padding:8px 10px;background:var(--bg);border-radius:8px;gap:8px"><span style="font-size:12px;color:var(--muted)">Manual do ClinicaOS</span><span style="font-size:12px;color:var(--text);white-space:nowrap">📄 Doc</span></div>
-          </div>
-        </div>
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:12px">
-          <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px">Barra de navegação inferior</div>
-          <div style="display:flex;flex-direction:column;gap:8px">
-            <div style="display:flex;gap:10px;align-items:center;padding:8px;background:var(--bg);border-radius:8px"><span style="font-size:1.3rem;width:28px;text-align:center">🏠</span><div><div style="font-size:13px;font-weight:500;color:var(--text)">Início</div><div style="font-size:11px;color:var(--muted)">Dashboard com projetos e notas recentes</div></div></div>
-            <div style="display:flex;gap:10px;align-items:center;padding:8px;background:var(--bg);border-radius:8px"><span style="font-size:1.3rem;width:28px;text-align:center">📁</span><div><div style="font-size:13px;font-weight:500;color:var(--text)">Arquivos</div><div style="font-size:11px;color:var(--muted)">Scripts, notas e conversas com filtros por tipo e IA</div></div></div>
-            <div style="display:flex;gap:10px;align-items:center;padding:8px;background:var(--bg);border-radius:8px"><span style="font-size:1.3rem;width:28px;text-align:center">🔍</span><div><div style="font-size:13px;font-weight:500;color:var(--text)">Buscar</div><div style="font-size:11px;color:var(--muted)">Busca em todas as notas, títulos e tags ao mesmo tempo</div></div></div>
-            <div style="display:flex;gap:10px;align-items:center;padding:8px;background:var(--bg);border-radius:8px"><span style="font-size:1.3rem;width:28px;text-align:center">🕸️</span><div><div style="font-size:13px;font-weight:500;color:var(--text)">Mapa</div><div style="font-size:11px;color:var(--muted)">Mapa visual conectando todos os projetos e notas</div></div></div>
-            <div style="display:flex;gap:10px;align-items:center;padding:8px;background:var(--bg);border-radius:8px"><span style="font-size:1.3rem;width:28px;text-align:center">⬆️</span><div><div style="font-size:13px;font-weight:500;color:var(--text)">GitHub</div><div style="font-size:11px;color:var(--muted)">Salva e sincroniza tudo no seu repositório GitHub</div></div></div>
-            <div style="display:flex;gap:10px;align-items:center;padding:8px;background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.3);border-radius:8px"><span style="font-size:1.3rem;width:28px;text-align:center">➕</span><div><div style="font-size:13px;font-weight:500;color:var(--primary)">Botão azul (+)</div><div style="font-size:11px;color:var(--muted)">Toque para criar Nova nota, Projeto, Script ou Upload</div></div></div>
-            <div style="display:flex;gap:10px;align-items:center;padding:8px;background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.3);border-radius:8px"><span style="font-size:1.3rem;width:28px;text-align:center">❓</span><div><div style="font-size:13px;font-weight:500;color:var(--primary)">Ajuda</div><div style="font-size:11px;color:var(--muted)">Esta tela — guia completo do RAZEC</div></div></div>
-          </div>
-        </div>
-        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:12px">
-          <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px">IAs suportadas</div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-            <div style="padding:12px;background:var(--bg);border-radius:8px;text-align:center"><div style="font-size:1.5rem">🟠</div><div style="font-size:13px;font-weight:600;color:var(--text)">Claude</div><div style="font-size:10px;color:var(--muted)">Anthropic</div></div>
-            <div style="padding:12px;background:var(--bg);border-radius:8px;text-align:center"><div style="font-size:1.5rem">🟢</div><div style="font-size:13px;font-weight:600;color:var(--text)">ChatGPT</div><div style="font-size:10px;color:var(--muted)">OpenAI</div></div>
-            <div style="padding:12px;background:var(--bg);border-radius:8px;text-align:center"><div style="font-size:1.5rem">🔵</div><div style="font-size:13px;font-weight:600;color:var(--text)">Gemini</div><div style="font-size:10px;color:var(--muted)">Google</div></div>
-            <div style="padding:12px;background:var(--bg);border-radius:8px;text-align:center"><div style="font-size:1.5rem">⚫</div><div style="font-size:13px;font-weight:600;color:var(--text)">Grok</div><div style="font-size:10px;color:var(--muted)">xAI</div></div>
-          </div>
-        </div>
-        <div style="background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.3);border-radius:12px;padding:1rem;margin-bottom:16px">
-          <div style="display:flex;gap:10px"><span style="font-size:1.5rem">🔐</span><div><div style="font-size:13px;font-weight:600;color:var(--success);margin-bottom:4px">Seus dados são seguros</div><div style="font-size:12px;color:var(--muted);line-height:1.6">Tudo fica salvo no seu celular/navegador. Nada vai para servidores externos. Só vai ao GitHub quando você tocar em ⬆️ — e somente para o seu repositório privado.</div></div></div>
-        </div>
-        <div style="text-align:center;font-size:11px;color:var(--muted)">RAZEC v2.0 · Cezar Moreira · 2026</div>
-      </div>
     </div>
 
   </div>
@@ -1082,9 +1026,6 @@ render();
   </button>
   <button class="bn-item" id="bn-graph" onclick="showView('graph');setActiveNav('bn-graph')">
     <span class="bn-icon">🕸️</span><span class="bn-label">Mapa</span>
-  </button>
-  <button class="bn-item" id="bn-ajuda" onclick="showView('ajuda');setActiveNav('bn-ajuda')">
-    <span class="bn-icon">❓</span><span class="bn-label">Ajuda</span>
   </button>
   <button class="bn-item" id="bn-github" onclick="syncGitHub()">
     <span class="bn-icon">⬆️</span><span class="bn-label">GitHub</span>

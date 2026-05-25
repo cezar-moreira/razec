@@ -16,3 +16,12 @@ logs/
 # Temp
 tmp/
 temp/
+
+# Node
+node_modules/
+package-lock.json
+
+# Arquivos sensíveis
+Senha do banco de dados.txt
+*.env
+.env*

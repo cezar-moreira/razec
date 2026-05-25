@@ -1,0 +1,24 @@
+{
+  "name": "razec",
+  "version": "1.0.0",
+  "description": "> Organize projetos, notas e conhecimento em um só lugar. Acesse de qualquer dispositivo com sincronização em tempo real.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cezar-moreira/razec.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/cezar-moreira/razec/issues"
+  },
+  "homepage": "https://github.com/cezar-moreira/razec#readme",
+  "dependencies": {
+    "playwright": "^1.60.0"
+  }
+}
