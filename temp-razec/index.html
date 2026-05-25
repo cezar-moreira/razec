@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RAZEC — Central de Inteligência</title>
+<link rel="icon" type="image/svg+xml" href="/vite.svg">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#0d1117">
+<meta name="description" content="RAZEC — Sua central de projetos e conhecimento">
+<script type="module" src="/src/app.ts"></script>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo" id="logoHome">⚡ RAZEC<span> AI</span></div>
+  <div class="search-wrap">
+    <span class="si">🔍</span>
+    <input type="text" id="globalSearch" placeholder="Buscar notas, scripts, projetos...">
+  </div>
+  <div class="topbar-right">
+    <button class="btn" data-action="new-note">+ Nova nota</button>
+    <button class="btn btn-primary" data-action="new-project">+ Projeto</button>
+    <button class="btn" data-action="sync">⬆ GitHub</button>
+  </div>
+</div>
+
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="nav-item active" data-view="dashboard"><span class="icon">🏠</span> Dashboard</div>
+      <div class="nav-item" data-view="editor"><span class="icon">✏️</span> Editor <span class="badge" id="badgeNotas">0</span></div>
+      <div class="nav-item" data-view="files"><span class="icon">📁</span> Arquivos</div>
+      <div class="nav-item" data-view="graph"><span class="icon">🕸️</span> Mapa visual</div>
+      <div class="nav-item" data-view="search"><span class="icon">🔍</span> Busca avançada</div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Projetos</div>
+      <div id="sidebarProjects"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tags</div>
+      <div id="sidebarTags" style="padding:4px 12px;display:flex;flex-wrap:wrap;gap:4px"></div>
+    </div>
+    <div style="margin-top:auto;padding:12px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px">Armazenamento local</div>
+      <div style="height:4px;background:var(--border);border-radius:2px"><div id="storageBar" style="height:100%;background:var(--primary);border-radius:2px;width:0%"></div></div>
+      <div id="storageTxt" style="font-size:10px;color:var(--muted);margin-top:4px"></div>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div class="view active" id="view-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Notas</div><div class="stat-val" id="statNotas">0</div><div class="stat-sub">total criadas</div></div>
+        <div class="stat-card"><div class="stat-label">Projetos</div><div class="stat-val" id="statProjetos">0</div><div class="stat-sub">ativos</div></div>
+        <div class="stat-card"><div class="stat-label">Scripts</div><div class="stat-val" id="statScripts">0</div><div class="stat-sub">arquivos de código</div></div>
+        <div class="stat-card"><div class="stat-label">Conversas</div><div class="stat-val" id="statConversas">0</div><div class="stat-sub">salvas</div></div>
+      </div>
+      <div class="section-title">Projetos</div>
+      <div class="projects-grid" id="projectsGrid"></div>
+      <div class="section-title">Recentes</div>
+      <div class="recent-list" id="recentList"></div>
+    </div>
+
+    <!-- EDITOR -->
+    <div class="view" id="view-editor" style="padding:0">
+      <div class="editor-view">
+        <div class="editor-panel">
+          <div class="editor-toolbar">
+            <button class="tb-btn" data-fmt="**|**">𝐍 Negrito</button>
+            <button class="tb-btn" data-fmt="*|*">Itálico</button>
+            <button class="tb-btn" data-fmt="`|`">💡 Código</button>
+            <button class="tb-btn" data-fmt="\n\`\`\`\n|\n\`\`\`">📦 Bloco código</button>
+            <button class="tb-btn" data-fmt="# |">📌 Título</button>
+            <button class="tb-btn" data-fmt="## |">📎 Subtítulo</button>
+            <button class="tb-btn" data-fmt="- |">📋 Lista</button>
+            <button class="tb-btn" data-fmt="[[|]]">🔗 Linkar nota</button>
+            <div style="margin-left:auto;display:flex;gap:6px">
+              <button class="tb-btn" data-action="preview">👁 Visualizar</button>
+              <button class="btn btn-primary btn-save" data-action="save">💾 Salvar nota</button>
+            </div>
+          </div>
+          <input class="editor-title" id="editorTitle" placeholder="Título da nota...">
+          <div class="editor-meta">
+            <div class="meta-chip">📁 <span id="metaProjeto">Sem projeto</span></div>
+            <div class="meta-chip">🏷️ <span id="metaTags">Sem tags</span></div>
+            <div class="meta-chip">📅 <span id="metaData">Hoje</span></div>
+          </div>
+          <textarea class="editor-body" id="editorBody" placeholder="Escreva em Markdown...&#10;&#10;Use [[nome]] para linkar outras notas&#10;Use ```python para blocos de código"></textarea>
+        </div>
+        <div class="preview-panel" id="previewPanel"></div>
+      </div>
+    </div>
+
+    <!-- FILES -->
+    <div class="view" id="view-files">
+      <div class="files-header">
+        <h2 style="font-size:1.1rem;flex:1">📁 Arquivos e Scripts</h2>
+        <button class="btn" data-action="upload">⬆ Upload</button>
+        <button class="btn btn-primary" data-action="new-script">+ Novo script</button>
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap" id="filterTabs">
+        <button class="btn active" data-filter="todos">Todos</button>
+        <button class="btn" data-filter="python">🐍 Python</button>
+        <button class="btn" data-filter="html">🌐 HTML</button>
+        <button class="btn" data-filter="js">⚡ JavaScript</button>
+        <button class="btn" data-filter="sql">🗄️ SQL</button>
+        <button class="btn" data-filter="conversa">💬 Conversas</button>
+        <button class="btn" data-filter="ia_claude">🟠 Claude</button>
+        <button class="btn" data-filter="ia_chatgpt">🟢 ChatGPT</button>
+        <button class="btn" data-filter="ia_gemini">🔵 Gemini</button>
+        <button class="btn" data-filter="ia_grok">⚫ Grok</button>
+      </div>
+      <div class="files-grid" id="filesGrid"></div>
+    </div>
+
+    <!-- GRAPH -->
+    <div class="view" id="view-graph">
+      <div style="margin-bottom:1rem;display:flex;align-items:center;gap:10px">
+        <h2 style="font-size:1.1rem;flex:1">🕸️ Mapa visual de conhecimento</h2>
+        <span style="font-size:12px;color:var(--muted)">Clique em um nó para abrir a nota</span>
+      </div>
+      <div class="graph-container" id="graphContainer">
+        <canvas id="graphCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="view" id="view-search">
+      <div style="margin-bottom:1rem">
+        <input style="width:100%;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:14px" placeholder="Busca avançada — suporta regex e filtros..." id="advSearch">
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap" id="searchFilters">
+          <button class="btn" data-search-hint="projeto:">📁 Por projeto</button>
+          <button class="btn" data-search-hint="tag:">🏷️ Por tag</button>
+          <button class="btn" data-search-hint="tipo:">📄 Por tipo</button>
+          <button class="btn" data-search-hint="data:">📅 Por data</button>
+        </div>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+
+    <!-- AJUDA -->
+    <div class="view" id="view-ajuda">
+      <div style="max-width:600px;margin:0 auto;padding-bottom:2rem">
+        <div style="text-align:center;margin-bottom:1.5rem">
+          <div style="font-size:3rem">⚡</div>
+          <h1 style="font-size:1.4rem;font-weight:700;color:var(--primary)">RAZEC AI</h1>
+          <p style="font-size:13px;color:var(--muted);margin-top:4px">Guia completo de uso</p>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:12px">
+          <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:12px">Tipos de nota</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;gap:12px"><div style="font-size:1.8rem;flex-shrink:0">📝</div><div><div style="font-size:14px;font-weight:600;color:var(--text)">Nota</div><div style="font-size:12px;color:var(--muted);line-height:1.6">Para qualquer texto — ideias, análises, planejamentos, reuniões.</div></div></div>
+            <div style="display:flex;gap:12px"><div style="font-size:1.8rem;flex-shrink:0">💻</div><div><div style="font-size:14px;font-weight:600;color:var(--text)">Script / Código</div><div style="font-size:12px;color:var(--muted);line-height:1.6">Para códigos — Python, HTML, JavaScript, SQL.</div></div></div>
+            <div style="display:flex;gap:12px"><div style="font-size:1.8rem;flex-shrink:0">💬</div><div><div style="font-size:14px;font-weight:600;color:var(--text)">Conversa</div><div style="font-size:12px;color:var(--muted);line-height:1.6">Para salvar conversas com IAs. Cole o texto e escolha a fonte.</div></div></div>
+            <div style="display:flex;gap:12px"><div style="font-size:1.8rem;flex-shrink:0">📄</div><div><div style="font-size:14px;font-weight:600;color:var(--text)">Documentação</div><div style="font-size:12px;color:var(--muted);line-height:1.6">Para guias e manuais de referência.</div></div></div>
+          </div>
+        </div>
+        <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.25rem;margin-bottom:12px">
+          <div style="font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px">Atalhos de teclado</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px">
+            <div style="padding:6px 8px;background:var(--bg);border-radius:6px"><kbd>Ctrl+N</kbd> Nova nota</div>
+            <div style="padding:6px 8px;background:var(--bg);border-radius:6px"><kbd>Ctrl+S</kbd> Salvar</div>
+            <div style="padding:6px 8px;background:var(--bg);border-radius:6px"><kbd>Ctrl+F</kbd> Buscar</div>
+            <div style="padding:6px 8px;background:var(--bg);border-radius:6px"><kbd>Ctrl+W</kbd> Fechar editor</div>
+            <div style="padding:6px 8px;background:var(--bg);border-radius:6px"><kbd>Ctrl+P</kbd> Preview</div>
+            <div style="padding:6px 8px;background:var(--bg);border-radius:6px"><kbd>Ctrl+U</kbd> Upload</div>
+            <div style="padding:6px 8px;background:var(--bg);border-radius:6px"><kbd>Ctrl+G</kbd> GitHub sync</div>
+            <div style="padding:6px 8px;background:var(--bg);border-radius:6px"><kbd>Ctrl+L</kbd> Idioma</div>
+            <div style="padding:6px 8px;background:var(--bg);border-radius:6px"><kbd>Ctrl+Shift+P</kbd> Novo projeto</div>
+            <div style="padding:6px 8px;background:var(--bg);border-radius:6px"><kbd>Ctrl+1-5</kbd> Navegar views</div>
+            <div style="padding:6px 8px;background:var(--bg);border-radius:6px"><kbd>Ctrl+/</kbd> Ajuda</div>
+            <div style="padding:6px 8px;background:var(--bg);border-radius:6px"><kbd>Esc</kbd> Fechar modal</div>
+          </div>
+        </div>
+        <div style="background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.3);border-radius:12px;padding:1rem;margin-bottom:16px">
+          <div style="display:flex;gap:10px"><span style="font-size:1.5rem">🔐</span><div><div style="font-size:13px;font-weight:600;color:var(--success);margin-bottom:4px">Seus dados são seguros</div><div style="font-size:12px;color:var(--muted);line-height:1.6">Tudo fica salvo no seu navegador. Nada vai para servidores externos. Só vai ao GitHub quando você tocar em ⬆.</div></div></div>
+        </div>
+        <div style="text-align:center;font-size:11px;color:var(--muted)">RAZEC v3.0 · Cezar Moreira · 2026</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- STATUS BAR -->
+<div class="status-bar" id="statusBar">Pronto</div>
+
+<!-- MODAIS -->
+<div class="modal-overlay" id="modalNota">
+  <div class="modal">
+    <h3>✏️ Nova nota</h3>
+    <div class="field"><label>Título</label><input id="novoTitulo" placeholder="Ex: Análise do sistema 4Medic"></div>
+    <div class="field"><label>Projeto</label><select id="novoProjetoNota"></select></div>
+    <div class="field"><label>Tipo</label>
+      <select id="novoTipo">
+        <option value="nota">📝 Nota</option>
+        <option value="script">💻 Script/Código</option>
+        <option value="conversa">💬 Conversa</option>
+        <option value="doc">📄 Documentação</option>
+      </select>
+    </div>
+    <div class="field"><label>Tags (separadas por vírgula)</label><input id="novasTags" placeholder="python, flask, backend"></div>
+    <div class="field"><label>🤖 Fonte da IA</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="fonteBtns">
+        <button type="button" class="fonte-btn" data-fonte="nenhuma" style="padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px">❌ Nenhuma</button>
+        <button type="button" class="fonte-btn" data-fonte="claude" style="padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px">🟠 Claude</button>
+        <button type="button" class="fonte-btn" data-fonte="chatgpt" style="padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px">🟢 ChatGPT</button>
+        <button type="button" class="fonte-btn" data-fonte="gemini" style="padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px">🔵 Gemini</button>
+        <button type="button" class="fonte-btn" data-fonte="grok" style="padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px">⚫ Grok</button>
+        <button type="button" class="fonte-btn" data-fonte="outro" style="padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px">➕ Outro</button>
+      </div>
+      <input type="hidden" id="fonteIA" value="nenhuma">
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="document.getElementById('modalNota').classList.remove('show')">Cancelar</button>
+      <button class="btn btn-primary" data-action="criar-nota">Criar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalProjeto">
+  <div class="modal">
+    <h3>📁 Novo projeto</h3>
+    <div class="field"><label>Nome do projeto</label><input id="projNome" placeholder="Ex: ClinicaOS, Ultravida, Paulo José"></div>
+    <div class="field"><label>Descrição</label><input id="projDesc" placeholder="Breve descrição do projeto"></div>
+    <div class="field"><label>Emoji / ícone</label><input id="projIcon" placeholder="🏥" maxlength="2" value="📁"></div>
+    <div class="field"><label>Cor</label>
+      <select id="projCor">
+        <option value="blue">🔵 Azul</option>
+        <option value="green">🟢 Verde</option>
+        <option value="purple">🟣 Roxo</option>
+        <option value="orange">🟠 Laranja</option>
+        <option value="red">🔴 Vermelho</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="document.getElementById('modalProjeto').classList.remove('show')">Cancelar</button>
+      <button class="btn btn-primary" data-action="criar-projeto">Criar projeto</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalUpload">
+  <div class="modal">
+    <h3>⬆ Upload de arquivo</h3>
+    <div class="field"><label>Arquivo</label><input type="file" id="uploadFile" multiple accept=".py,.js,.html,.css,.sql,.md,.txt,.json"></div>
+    <div class="field"><label>Projeto destino</label><select id="uploadProjeto"></select></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="document.getElementById('modalUpload').classList.remove('show')">Cancelar</button>
+      <button class="btn btn-primary" data-action="fazer-upload">Upload</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalGithub">
+  <div class="modal">
+    <h3>⬆ Sincronizar com GitHub</h3>
+    <div class="field"><label>Usuário GitHub</label><input id="ghUser" value="cezar-moreira"></div>
+    <div class="field"><label>Token (Personal Access Token)</label><input id="ghToken" type="password" placeholder="ghp_..."></div>
+    <div class="field"><label>Repositório</label><input id="ghRepo" value="razec"></div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Gere o token em: github.com/settings/tokens → New token → repo</div>
+    <div class="modal-actions">
+      <button class="btn" onclick="document.getElementById('modalGithub').classList.remove('show')">Cancelar</button>
+      <button class="btn btn-primary" data-action="salvar-github">Salvar e sincronizar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalConfirm">
+  <div class="modal">
+    <h3>⚠️ Confirmação</h3>
+    <p id="confirmMessage" style="font-size:14px;color:var(--text);margin-bottom:1rem"></p>
+    <div class="modal-actions">
+      <button class="btn" onclick="document.getElementById('modalConfirm').classList.remove('show')">Cancelar</button>
+      <button class="btn btn-danger" id="confirmYesBtn">Sim, excluir</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV MOBILE -->
+<nav class="bottom-nav">
+  <button class="bn-item active" data-view="dashboard">
+    <span class="bn-icon">🏠</span><span class="bn-label">Início</span>
+  </button>
+  <button class="bn-item" data-view="files">
+    <span class="bn-icon">📁</span><span class="bn-label">Arquivos</span>
+  </button>
+  <button class="bn-item" data-view="search">
+    <span class="bn-icon">🔍</span><span class="bn-label">Buscar</span>
+  </button>
+  <button class="bn-item" data-view="graph">
+    <span class="bn-icon">🕸️</span><span class="bn-label">Mapa</span>
+  </button>
+  <button class="bn-item" data-view="ajuda">
+    <span class="bn-icon">❓</span><span class="bn-label">Ajuda</span>
+  </button>
+  <button class="bn-item" data-view="github">
+    <span class="bn-icon">⬆️</span><span class="bn-label">GitHub</span>
+  </button>
+</nav>
+
+<!-- FAB -->
+<button class="fab" id="fabBtn">＋</button>
+<div class="fab-menu" id="fabMenu">
+  <div class="fab-opt" data-action="nota">✏️ Nova nota</div>
+  <div class="fab-opt" data-action="projeto">📁 Novo projeto</div>
+  <div class="fab-opt" data-action="script">💻 Novo script</div>
+  <div class="fab-opt" data-action="upload">⬆ Upload arquivo</div>
+</div>
+
+</body>
+</html>
