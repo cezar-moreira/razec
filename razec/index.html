@@ -15,49 +15,7 @@
 body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;display:flex;flex-direction:column}
 a{color:var(--primary);text-decoration:none}
 
-/* ── AUTH SCREEN ─────────────────────────────────────── */
-#authScreen{
-  display:none;position:fixed;inset:0;background:var(--bg);
-  z-index:999;flex-direction:column;align-items:center;justify-content:center;padding:1rem;
-}
-.auth-box{
-  background:var(--sidebar);border:1px solid var(--border);border-radius:16px;
-  padding:2.5rem 2rem;width:100%;max-width:400px;
-}
-.auth-logo{font-size:2rem;font-weight:800;color:var(--primary);text-align:center;margin-bottom:.25rem}
-.auth-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:2rem}
-.auth-tabs{display:flex;margin-bottom:1.5rem;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
-.auth-tab{flex:1;padding:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .2s}
-.auth-tab.active{background:var(--primary);color:#000}
-.auth-field{margin-bottom:1rem}
-.auth-field label{display:block;font-size:12px;color:var(--muted);margin-bottom:5px}
-.auth-field input{
-  width:100%;padding:10px 12px;background:var(--bg);border:1px solid var(--border);
-  border-radius:var(--radius);color:var(--text);font-size:14px;
-}
-.auth-field input:focus{outline:none;border-color:var(--primary)}
-.auth-btn{
-  width:100%;padding:11px;background:var(--primary);color:#000;font-size:14px;
-  font-weight:700;border:none;border-radius:var(--radius);cursor:pointer;margin-top:.5rem;
-  transition:background .2s;
-}
-.auth-btn:hover{background:#79b8ff}
-.auth-btn:disabled{opacity:.6;cursor:not-allowed}
-.auth-msg{font-size:12px;text-align:center;margin-top:10px;padding:8px;border-radius:6px;display:none}
-.auth-msg.error{background:rgba(248,81,73,.1);border:1px solid rgba(248,81,73,.2);color:var(--danger);display:block}
-.auth-msg.success{background:rgba(63,185,80,.1);border:1px solid rgba(63,185,80,.2);color:var(--success);display:block}
-.auth-link{font-size:12px;color:var(--muted);text-align:center;margin-top:10px;cursor:pointer;display:block;background:none;border:none;width:100%}
-.auth-link:hover{color:var(--primary)}
-
-/* ── LOADING ─────────────────────────────────────────── */
-#loadingScreen{
-  display:none;position:fixed;inset:0;background:var(--bg);
-  z-index:998;align-items:center;justify-content:center;flex-direction:column;gap:1rem;
-}
-.spinner{width:36px;height:36px;border:3px solid var(--border);border-top-color:var(--primary);border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* ── TOPBAR ──────────────────────────────────────────── */
+/* TOPBAR */
 .topbar{height:52px;background:var(--sidebar);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 1rem;gap:12px;position:sticky;top:0;z-index:100}
 .logo{font-size:1.1rem;font-weight:700;color:var(--primary);white-space:nowrap}
 .logo span{color:var(--text)}
@@ -66,59 +24,43 @@ a{color:var(--primary);text-decoration:none}
 .search-wrap input:focus{outline:none;border-color:var(--primary)}
 .search-wrap .si{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:15px}
 .topbar-right{display:flex;gap:8px;margin-left:auto;align-items:center}
-.user-badge{font-size:11px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:999px;padding:3px 10px;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.btn{padding:6px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap;transition:all .15s}
+.btn{padding:6px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap}
 .btn:hover{border-color:var(--primary);color:var(--primary)}
 .btn-primary{background:var(--primary);color:#000;border-color:transparent;font-weight:600}
 .btn-primary:hover{background:#79b8ff;color:#000}
-.btn-danger{background:var(--danger);color:#fff;border-color:transparent;font-weight:600}
-.btn-sm{padding:4px 10px;font-size:12px}
 
-/* ── LAYOUT ──────────────────────────────────────────── */
+/* LAYOUT */
 .layout{display:flex;flex:1;overflow:hidden;height:calc(100vh - 52px)}
 
-/* ── SIDEBAR ─────────────────────────────────────────── */
+/* SIDEBAR */
 .sidebar{width:240px;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;overflow-y:auto;flex-shrink:0}
 .sidebar-section{padding:8px 0}
 .sidebar-label{font-size:10px;font-weight:600;color:var(--muted);padding:4px 12px 2px;letter-spacing:.06em;text-transform:uppercase}
-.nav-item{display:flex;align-items:center;gap:8px;padding:6px 12px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .15s}
+.nav-item{display:flex;align-items:center;gap:8px;padding:6px 12px;font-size:13px;color:var(--muted);cursor:pointer;border-radius:0;transition:all .15s;position:relative}
 .nav-item:hover{background:var(--card);color:var(--text)}
 .nav-item.active{background:rgba(88,166,255,.12);color:var(--primary)}
 .nav-item .icon{font-size:15px;width:18px;text-align:center}
 .nav-item .badge{margin-left:auto;background:var(--card);color:var(--muted);font-size:10px;padding:1px 6px;border-radius:999px;border:1px solid var(--border)}
-.project-item{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 24px;font-size:12px;color:var(--muted);cursor:pointer;transition:color .15s}
+.project-item{display:flex;align-items:center;gap:8px;padding:5px 12px 5px 24px;font-size:12px;color:var(--muted);cursor:pointer}
 .project-item:hover{color:var(--text)}
 .project-item .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.project-item .pcount{margin-left:auto;font-size:10px}
 
-/* ── SYNC STATUS ─────────────────────────────────────── */
-.cloud-status{margin:0 12px 4px;padding:6px 10px;border-radius:6px;font-size:11px;display:flex;align-items:center;gap:6px;border:1px solid transparent}
-.cloud-ok{background:rgba(63,185,80,.1);border-color:rgba(63,185,80,.2);color:var(--success)}
-.cloud-sync{background:rgba(210,153,34,.1);border-color:rgba(210,153,34,.2);color:var(--warning)}
-.cloud-err{background:rgba(248,81,73,.1);border-color:rgba(248,81,73,.2);color:var(--danger)}
-
-/* ── STORAGE ─────────────────────────────────────────── */
-.storage-wrap{margin-top:auto;padding:12px;border-top:1px solid var(--border)}
-.storage-label{font-size:11px;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between}
-.storage-bar-bg{height:4px;background:var(--border);border-radius:2px}
-.storage-bar-fill{height:100%;border-radius:2px;transition:width .5s,background .5s}
-
-/* ── MAIN ────────────────────────────────────────────── */
+/* MAIN */
 .main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+
+/* VIEWS */
 .view{display:none;flex:1;padding:1.5rem}
 .view.active{display:flex;flex-direction:column}
 
-/* ── DASHBOARD ───────────────────────────────────────── */
-.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:1.5rem}
+/* DASHBOARD */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:1.5rem}
 .stat-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem}
 .stat-label{font-size:11px;color:var(--muted);margin-bottom:4px}
 .stat-val{font-size:1.6rem;font-weight:700;color:var(--text)}
 .stat-sub{font-size:11px;color:var(--muted);margin-top:2px}
 .projects-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-bottom:1.5rem}
-.proj-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;cursor:pointer;transition:border-color .2s;position:relative}
+.proj-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;cursor:pointer;transition:border-color .2s}
 .proj-card:hover{border-color:var(--primary)}
-.proj-card:hover .proj-del{opacity:1}
-.proj-del{position:absolute;top:10px;right:10px;opacity:0;transition:opacity .2s;background:rgba(248,81,73,.15);border:1px solid rgba(248,81,73,.3);color:var(--danger);border-radius:5px;padding:3px 7px;font-size:11px;cursor:pointer}
 .proj-header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
 .proj-icon{width:36px;height:36px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;font-size:18px}
 .proj-name{font-size:14px;font-weight:600;color:var(--text)}
@@ -129,30 +71,23 @@ a{color:var(--primary);text-decoration:none}
 .tag.purple{background:rgba(188,140,255,.1);color:var(--purple);border-color:rgba(188,140,255,.3)}
 .tag.orange{background:rgba(255,166,87,.1);color:var(--orange);border-color:rgba(255,166,87,.3)}
 .recent-list{display:flex;flex-direction:column;gap:8px}
-.recent-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:border-color .2s}
+.recent-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:10px 14px;display:flex;align-items:center;gap:12px;cursor:pointer}
 .recent-item:hover{border-color:var(--primary)}
+.ri-icon{font-size:18px;width:28px;text-align:center}
 .ri-body{flex:1}
 .ri-title{font-size:13px;font-weight:500;color:var(--text)}
 .ri-meta{font-size:11px;color:var(--muted);margin-top:2px}
-.section-title{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;margin-top:1.5rem}
-.section-title:first-child{margin-top:0}
-.empty-state{text-align:center;padding:3rem;color:var(--muted);font-size:13px}
-.empty-state .ei{font-size:2.5rem;margin-bottom:.75rem}
+.ri-date{font-size:11px;color:var(--muted);white-space:nowrap}
 
-/* ── EDITOR ──────────────────────────────────────────── */
-.editor-view{flex:1;display:flex;gap:0;overflow:hidden}
-.editor-panel{flex:1;display:flex;flex-direction:column;padding:1.5rem;min-width:0;overflow-y:auto}
+/* EDITOR */
+.editor-view{flex:1;display:flex;gap:0}
+.editor-panel{flex:1;display:flex;flex-direction:column;padding:1.5rem}
 .editor-toolbar{display:flex;align-items:center;gap:6px;margin-bottom:12px;flex-wrap:wrap}
-.tb-btn{padding:5px 10px;border-radius:5px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;cursor:pointer;transition:all .15s}
+.tb-btn{padding:5px 10px;border-radius:5px;border:1px solid var(--border);background:var(--card);color:var(--muted);font-size:12px;cursor:pointer}
 .tb-btn:hover{color:var(--text);border-color:var(--text)}
 .editor-title{font-size:1.4rem;font-weight:700;background:transparent;border:none;color:var(--text);width:100%;margin-bottom:8px;outline:none;font-family:var(--font)}
-.editor-meta{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
-.meta-chip{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:999px;padding:2px 10px;cursor:pointer;transition:all .15s}
-.meta-chip:hover{border-color:var(--primary);color:var(--primary)}
-.save-status{font-size:11px;margin-left:auto;transition:color .3s}
-.save-ok{color:var(--success)}
-.save-pending{color:var(--warning)}
-.save-saving{color:var(--muted)}
+.editor-meta{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.meta-chip{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:999px;padding:2px 10px;cursor:pointer}
 .editor-body{flex:1;font-size:14px;line-height:1.7;background:transparent;border:none;color:var(--text);resize:none;width:100%;outline:none;font-family:'JetBrains Mono',monospace,var(--font);min-height:300px}
 .preview-panel{width:45%;border-left:1px solid var(--border);padding:1.5rem;overflow-y:auto;display:none}
 .preview-panel.show{display:block}
@@ -164,361 +99,275 @@ a{color:var(--primary);text-decoration:none}
 .preview-panel ul,.preview-panel ol{padding-left:1.5rem;margin-bottom:.75rem;color:#cdd9e5;line-height:1.8}
 .preview-panel blockquote{border-left:3px solid var(--primary);padding-left:1rem;color:var(--muted);font-style:italic;margin-bottom:.75rem}
 
-/* ── PROMPT PANEL ────────────────────────────────────── */
-.prompt-panel{width:310px;border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--sidebar);flex-shrink:0}
-.prompt-header{padding:10px 12px;border-bottom:1px solid var(--border);font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:6px}
-.prompt-auto-btn{font-size:10px;background:rgba(88,166,255,.15);color:var(--primary);border:1px solid rgba(88,166,255,.3);border-radius:5px;padding:3px 8px;cursor:pointer;white-space:nowrap}
-.prompt-auto-btn:hover{background:rgba(88,166,255,.25)}
-.prompt-cats{display:flex;gap:4px;flex-wrap:wrap;padding:8px 10px;border-bottom:1px solid var(--border)}
-.prompt-cat{font-size:10px;padding:3px 8px;border-radius:99px;border:1px solid var(--border);color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .15s}
-.prompt-cat:hover{border-color:var(--primary);color:var(--primary)}
-.prompt-cat.active{background:var(--primary);color:#000;border-color:transparent;font-weight:600}
-.prompt-body{flex:1;overflow-y:auto;padding:8px;display:flex;flex-direction:column;gap:5px}
-.prompt-preset{padding:7px 10px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:11px;cursor:pointer;text-align:left;transition:all .15s;line-height:1.4;display:flex;align-items:flex-start;gap:7px}
-.prompt-preset:hover{border-color:var(--primary);color:var(--text);background:rgba(88,166,255,.05)}
-.prompt-preset-icon{font-size:14px;flex-shrink:0;margin-top:1px}
-.prompt-community-sep{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;padding:8px 10px 4px;opacity:.7}
-.prompt-community{border-style:dashed}
-.prompt-preset-info{}
-.prompt-preset-title{font-weight:600;color:var(--text);font-size:11px;margin-bottom:2px}
-.prompt-preset-desc{font-size:10px;color:var(--muted);line-height:1.3}
-.prompt-result{display:none;flex-direction:column;gap:5px;padding:8px;border-top:1px solid var(--border);background:var(--bg)}
-.prompt-result.show{display:flex}
-.prompt-result-label{font-size:10px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
-.prompt-text{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:10px;font-size:11px;color:#cdd9e5;line-height:1.5;white-space:pre-wrap;max-height:160px;overflow-y:auto}
-.prompt-copy{padding:7px;background:var(--primary);color:#000;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;text-align:center;transition:background .15s}
-.prompt-copy:hover{background:#79b8ff}
-.prompt-copy.copied{background:var(--success);color:#fff}
-.prompt-save{padding:7px;background:var(--card);color:var(--muted);border:1px solid var(--border);border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;text-align:center;transition:all .15s}
-.prompt-save:hover{border-color:var(--success);color:var(--success)}
-.prompt-save.saved{background:rgba(63,185,80,.1);border-color:var(--success);color:var(--success)}
-.prompt-save.saved{background:rgba(63,185,80,.1);border-color:var(--success);color:var(--success)}
-/* Prompts salvos view */
-.saved-prompt-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px;margin-bottom:10px}
-.saved-prompt-card:hover{border-color:var(--primary)}
-.saved-prompt-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between;gap:8px}
-.saved-prompt-meta{font-size:11px;color:var(--muted);margin-bottom:8px}
-.saved-prompt-text{font-size:11px;color:var(--muted);line-height:1.5;white-space:pre-wrap;max-height:80px;overflow:hidden;position:relative}
-.saved-prompt-text::after{content:'';position:absolute;bottom:0;left:0;right:0;height:20px;background:linear-gradient(transparent,var(--card))}
-.saved-prompt-actions{display:flex;gap:6px;margin-top:10px}
-.spa-copy{flex:1;padding:5px;background:var(--primary);color:#000;border:none;border-radius:5px;cursor:pointer;font-size:11px;font-weight:600}
-.spa-del{padding:5px 10px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:5px;cursor:pointer;font-size:11px}
-.spa-del:hover{border-color:var(--danger);color:var(--danger)}
+/* AI PANEL */
+.ai-panel{width:320px;border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--sidebar)}
+.ai-header{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600}
+.ai-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:10px}
+.ai-msg{font-size:13px;line-height:1.6;padding:10px 12px;border-radius:var(--radius)}
+.ai-msg.user{background:rgba(88,166,255,.1);border:1px solid rgba(88,166,255,.2);color:var(--text);margin-left:20px}
+.ai-msg.assistant{background:var(--card);border:1px solid var(--border);color:#cdd9e5;margin-right:20px}
+.ai-msg.loading{color:var(--muted);font-style:italic}
+.ai-input-row{padding:10px;border-top:1px solid var(--border);display:flex;gap:6px}
+.ai-input{flex:1;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px}
+.ai-input:focus{outline:none;border-color:var(--primary)}
+.ai-send{padding:8px 12px;background:var(--primary);color:#000;border:none;border-radius:var(--radius);cursor:pointer;font-weight:600;font-size:13px}
 
-/* ── FILES ───────────────────────────────────────────── */
+/* FILES VIEW */
 .files-header{display:flex;align-items:center;gap:10px;margin-bottom:1rem}
 .files-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
-.file-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;cursor:pointer;transition:border-color .2s;position:relative}
+.file-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;cursor:pointer;transition:border-color .2s}
 .file-card:hover{border-color:var(--primary)}
-.file-card:hover .file-del{opacity:1}
-.file-del{position:absolute;top:8px;right:8px;opacity:0;transition:opacity .2s;background:rgba(248,81,73,.15);border:1px solid rgba(248,81,73,.3);color:var(--danger);border-radius:5px;padding:2px 6px;font-size:10px;cursor:pointer}
 .file-icon{font-size:28px;margin-bottom:8px}
 .file-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;word-break:break-all}
 .file-meta{font-size:11px;color:var(--muted)}
 
-/* ── GRAPH ───────────────────────────────────────────── */
-.graph-container{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);position:relative;overflow:hidden;min-height:400px;cursor:pointer}
+/* GRAPH VIEW */
+.graph-container{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);position:relative;overflow:hidden;min-height:400px}
+.graph-node{position:absolute;background:var(--primary);border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#000;font-weight:700;font-size:10px;transition:transform .2s;text-align:center}
+.graph-node:hover{transform:scale(1.2);z-index:10}
+.graph-label{position:absolute;font-size:10px;color:var(--muted);white-space:nowrap;pointer-events:none}
 canvas#graphCanvas{position:absolute;inset:0;width:100%;height:100%}
-.graph-legend{display:flex;gap:16px;font-size:11px;color:var(--muted);margin-bottom:10px;flex-wrap:wrap}
-.legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:3px}
 
-/* ── SEARCH ──────────────────────────────────────────── */
+/* SEARCH RESULTS */
 .search-results{display:flex;flex-direction:column;gap:8px}
-.sr-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer;transition:border-color .2s}
+.sr-item{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:12px 14px;cursor:pointer}
 .sr-item:hover{border-color:var(--primary)}
 .sr-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:4px}
 .sr-excerpt{font-size:12px;color:var(--muted);line-height:1.5}
 .sr-path{font-size:10px;color:var(--primary);margin-top:4px}
 mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0 2px}
-.search-hint{font-size:11px;color:var(--muted);background:var(--card);border:1px solid var(--border);border-radius:6px;padding:8px 12px;margin-bottom:8px;line-height:1.6}
-.search-hint code{background:var(--bg);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:10px;color:var(--primary)}
 
-/* ── MODAL ───────────────────────────────────────────── */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:center;justify-content:center;padding:1rem}
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:none;align-items:center;justify-content:center}
 .modal-overlay.show{display:flex}
-.modal{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;width:100%;max-width:460px;max-height:90vh;overflow-y:auto}
-.modal h3{margin-bottom:1rem;font-size:15px;display:flex;align-items:center;gap:8px}
+.modal{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;width:100%;max-width:460px}
+.modal h3{margin-bottom:1rem;font-size:15px}
 .field{margin-bottom:12px}
 .field label{display:block;font-size:12px;color:var(--muted);margin-bottom:4px}
 .field input,.field select,.field textarea{width:100%;padding:8px 10px;background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:13px}
 .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--primary)}
 .modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1rem}
-.fonte-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.fonte-btn{padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px;transition:all .15s;text-align:center}
-.fonte-btn.selected{border-color:var(--primary);color:var(--primary);background:rgba(88,166,255,.1)}
-.confirm-icon{font-size:2.5rem;text-align:center;margin-bottom:.5rem}
-.confirm-msg{font-size:13px;color:var(--muted);text-align:center;margin-bottom:1rem;line-height:1.6}
 
-/* ── SCROLLBAR ───────────────────────────────────────── */
+/* SECTION TITLE */
+.section-title{font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:10px;margin-top:1.5rem}
+.section-title:first-child{margin-top:0}
+
+/* SCROLLBAR */
 ::-webkit-scrollbar{width:6px;height:6px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-/* ── RESPONSIVE ──────────────────────────────────────── */
-@media(max-width:768px){.sidebar{display:none}.preview-panel{display:none!important}.prompt-panel{display:none}}
-@media(max-width:640px){.topbar-right .btn:not(.btn-primary){display:none}}
+/* BOTTOM NAV MOBILE */
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;height:60px;background:var(--sidebar);border-top:1px solid var(--border);z-index:200;justify-content:space-around;align-items:center;padding:0 4px}
+.bn-item{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 12px;cursor:pointer;border-radius:var(--radius);flex:1;border:none;background:transparent}
+.bn-item .bn-icon{font-size:20px;line-height:1}
+.bn-item .bn-label{font-size:9px;color:var(--muted);font-weight:500}
+.bn-item.active .bn-label{color:var(--primary)}
+.fab{display:none;position:fixed;bottom:70px;right:16px;width:52px;height:52px;background:var(--primary);color:#000;border:none;border-radius:50%;font-size:26px;cursor:pointer;z-index:201;box-shadow:0 4px 16px rgba(88,166,255,.4);align-items:center;justify-content:center}
+.fab-menu{display:none;position:fixed;bottom:132px;right:16px;flex-direction:column;gap:8px;z-index:201}
+.fab-menu.open{display:flex}
+.fab-opt{display:flex;align-items:center;gap:8px;padding:8px 14px;background:var(--card);border:1px solid var(--border);border-radius:20px;font-size:13px;color:var(--text);cursor:pointer;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+/* RESPONSIVE */
+@media(max-width:640px){
+  .sidebar{display:none}
+  .preview-panel{display:none!important}
+  .ai-panel{display:none}
+  .bottom-nav{display:flex}
+  .fab{display:flex}
+  .topbar-right{display:none}
+  .search-wrap{max-width:100%}
+  .layout{height:calc(100vh - 52px - 60px)}
+  .view{padding:12px}
+  .stats-grid{grid-template-columns:1fr 1fr;gap:8px}
+  .stat-card{padding:.75rem}
+  .stat-val{font-size:1.3rem}
+  .projects-grid{grid-template-columns:1fr}
+  .modal{margin:12px;max-width:calc(100vw - 24px)}
+  .editor-panel{padding:12px}
+  .files-grid{grid-template-columns:1fr 1fr}
+}
 </style>
 </head>
 <body>
 
-<!-- LOADING -->
-<div id="loadingScreen" style="display:flex">
-  <div class="spinner"></div>
-  <span style="color:var(--muted);font-size:13px">Conectando...</span>
-</div>
-
-<!-- AUTH SCREEN -->
-<div id="authScreen">
-  <div class="auth-box">
-    <div class="auth-logo">⚡ RAZEC</div>
-    <div class="auth-sub">Central de projetos e conhecimento</div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" id="tabLogin" onclick="switchTab('login')">Entrar</button>
-      <button class="auth-tab" id="tabSignup" onclick="switchTab('signup')">Criar conta</button>
-    </div>
-    <!-- painel login/signup -->
-    <div id="loginPanel">
-      <div class="auth-field"><label>Email</label><input id="authEmail" type="email" placeholder="seu@email.com" onkeydown="if(event.key==='Enter')submitAuth()"></div>
-      <div class="auth-field" id="passField"><label>Senha</label><input id="authPass" type="password" placeholder="Mínimo 6 caracteres" onkeydown="if(event.key==='Enter')submitAuth()"></div>
-      <button class="auth-btn" id="authBtn" onclick="submitAuth()">Entrar</button>
-      <div id="authMsg" class="auth-msg"></div>
-      <button class="auth-link" id="forgotLink" onclick="switchTab('recover')">Esqueci minha senha</button>
-    </div>
-    <!-- painel recuperação -->
-    <div id="recoverPanel" style="display:none">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;text-align:center;">Digite seu email e enviaremos um link para redefinir sua senha.</p>
-      <div class="auth-field"><label>Email</label><input id="recoverEmail" type="email" placeholder="seu@email.com"></div>
-      <button class="auth-btn" id="recoverBtn" onclick="enviarRecuperacao()">Enviar link de recuperação</button>
-      <div id="recoverMsg" class="auth-msg"></div>
-      <button class="auth-link" onclick="switchTab('login')">← Voltar para o login</button>
-    </div>
-    <!-- painel nova senha (após clicar no link do email) -->
-    <div id="newPassPanel" style="display:none">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:1rem;text-align:center;">Defina sua nova senha abaixo.</p>
-      <div class="auth-field"><label>Nova senha</label><input id="newPass1" type="password" placeholder="Mínimo 6 caracteres"></div>
-      <div class="auth-field"><label>Confirmar senha</label><input id="newPass2" type="password" placeholder="Repita a senha"></div>
-      <button class="auth-btn" id="newPassBtn" onclick="confirmarNovaSenha()">Salvar nova senha</button>
-      <div id="newPassMsg" class="auth-msg"></div>
-    </div>
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="logo">⚡ RAZEC<span> AI</span></div>
+  <div class="search-wrap">
+    <span class="si">🔍</span>
+    <input type="text" id="globalSearch" placeholder="Buscar notas, scripts, projetos..." oninput="buscarGlobal(this.value)">
+  </div>
+  <div class="topbar-right">
+    <button class="btn" onclick="showModal('modalNota')">+ Nova nota</button>
+    <button class="btn btn-primary" onclick="showModal('modalProjeto')">+ Projeto</button>
+    <button class="btn" onclick="syncGitHub()" title="Sincronizar GitHub">⬆ GitHub</button>
   </div>
 </div>
 
-<!-- APP SCREEN -->
-<div id="appScreen" style="display:none;flex-direction:column;flex:1">
+<div class="layout">
 
-  <!-- TOPBAR -->
-  <div class="topbar">
-    <div class="logo">⚡ RAZEC<span> AI</span></div>
-    <div class="search-wrap">
-      <span class="si">🔍</span>
-      <input type="text" id="globalSearch" placeholder="Buscar... ou use projeto: tag: tipo: fonte:" oninput="buscarGlobal(this.value)">
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-section">
+      <div class="nav-item active" onclick="showView('dashboard',this)"><span class="icon">🏠</span> Dashboard</div>
+      <div class="nav-item" onclick="showView('editor',this)"><span class="icon">✏️</span> Editor <span class="badge" id="badgeNotas">0</span></div>
+      <div class="nav-item" onclick="showView('files',this)"><span class="icon">📁</span> Arquivos</div>
+      <div class="nav-item" onclick="showView('graph',this)"><span class="icon">🕸️</span> Mapa visual</div>
+      <div class="nav-item" onclick="showView('search',this)"><span class="icon">🔍</span> Busca avançada</div>
     </div>
-    <div class="topbar-right">
-      <span class="user-badge" id="userEmail"></span>
-      <button class="btn" onclick="showModal('modalNota')">+ Nota</button>
-      <button class="btn btn-primary" onclick="showModal('modalProjeto')">+ Projeto</button>
-      <button class="btn btn-sm" onclick="confirmarLogout()" title="Sair">⏏ Sair</button>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Projetos</div>
+      <div id="sidebarProjects"></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Tags</div>
+      <div id="sidebarTags" style="padding:4px 12px;display:flex;flex-wrap:wrap;gap:4px"></div>
+    </div>
+    <div style="margin-top:auto;padding:12px;border-top:1px solid var(--border)">
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px">Armazenamento local</div>
+      <div style="height:4px;background:var(--border);border-radius:2px"><div id="storageBar" style="height:100%;background:var(--primary);border-radius:2px;width:0%"></div></div>
+      <div id="storageTxt" style="font-size:10px;color:var(--muted);margin-top:4px"></div>
     </div>
   </div>
 
-  <div class="layout">
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-      <div class="sidebar-section">
-        <div class="nav-item active" onclick="showView('dashboard',this)"><span class="icon">🏠</span> Dashboard</div>
-        <div class="nav-item" onclick="showView('editor',this)"><span class="icon">✏️</span> Editor <span class="badge" id="badgeNotas">0</span></div>
-        <div class="nav-item" onclick="showView('files',this)"><span class="icon">📁</span> Arquivos</div>
-        <div class="nav-item" onclick="showView('graph',this)"><span class="icon">🕸️</span> Mapa visual</div>
-        <div class="nav-item" onclick="showView('search',this)"><span class="icon">🔍</span> Busca</div>
-        <div class="nav-item" onclick="showView('prompts',this)"><span class="icon">🤖</span> Prompts salvos <span class="badge" id="badgePrompts">0</span></div>
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- DASHBOARD -->
+    <div class="view active" id="view-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-label">Notas</div><div class="stat-val" id="statNotas">0</div><div class="stat-sub">total criadas</div></div>
+        <div class="stat-card"><div class="stat-label">Projetos</div><div class="stat-val" id="statProjetos">0</div><div class="stat-sub">ativos</div></div>
+        <div class="stat-card"><div class="stat-label">Scripts</div><div class="stat-val" id="statScripts">0</div><div class="stat-sub">arquivos de código</div></div>
+        <div class="stat-card"><div class="stat-label">Conversas</div><div class="stat-val" id="statConversas">0</div><div class="stat-sub">salvas</div></div>
       </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Projetos</div>
-        <div id="sidebarProjects"></div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Tags</div>
-        <div id="sidebarTags" style="padding:4px 12px;display:flex;flex-wrap:wrap;gap:4px"></div>
-      </div>
-      <div class="sidebar-section">
-        <div class="sidebar-label">Nuvem</div>
-        <div class="cloud-status cloud-ok" id="cloudStatus">
-          <span id="cloudIcon">☁️</span>
-          <span id="cloudTxt">Sincronizado</span>
+
+      <div class="section-title">Projetos</div>
+      <div class="projects-grid" id="projectsGrid"></div>
+
+      <div class="section-title">Recentes</div>
+      <div class="recent-list" id="recentList"></div>
+    </div>
+
+    <!-- EDITOR -->
+    <div class="view" id="view-editor" style="padding:0">
+      <div class="editor-view">
+        <div class="editor-panel">
+          <div class="editor-toolbar">
+            <button class="tb-btn" onclick="fmt('**','**')"><b>B</b></button>
+            <button class="tb-btn" onclick="fmt('*','*')"><i>I</i></button>
+            <button class="tb-btn" onclick="fmt('`','`')">Code</button>
+            <button class="tb-btn" onclick="fmt('\n```\n','\n```')">Block</button>
+            <button class="tb-btn" onclick="fmt('# ','')">H1</button>
+            <button class="tb-btn" onclick="fmt('## ','')">H2</button>
+            <button class="tb-btn" onclick="fmt('- ','')">Lista</button>
+            <button class="tb-btn" onclick="fmt('[[',']]')">[[Link]]</button>
+            <div style="margin-left:auto;display:flex;gap:6px">
+              <button class="tb-btn" onclick="togglePreview()">👁 Preview</button>
+              <button class="btn btn-primary" onclick="salvarNota()">💾 Salvar</button>
+            </div>
+          </div>
+          <input class="editor-title" id="editorTitle" placeholder="Título da nota...">
+          <div class="editor-meta">
+            <div class="meta-chip" onclick="showModal('modalMeta')">📁 <span id="metaProjeto">Sem projeto</span></div>
+            <div class="meta-chip">🏷️ <span id="metaTags">Sem tags</span></div>
+            <div class="meta-chip">📅 <span id="metaData">Hoje</span></div>
+          </div>
+          <textarea class="editor-body" id="editorBody" placeholder="Escreva em Markdown...&#10;&#10;Use [[nome]] para linkar outras notas&#10;Use ```python para blocos de código"></textarea>
         </div>
-      </div>
-      <div class="storage-wrap">
-        <button class="btn btn-sm" style="width:100%;justify-content:center;margin-bottom:8px" onclick="exportarJSON()">⬇ Exportar backup (.json)</button>
-        <div class="storage-label">
-          <span>Notas na nuvem</span>
-          <span id="notaCount" style="font-weight:600;color:var(--success)">0</span>
+        <div class="preview-panel" id="previewPanel"></div>
+        <div class="ai-panel">
+          <div class="ai-header">🤖 IA Assistente</div>
+          <div class="ai-messages" id="aiMessages">
+            <div class="ai-msg assistant">Olá! Posso ajudar com suas notas. Pergunte sobre o conteúdo atual, peça resumos, ou gere código.</div>
+          </div>
+          <div class="ai-input-row">
+            <input class="ai-input" id="aiInput" placeholder="Pergunte algo..." onkeydown="if(event.key==='Enter')enviarIA()">
+            <button class="ai-send" onclick="enviarIA()">→</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- MAIN -->
-    <div class="main">
-
-      <!-- DASHBOARD -->
-      <div class="view active" id="view-dashboard">
-        <div class="stats-grid">
-          <div class="stat-card"><div class="stat-label">Notas</div><div class="stat-val" id="statNotas">0</div><div class="stat-sub">total</div></div>
-          <div class="stat-card"><div class="stat-label">Projetos</div><div class="stat-val" id="statProjetos">0</div><div class="stat-sub">ativos</div></div>
-          <div class="stat-card"><div class="stat-label">Scripts</div><div class="stat-val" id="statScripts">0</div><div class="stat-sub">códigos</div></div>
-          <div class="stat-card"><div class="stat-label">Conversas</div><div class="stat-val" id="statConversas">0</div><div class="stat-sub">salvas</div></div>
-        </div>
-        <div class="section-title">Projetos</div>
-        <div class="projects-grid" id="projectsGrid"></div>
-        <div class="section-title">Recentes</div>
-        <div class="recent-list" id="recentList"></div>
+    <!-- FILES -->
+    <div class="view" id="view-files">
+      <div class="files-header">
+        <h2 style="font-size:1.1rem;flex:1">📁 Arquivos e Scripts</h2>
+        <button class="btn" onclick="showModal('modalUpload')">⬆ Upload</button>
+        <button class="btn btn-primary" onclick="novoScript()">+ Novo script</button>
       </div>
-
-      <!-- EDITOR -->
-      <div class="view" id="view-editor" style="padding:0">
-        <div class="editor-view">
-          <div class="editor-panel">
-            <div class="editor-toolbar">
-              <button class="tb-btn" onclick="fmt('**','**')"><b>B</b></button>
-              <button class="tb-btn" onclick="fmt('*','*')"><i>I</i></button>
-              <button class="tb-btn" onclick="fmt('`','`')">Code</button>
-              <button class="tb-btn" onclick="fmt('\n```\n','\n```\n')">Block</button>
-              <button class="tb-btn" onclick="fmt('# ','')">H1</button>
-              <button class="tb-btn" onclick="fmt('## ','')">H2</button>
-              <button class="tb-btn" onclick="fmt('- ','')">Lista</button>
-              <button class="tb-btn" onclick="fmt('- [ ] ','')">☐</button>
-              <div style="margin-left:auto;display:flex;gap:6px;align-items:center">
-                <span class="save-status save-ok" id="saveStatus">✓ Salvo</span>
-                <button class="tb-btn" onclick="togglePreview()">👁</button>
-                <button class="btn btn-danger btn-sm" onclick="confirmarDeletarNota(notaAtual)">🗑</button>
-                <button class="btn btn-primary btn-sm" onclick="salvarNota()">💾 Salvar</button>
-              </div>
-            </div>
-            <input class="editor-title" id="editorTitle" placeholder="Título da nota..." oninput="triggerAutoSave()">
-            <div class="editor-meta">
-              <div class="meta-chip" onclick="showModal('modalEditMeta')">📁 <span id="metaProjeto">Sem projeto</span></div>
-              <div class="meta-chip" onclick="showModal('modalEditMeta')">🏷️ <span id="metaTags">Sem tags</span></div>
-              <div class="meta-chip">📅 <span id="metaData">—</span></div>
-            </div>
-            <textarea class="editor-body" id="editorBody"
-              placeholder="Escreva em Markdown...&#10;&#10;# Título  ## Subtítulo&#10;**negrito**  *itálico*  `código`&#10;- lista  - [ ] tarefa  - [x] feita&#10;&#10;```python&#10;seu código aqui&#10;```"
-              oninput="triggerAutoSave()"></textarea>
-          </div>
-          <div class="preview-panel" id="previewPanel"></div>
-          <div class="prompt-panel">
-            <div class="prompt-header">
-              <span>🤖 Prompts IA</span>
-              <button class="prompt-auto-btn" onclick="autoDetectarCategoria()">✨ Auto-detectar</button>
-            </div>
-            <div class="prompt-cats" id="promptCats"></div>
-            <div class="prompt-body" id="promptBody"></div>
-            <div class="prompt-result" id="promptResult">
-              <div class="prompt-result-label">Prompt gerado</div>
-              <div class="prompt-text" id="promptText"></div>
-              <button class="prompt-copy" id="promptCopyBtn" onclick="copiarPrompt()">📋 Copiar prompt</button>
-              <button class="prompt-save" id="promptSaveBtn" onclick="salvarPrompt()">💾 Salvar prompt</button>
-            </div>
-          </div>
-        </div>
+      <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap" id="filterTabs">
+        <button class="btn active" onclick="filtrarFiles('todos',this)">Todos</button>
+        <button class="btn" onclick="filtrarFiles('python',this)">🐍 Python</button>
+        <button class="btn" onclick="filtrarFiles('html',this)">🌐 HTML</button>
+        <button class="btn" onclick="filtrarFiles('js',this)">⚡ JavaScript</button>
+        <button class="btn" onclick="filtrarFiles('sql',this)">🗄️ SQL</button>
+        <button class="btn" onclick="filtrarFiles('conversa',this)">💬 Conversas</button>
+        <button class="btn" onclick="filtrarFiles('ia_claude',this)">🟠 Claude</button>
+        <button class="btn" onclick="filtrarFiles('ia_chatgpt',this)">🟢 ChatGPT</button>
+        <button class="btn" onclick="filtrarFiles('ia_gemini',this)">🔵 Gemini</button>
+        <button class="btn" onclick="filtrarFiles('ia_grok',this)">⚫ Grok</button>
       </div>
-
-      <!-- FILES -->
-      <div class="view" id="view-files">
-        <div class="files-header">
-          <h2 style="font-size:1.1rem;flex:1">📁 Arquivos</h2>
-          <button class="btn" onclick="showModal('modalUpload')">⬆ Upload</button>
-          <button class="btn btn-primary" onclick="novoScript()">+ Script</button>
-        </div>
-        <div style="display:flex;gap:8px;margin-bottom:1rem;flex-wrap:wrap" id="filterTabs">
-          <button class="btn active" onclick="filtrarFiles('todos',this)">Todos</button>
-          <button class="btn" onclick="filtrarFiles('python',this)">🐍 Python</button>
-          <button class="btn" onclick="filtrarFiles('html',this)">🌐 HTML</button>
-          <button class="btn" onclick="filtrarFiles('js',this)">⚡ JS</button>
-          <button class="btn" onclick="filtrarFiles('sql',this)">🗄️ SQL</button>
-          <button class="btn" onclick="filtrarFiles('conversa',this)">💬 Conversas</button>
-          <button class="btn" onclick="filtrarFiles('ia_claude',this)">🟠 Claude</button>
-          <button class="btn" onclick="filtrarFiles('ia_chatgpt',this)">🟢 ChatGPT</button>
-          <button class="btn" onclick="filtrarFiles('ia_gemini',this)">🔵 Gemini</button>
-        </div>
-        <div class="files-grid" id="filesGrid"></div>
-      </div>
-
-      <!-- GRAPH -->
-      <div class="view" id="view-graph">
-        <div style="margin-bottom:.75rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-          <h2 style="font-size:1.1rem;flex:1">🕸️ Mapa visual</h2>
-          <div class="graph-legend">
-            <span><span class="legend-dot" style="background:#58a6ff"></span>Projetos</span>
-            <span><span class="legend-dot" style="background:#3fb950"></span>Notas</span>
-            <span><span class="legend-dot" style="background:#bc8cff"></span>Scripts</span>
-            <span><span class="legend-dot" style="background:#ffa657"></span>Conversas</span>
-          </div>
-          <span style="font-size:11px;color:var(--muted)">Clique para abrir</span>
-        </div>
-        <div class="graph-container" id="graphContainer"><canvas id="graphCanvas"></canvas></div>
-      </div>
-
-      <!-- SEARCH -->
-      <div class="view" id="view-search">
-        <div style="margin-bottom:1rem">
-          <input style="width:100%;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:14px"
-            placeholder="Busca avançada..." id="advSearch" oninput="buscarAvancado(this.value)">
-          <div class="search-hint" style="margin-top:8px">
-            Filtros: <code>projeto:clinicaos</code> <code>tag:python</code> <code>tipo:script</code> <code>fonte:claude</code>
-          </div>
-          <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
-            <button class="btn btn-sm" onclick="inserirFiltro('projeto:')">📁 projeto:</button>
-            <button class="btn btn-sm" onclick="inserirFiltro('tag:')">🏷️ tag:</button>
-            <button class="btn btn-sm" onclick="inserirFiltro('tipo:script')">💻 scripts</button>
-            <button class="btn btn-sm" onclick="inserirFiltro('tipo:conversa')">💬 conversas</button>
-            <button class="btn btn-sm" onclick="inserirFiltro('fonte:claude')">🟠 Claude</button>
-          </div>
-        </div>
-        <div class="search-results" id="searchResults"></div>
-      </div>
-
-      <!-- PROMPTS SALVOS -->
-      <div class="view" id="view-prompts">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
-          <h2 style="font-size:1.1rem">🤖 Prompts Salvos</h2>
-          <span style="font-size:12px;color:var(--muted)">Gere um prompt no editor e clique em 💾 Salvar</span>
-        </div>
-        <div id="promptsSalvosLista"></div>
-      </div>
-
+      <div class="files-grid" id="filesGrid"></div>
     </div>
+
+    <!-- GRAPH -->
+    <div class="view" id="view-graph">
+      <div style="margin-bottom:1rem;display:flex;align-items:center;gap:10px">
+        <h2 style="font-size:1.1rem;flex:1">🕸️ Mapa visual de conhecimento</h2>
+        <span style="font-size:12px;color:var(--muted)">Clique em um nó para abrir a nota</span>
+      </div>
+      <div class="graph-container" id="graphContainer">
+        <canvas id="graphCanvas"></canvas>
+      </div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="view" id="view-search">
+      <div style="margin-bottom:1rem">
+        <input style="width:100%;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:14px" placeholder="Busca avançada — suporta regex e filtros..." id="advSearch" oninput="buscarAvancado(this.value)">
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap" id="searchFilters">
+          <button class="btn" onclick="filtroSearch('projeto')">📁 Por projeto</button>
+          <button class="btn" onclick="filtroSearch('tag')">🏷️ Por tag</button>
+          <button class="btn" onclick="filtroSearch('tipo')">📄 Por tipo</button>
+          <button class="btn" onclick="filtroSearch('data')">📅 Por data</button>
+        </div>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+
   </div>
 </div>
 
-<!-- ═══════════ MODAIS ═══════════ -->
-
+<!-- MODAIS -->
 <div class="modal-overlay" id="modalNota">
   <div class="modal">
     <h3>✏️ Nova nota</h3>
-    <div class="field"><label>Título</label><input id="novoTitulo" placeholder="Ex: Análise do sistema — 24/05"></div>
-    <div class="field"><label>Projeto</label><select id="novoProjetoNota"></select></div>
+    <div class="field"><label>Título</label><input id="novoTitulo" placeholder="Ex: Análise do sistema 4Medic"></div>
+    <div class="field"><label>Projeto</label><select id="novoProjetoNota" onchange=""></select></div>
     <div class="field"><label>Tipo</label>
       <select id="novoTipo">
         <option value="nota">📝 Nota</option>
         <option value="script">💻 Script/Código</option>
-        <option value="conversa">💬 Conversa com IA</option>
+        <option value="conversa">💬 Conversa</option>
         <option value="doc">📄 Documentação</option>
       </select>
     </div>
     <div class="field"><label>Tags (separadas por vírgula)</label><input id="novasTags" placeholder="python, flask, backend"></div>
-    <div class="field"><label>Fonte da IA</label>
-      <div class="fonte-grid" id="fonteBtns">
-        <button type="button" class="fonte-btn selected" onclick="selFonte(this,'nenhuma')">❌ Nenhuma</button>
-        <button type="button" class="fonte-btn" onclick="selFonte(this,'claude')">🟠 Claude</button>
-        <button type="button" class="fonte-btn" onclick="selFonte(this,'chatgpt')">🟢 ChatGPT</button>
-        <button type="button" class="fonte-btn" onclick="selFonte(this,'gemini')">🔵 Gemini</button>
-        <button type="button" class="fonte-btn" onclick="selFonte(this,'grok')">⚫ Grok</button>
-        <button type="button" class="fonte-btn" onclick="selFonte(this,'outro')">➕ Outro</button>
+    <div class="field"><label>🤖 Fonte da IA (opcional)</label>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px" id="fonteBtns">
+        <button type="button" class="fonte-btn" onclick="selecionarFonte(this,'nenhuma')" style="padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px">❌ Nenhuma</button>
+        <button type="button" class="fonte-btn" onclick="selecionarFonte(this,'claude')" style="padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px">🟠 Claude</button>
+        <button type="button" class="fonte-btn" onclick="selecionarFonte(this,'chatgpt')" style="padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px">🟢 ChatGPT</button>
+        <button type="button" class="fonte-btn" onclick="selecionarFonte(this,'gemini')" style="padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px">🔵 Gemini</button>
+        <button type="button" class="fonte-btn" onclick="selecionarFonte(this,'grok')" style="padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px">⚫ Grok</button>
+        <button type="button" class="fonte-btn" onclick="selecionarFonte(this,'outro')" style="padding:8px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;font-size:12px">➕ Outro</button>
       </div>
       <input type="hidden" id="fonteIA" value="nenhuma">
     </div>
     <div class="modal-actions">
       <button class="btn" onclick="hideModal('modalNota')">Cancelar</button>
-      <button class="btn btn-primary" onclick="criarNota()">Criar e abrir</button>
+      <button class="btn btn-primary" onclick="criarNota()">Criar</button>
     </div>
   </div>
 </div>
@@ -526,48 +375,21 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
 <div class="modal-overlay" id="modalProjeto">
   <div class="modal">
     <h3>📁 Novo projeto</h3>
-    <div class="field"><label>Nome</label><input id="projNome" placeholder="Ex: ClinicaOS, Ultravida"></div>
-    <div class="field"><label>Descrição</label><input id="projDesc" placeholder="Breve descrição"></div>
-    <div class="field"><label>Emoji</label><input id="projIcon" maxlength="2" value="📁"></div>
+    <div class="field"><label>Nome do projeto</label><input id="projNome" placeholder="Ex: ClinicaOS, Ultravida, Paulo José"></div>
+    <div class="field"><label>Descrição</label><input id="projDesc" placeholder="Breve descrição do projeto"></div>
+    <div class="field"><label>Emoji / ícone</label><input id="projIcon" placeholder="🏥" maxlength="2" value="📁"></div>
     <div class="field"><label>Cor</label>
       <select id="projCor">
-        <option value="blue">🔵 Azul</option><option value="green">🟢 Verde</option>
-        <option value="purple">🟣 Roxo</option><option value="orange">🟠 Laranja</option>
+        <option value="blue">🔵 Azul</option>
+        <option value="green">🟢 Verde</option>
+        <option value="purple">🟣 Roxo</option>
+        <option value="orange">🟠 Laranja</option>
         <option value="red">🔴 Vermelho</option>
       </select>
     </div>
     <div class="modal-actions">
       <button class="btn" onclick="hideModal('modalProjeto')">Cancelar</button>
-      <button class="btn btn-primary" onclick="criarProjeto()">Criar</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="modalEditMeta">
-  <div class="modal">
-    <h3>✏️ Editar informações</h3>
-    <div class="field"><label>Projeto</label><select id="editMetaProjeto"></select></div>
-    <div class="field"><label>Tipo</label>
-      <select id="editMetaTipo">
-        <option value="nota">📝 Nota</option><option value="script">💻 Script</option>
-        <option value="conversa">💬 Conversa</option><option value="doc">📄 Doc</option>
-      </select>
-    </div>
-    <div class="field"><label>Tags</label><input id="editMetaTags"></div>
-    <div class="field"><label>Fonte IA</label>
-      <div class="fonte-grid" id="editFonteBtns">
-        <button type="button" class="fonte-btn" onclick="selFonteEdit(this,'nenhuma')">❌ Nenhuma</button>
-        <button type="button" class="fonte-btn" onclick="selFonteEdit(this,'claude')">🟠 Claude</button>
-        <button type="button" class="fonte-btn" onclick="selFonteEdit(this,'chatgpt')">🟢 ChatGPT</button>
-        <button type="button" class="fonte-btn" onclick="selFonteEdit(this,'gemini')">🔵 Gemini</button>
-        <button type="button" class="fonte-btn" onclick="selFonteEdit(this,'grok')">⚫ Grok</button>
-        <button type="button" class="fonte-btn" onclick="selFonteEdit(this,'outro')">➕ Outro</button>
-      </div>
-      <input type="hidden" id="editFonteIA" value="nenhuma">
-    </div>
-    <div class="modal-actions">
-      <button class="btn" onclick="hideModal('modalEditMeta')">Cancelar</button>
-      <button class="btn btn-primary" onclick="salvarMetaNota()">Salvar</button>
+      <button class="btn btn-primary" onclick="criarProjeto()">Criar projeto</button>
     </div>
   </div>
 </div>
@@ -575,8 +397,8 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
 <div class="modal-overlay" id="modalUpload">
   <div class="modal">
     <h3>⬆ Upload de arquivo</h3>
-    <div class="field"><label>Arquivo(s)</label><input type="file" id="uploadFile" multiple accept=".py,.js,.html,.css,.sql,.md,.txt,.json"></div>
-    <div class="field"><label>Projeto</label><select id="uploadProjeto"></select></div>
+    <div class="field"><label>Arquivo</label><input type="file" id="uploadFile" multiple accept=".py,.js,.html,.css,.sql,.md,.txt,.json"></div>
+    <div class="field"><label>Projeto destino</label><select id="uploadProjeto"></select></div>
     <div class="modal-actions">
       <button class="btn" onclick="hideModal('modalUpload')">Cancelar</button>
       <button class="btn btn-primary" onclick="fazerUpload()">Upload</button>
@@ -584,1041 +406,662 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
   </div>
 </div>
 
-<div class="modal-overlay" id="modalConfirm">
-  <div class="modal" style="max-width:340px;text-align:center">
-    <div class="confirm-icon" id="confirmIcon">⚠️</div>
-    <h3 style="justify-content:center" id="confirmTitle"></h3>
-    <div class="confirm-msg" id="confirmMsg"></div>
-    <div class="modal-actions" style="justify-content:center">
-      <button class="btn" onclick="hideModal('modalConfirm')">Cancelar</button>
-      <button class="btn btn-danger" id="confirmBtn">Confirmar</button>
+<div class="modal-overlay" id="modalGithub">
+  <div class="modal">
+    <h3>⬆ Sincronizar com GitHub</h3>
+    <div class="field"><label>Usuário GitHub</label><input id="ghUser" value="cezar-moreira"></div>
+    <div class="field"><label>Token (Personal Access Token)</label><input id="ghToken" type="password" placeholder="ghp_..."></div>
+    <div class="field"><label>Repositório</label><input id="ghRepo" value="razec"></div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:8px">Gere o token em: github.com/settings/tokens → New token → repo</div>
+    <div class="modal-actions">
+      <button class="btn" onclick="hideModal('modalGithub')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarGithubConfig()">Salvar e sincronizar</button>
     </div>
   </div>
 </div>
 
-<!-- Supabase SDK -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ═══════════════════════════════════════════════════════════
-// CONFIG
+// STORAGE — tudo no localStorage (funciona offline)
 // ═══════════════════════════════════════════════════════════
-const SURL = 'https://ryolqzqcbwwtuaagorvr.supabase.co';
-const SKEY = 'sb_publishable_iGLysHT8cw_fhWGa50ljhA_LPnfyCRr';
-const sb   = supabase.createClient(SURL, SKEY);
 
-let currentUser = null;
-let notaAtual   = null;
-let _cache      = { notas: [], projetos: [] };
-let _autoSave   = null;
-let _unsaved    = false;
-let _graphNodes = [];
+const DB = {
+  get: (k, def=[]) => { try { return JSON.parse(localStorage.getItem('razec_'+k)) ?? def } catch { return def } },
+  set: (k, v) => localStorage.setItem('razec_'+k, JSON.stringify(v)),
+};
 
-const COR       = { blue:'#58a6ff', green:'#3fb950', purple:'#bc8cff', orange:'#ffa657', red:'#f85149' };
-const TIPO_ICON = { nota:'📝', script:'💻', conversa:'💬', doc:'📄' };
-const FONTE_ICON= { claude:'🟠', chatgpt:'🟢', gemini:'🔵', grok:'⚫', outro:'➕', nenhuma:'' };
+// Dados iniciais de exemplo
+function inicializarDados() {
+  if (DB.get('init', false)) return;
 
-// ═══════════════════════════════════════════════════════════
-// AUTH
-// ═══════════════════════════════════════════════════════════
-async function init() {
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session?.user) {
-      currentUser = session.user;
-      await mostrarApp();
-    } else {
-      mostrarAuth();
-    }
-  } catch(e) {
-    mostrarAuth();
-  }
+  const projetos = [
+    { id: 'ultravida', nome: 'Ultravida — Painel TV', desc: 'Sistema de chamadas Flask/SocketIO com painel LED e sala de espera', icon: '🏥', cor: 'blue', criado: new Date().toISOString() },
+    { id: 'clinicaos', nome: 'ClinicaOS', desc: 'Sistema completo de gestão clínica com IA, LGPD e deploy Railway', icon: '⚕️', cor: 'green', criado: new Date().toISOString() },
+    { id: 'paulojose', nome: 'Paulo José — @paulojose.missao', desc: 'Direção musical, composição Suno AI, estratégia Instagram', icon: '🎵', cor: 'purple', criado: new Date().toISOString() },
+    { id: 'instagram', nome: 'Instagram Growth', desc: 'Estratégias orgânicas, Reels, Collabs, SEO de perfil', icon: '📱', cor: 'orange', criado: new Date().toISOString() },
+  ];
 
-  sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'PASSWORD_RECOVERY') {
-      mostrarAuth();
-      mostrarPainel('newPass');
-    } else if (event === 'SIGNED_IN' && session?.user) {
-      currentUser = session.user;
-      await mostrarApp();
-    } else if (event === 'SIGNED_OUT') {
-      currentUser = null;
-      mostrarAuth();
-    }
-  });
+  const notas = [
+    { id: n(), titulo: 'Bugs Ultravida — relatórios e ticker LED', projeto: 'ultravida', tipo: 'nota', tags: ['bug','flask','socketio'], conteudo: '# Bugs em aberto — Ultravida\n\n## Bug 1: Página de relatórios\n- Não carrega ao acessar\n- Verificar rota Flask e template\n\n## Bug 2: Ticker LED (footer)\n- Funciona no monitor padrão\n- Não renderiza na TV\n- Investigar: CSS scroll, resolução TV, fullscreen API\n\n## Próximos passos\n- [ ] Diagnosticar login/localStorage em `atendente_ultravida.html`\n- [ ] Corrigir rota de relatórios\n- [ ] Testar ticker em TV 1080p', criado: new Date().toISOString(), atualizado: new Date().toISOString() },
+    { id: n(), titulo: 'ClinicaOS — Arquitetura e deploy', projeto: 'clinicaos', tipo: 'doc', tags: ['fastapi','postgresql','railway','lgpd'], conteudo: '# ClinicaOS — Arquitetura\n\n## Stack\n- **Backend**: FastAPI + Python 3.12\n- **Banco**: PostgreSQL (Supabase gratuito)\n- **Cache**: Redis (Upstash gratuito)\n- **Deploy**: Railway (gratuito)\n- **IA**: Anthropic Claude API\n\n## Módulos implementados\n- [x] Autenticação JWT + 2FA\n- [x] Pacientes com criptografia AES-256\n- [x] Prontuário com IA\n- [x] WebSocket sala de espera\n- [x] Painel TV\n- [ ] Dashboard completo\n- [ ] Módulo de agenda\n\n## LGPD\n- CPF, email, telefone → criptografados\n- Audit log completo\n- Soft delete\n- Consentimento obrigatório', criado: new Date().toISOString(), atualizado: new Date().toISOString() },
+    { id: n(), titulo: 'Análise 4Medic — Engenharia reversa', projeto: 'clinicaos', tipo: 'nota', tags: ['analise','4medic','concorrente'], conteudo: '# Engenharia Reversa — 4Medic\n\n## Prós\n- Transcrição IA de consultas\n- Assinatura digital CFM\n- Modelos prontos de documentos\n- Teleconsulta integrada\n- LGPD com criptografia\n\n## Contras\n- Mobile limitado\n- Sem CRM/marketing automático\n- Sem painel TV nativo\n- Sem API pública\n- Relatórios básicos\n- Caro para clínicas grandes\n\n## Diferencial do ClinicaOS\n- Painel TV com WebSocket nativo\n- IA de risco cardiovascular\n- CRM automático WhatsApp\n- API pública documentada\n- Deploy gratuito', criado: new Date().toISOString(), atualizado: new Date().toISOString() },
+  ];
+
+  DB.set('projetos', projetos);
+  DB.set('notas', notas);
+  DB.set('init', true);
+  DB.set('ghUser', 'cezar-moreira');
+  DB.set('ghRepo', 'razec');
 }
 
-function mostrarAuth() {
-  document.getElementById('loadingScreen').style.display = 'none';
-  document.getElementById('authScreen').style.display    = 'flex';
-  document.getElementById('appScreen').style.display     = 'none';
-}
-
-async function mostrarApp() {
-  document.getElementById('loadingScreen').style.display = 'flex';
-  document.getElementById('authScreen').style.display    = 'none';
-  document.getElementById('appScreen').style.display     = 'none';
-  document.getElementById('userEmail').textContent = currentUser.email;
-  await carregarTudo();
-  document.getElementById('loadingScreen').style.display = 'none';
-  document.getElementById('appScreen').style.display     = 'flex';
-  setupRealtime();
-  initPromptPanel();
-}
-
-let _authMode = 'login';
-function mostrarPainel(painel) {
-  document.getElementById('loginPanel').style.display  = painel === 'login'   ? '' : 'none';
-  document.getElementById('recoverPanel').style.display = painel === 'recover' ? '' : 'none';
-  document.getElementById('newPassPanel').style.display = painel === 'newPass' ? '' : 'none';
-  document.getElementById('authMsg').className = 'auth-msg';
-}
-function switchTab(mode) {
-  _authMode = mode;
-  if (mode === 'recover') {
-    document.getElementById('tabLogin').classList.remove('active');
-    document.getElementById('tabSignup').classList.remove('active');
-    mostrarPainel('recover');
-    return;
-  }
-  mostrarPainel('login');
-  document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
-  document.getElementById('tabSignup').classList.toggle('active', mode === 'signup');
-  document.getElementById('authBtn').textContent = mode === 'login' ? 'Entrar' : 'Criar conta';
-  document.getElementById('forgotLink').style.display = mode === 'login' ? '' : 'none';
-}
-
-async function enviarRecuperacao() {
-  const email = document.getElementById('recoverEmail').value.trim();
-  const btn   = document.getElementById('recoverBtn');
-  const msg   = document.getElementById('recoverMsg');
-  if (!email) { msg.textContent = 'Digite seu email.'; msg.className = 'auth-msg error'; return; }
-  btn.disabled = true; btn.textContent = 'Enviando...';
-  const { error } = await sb.auth.resetPasswordForEmail(email, {
-    redirectTo: 'https://cezar-moreira.github.io/razec/'
-  });
-  btn.disabled = false; btn.textContent = 'Enviar link de recuperação';
-  if (error) { msg.textContent = 'Erro ao enviar. Verifique o email e tente novamente.'; msg.className = 'auth-msg error'; }
-  else { msg.textContent = '✅ Link enviado! Verifique seu email (cheque o spam também).'; msg.className = 'auth-msg success'; }
-}
-
-async function confirmarNovaSenha() {
-  const p1  = document.getElementById('newPass1').value;
-  const p2  = document.getElementById('newPass2').value;
-  const btn = document.getElementById('newPassBtn');
-  const msg = document.getElementById('newPassMsg');
-  if (p1.length < 6) { msg.textContent = 'Senha deve ter pelo menos 6 caracteres.'; msg.className = 'auth-msg error'; return; }
-  if (p1 !== p2)     { msg.textContent = 'As senhas não coincidem.'; msg.className = 'auth-msg error'; return; }
-  btn.disabled = true; btn.textContent = 'Salvando...';
-  const { error } = await sb.auth.updateUser({ password: p1 });
-  if (error) { msg.textContent = 'Erro ao salvar senha. Tente novamente.'; msg.className = 'auth-msg error'; btn.disabled = false; btn.textContent = 'Salvar nova senha'; }
-  else { msg.textContent = '✅ Senha alterada! Entrando...'; msg.className = 'auth-msg success'; }
-}
-
-async function submitAuth() {
-  const email = document.getElementById('authEmail').value.trim();
-  const pass  = document.getElementById('authPass').value;
-  const btn   = document.getElementById('authBtn');
-  if (!email || !pass) { showAuthMsg('Preencha email e senha.', 'error'); return; }
-  btn.disabled = true;
-  btn.textContent = '...';
-
-  if (_authMode === 'login') {
-    const { error } = await sb.auth.signInWithPassword({ email, password: pass });
-    if (error) { showAuthMsg(traduzirErroAuth(error.message), 'error'); btn.disabled=false; btn.textContent='Entrar'; }
-  } else {
-    if (pass.length < 6) { showAuthMsg('Senha deve ter pelo menos 6 caracteres.', 'error'); btn.disabled=false; btn.textContent='Criar conta'; return; }
-    const { error } = await sb.auth.signUp({ email, password: pass });
-    if (error) { showAuthMsg(traduzirErroAuth(error.message), 'error'); btn.disabled=false; btn.textContent='Criar conta'; }
-    else showAuthMsg('✅ Conta criada! Verifique seu email para confirmar e depois faça login.', 'success');
-    btn.disabled=false; btn.textContent='Criar conta';
-  }
-}
-
-function traduzirErroAuth(msg) {
-  if (msg.includes('Invalid login')) return 'Email ou senha incorretos.';
-  if (msg.includes('Email not confirmed')) return 'Confirme seu email antes de entrar.';
-  if (msg.includes('already registered')) return 'Este email já possui uma conta.';
-  if (msg.includes('Password should be')) return 'Senha deve ter pelo menos 6 caracteres.';
-  return msg;
-}
-
-function showAuthMsg(msg, tipo) {
-  const el = document.getElementById('authMsg');
-  el.textContent = msg;
-  el.className = 'auth-msg ' + tipo;
-}
-
-function confirmarLogout() {
-  mostrarConfirm('👋', 'Sair do RAZEC?', 'Seus dados ficam salvos na nuvem.', async () => {
-    await sb.auth.signOut();
-  });
-}
-
-// ═══════════════════════════════════════════════════════════
-// BANCO DE DADOS — Supabase
-// ═══════════════════════════════════════════════════════════
-async function carregarTudo() {
-  setCloud('sync', '⟳ Sincronizando...');
-  try {
-    const [{ data: proj }, { data: notas }] = await Promise.all([
-      sb.from('projetos').select('*').eq('user_id', currentUser.id).order('criado', { ascending: true }),
-      sb.from('notas').select('*').eq('user_id', currentUser.id).order('atualizado', { ascending: false }),
-    ]);
-    _cache.projetos = (proj  || []).map(normalProj);
-    _cache.notas    = (notas || []).map(normalNota);
-    setCloud('ok', '☁️ Sincronizado');
-    render();
-  } catch(e) {
-    setCloud('err', '⚠️ Sem conexão');
-  }
-}
-
-// Normaliza campos do Supabase → formato interno do app
-function normalNota(r) {
-  return { id:r.id, titulo:r.titulo, conteudo:r.conteudo||'', tipo:r.tipo||'nota',
-    projeto:r.projeto_id||'', tags:r.tags||[], fonteIA:r.fonte_ia||'nenhuma',
-    criado:r.criado, atualizado:r.atualizado };
-}
-function normalProj(r) {
-  return { id:r.id, nome:r.nome, desc:r.descricao||'', icon:r.icon||'📁',
-    cor:r.cor||'blue', criado:r.criado };
-}
-
-async function dbSaveNota(nota) {
-  setCloud('sync','⟳ Salvando...');
-  const { error } = await sb.from('notas').upsert({
-    id: nota.id, user_id: currentUser.id,
-    titulo: nota.titulo, conteudo: nota.conteudo,
-    tipo: nota.tipo, projeto_id: nota.projeto||'',
-    tags: nota.tags||[], fonte_ia: nota.fonteIA||'nenhuma',
-    criado: nota.criado||new Date().toISOString(),
-    atualizado: new Date().toISOString(),
-  });
-  if (error) { setCloud('err','⚠️ Erro ao salvar'); console.error(error); return false; }
-  setCloud('ok','☁️ Salvo na nuvem');
-  return true;
-}
-
-async function dbSaveProj(proj) {
-  const { error } = await sb.from('projetos').upsert({
-    id: proj.id, user_id: currentUser.id,
-    nome: proj.nome, descricao: proj.desc||'',
-    icon: proj.icon||'📁', cor: proj.cor||'blue',
-    criado: proj.criado||new Date().toISOString(),
-  });
-  if (error) console.error(error);
-}
-
-async function dbDeleteNota(id) {
-  await sb.from('notas').delete().eq('id', id).eq('user_id', currentUser.id);
-}
-
-async function dbDeleteProj(id) {
-  await Promise.all([
-    sb.from('projetos').delete().eq('id', id).eq('user_id', currentUser.id),
-    sb.from('notas').delete().eq('projeto_id', id).eq('user_id', currentUser.id),
-  ]);
-}
-
-// Real-time sync entre dispositivos
-function setupRealtime() {
-  sb.channel('razec-changes')
-    .on('postgres_changes', { event:'*', schema:'public', table:'notas',    filter:`user_id=eq.${currentUser.id}` }, () => carregarTudo())
-    .on('postgres_changes', { event:'*', schema:'public', table:'projetos', filter:`user_id=eq.${currentUser.id}` }, () => carregarTudo())
-    .subscribe();
-}
-
-function setCloud(tipo, txt) {
-  const el = document.getElementById('cloudStatus');
-  el.className = 'cloud-status ' + (tipo==='ok'?'cloud-ok':tipo==='sync'?'cloud-sync':'cloud-err');
-  document.getElementById('cloudTxt').textContent = txt;
-}
+function n() { return 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2,6) }
 
 // ═══════════════════════════════════════════════════════════
 // RENDER
 // ═══════════════════════════════════════════════════════════
-function render() {
-  const { projetos, notas } = _cache;
-  const scripts   = notas.filter(n => n.tipo==='script');
-  const conversas = notas.filter(n => n.tipo==='conversa');
 
-  document.getElementById('statNotas').textContent    = notas.length;
+let notaAtual = null;
+
+function render() {
+  const projetos = DB.get('projetos', []);
+  const notas = DB.get('notas', []);
+  const scripts = notas.filter(n => n.tipo === 'script');
+  const conversas = notas.filter(n => n.tipo === 'conversa');
+
+  // Stats
+  document.getElementById('statNotas').textContent = notas.length;
   document.getElementById('statProjetos').textContent = projetos.length;
-  document.getElementById('statScripts').textContent  = scripts.length;
-  document.getElementById('statConversas').textContent= conversas.length;
-  document.getElementById('badgeNotas').textContent   = notas.length;
-  document.getElementById('notaCount').textContent    = notas.length + ' itens';
-  renderPromptsSalvos();
+  document.getElementById('statScripts').textContent = scripts.length;
+  document.getElementById('statConversas').textContent = conversas.length;
+  document.getElementById('badgeNotas').textContent = notas.length;
+
+  // Storage
+  const used = JSON.stringify(localStorage).length;
+  const max = 5 * 1024 * 1024;
+  const pct = Math.round(used / max * 100);
+  document.getElementById('storageBar').style.width = pct + '%';
+  document.getElementById('storageTxt').textContent = `${(used/1024).toFixed(0)}KB / 5MB (${pct}%)`;
 
   // Sidebar projetos
-  document.getElementById('sidebarProjects').innerHTML = projetos.map(p => {
-    const cnt = notas.filter(n => n.projeto===p.id).length;
-    return `<div class="project-item" onclick="filtrarPorProjeto('${p.id}')">
-      <div class="dot" style="background:${COR[p.cor]||COR.blue}"></div>
+  const corMap = { blue:'#58a6ff', green:'#3fb950', purple:'#bc8cff', orange:'#ffa657', red:'#f85149' };
+  document.getElementById('sidebarProjects').innerHTML = projetos.map(p => `
+    <div class="project-item" onclick="filtrarPorProjeto('${p.id}')">
+      <div class="dot" style="background:${corMap[p.cor]||'#58a6ff'}"></div>
       ${p.icon} ${p.nome.split('—')[0].trim()}
-      <span class="pcount">${cnt}</span>
-    </div>`;
-  }).join('');
+    </div>
+  `).join('');
 
   // Sidebar tags
-  const tags = [...new Set(notas.flatMap(n => n.tags||[]))];
-  document.getElementById('sidebarTags').innerHTML = tags.map(t =>
-    `<span class="tag" style="cursor:pointer" onclick="filtrarPorTag('${escH(t)}')">${escH(t)}</span>`
+  const todasTags = [...new Set(notas.flatMap(n => n.tags || []))];
+  document.getElementById('sidebarTags').innerHTML = todasTags.map(t =>
+    `<span class="tag" style="cursor:pointer" onclick="buscarAvancado('${t}');showView('search')">${t}</span>`
   ).join('');
 
   // Projects grid
-  document.getElementById('projectsGrid').innerHTML = projetos.length
-    ? projetos.map(p => {
-        const cnt = notas.filter(n => n.projeto===p.id).length;
-        const cls = {blue:'',green:'green',purple:'purple',orange:'orange'}[p.cor]||'';
-        return `<div class="proj-card" onclick="filtrarPorProjeto('${p.id}')">
-          <button class="proj-del" onclick="event.stopPropagation();confirmarDeletarProj('${p.id}')">🗑 Excluir</button>
-          <div class="proj-header">
-            <div class="proj-icon" style="background:${COR[p.cor]||COR.blue}22">${p.icon}</div>
-            <div><div class="proj-name">${escH(p.nome)}</div><div style="font-size:11px;color:var(--muted)">${cnt} item${cnt!==1?'s':''}</div></div>
+  document.getElementById('projectsGrid').innerHTML = projetos.map(p => {
+    const pNotas = notas.filter(n => n.projeto === p.id);
+    const tagClass = { blue:'', green:'green', purple:'purple', orange:'orange' }[p.cor] || '';
+    return `
+      <div class="proj-card" onclick="filtrarPorProjeto('${p.id}')">
+        <div class="proj-header">
+          <div class="proj-icon" style="background:rgba(88,166,255,.1)">${p.icon}</div>
+          <div>
+            <div class="proj-name">${p.nome}</div>
+            <div style="font-size:11px;color:var(--muted)">${pNotas.length} itens</div>
           </div>
-          <div class="proj-desc">${escH(p.desc)}</div>
-          <div class="proj-tags"><span class="tag ${cls}">${p.cor}</span></div>
-        </div>`;
-      }).join('')
-    : `<div class="empty-state" style="grid-column:1/-1"><div class="ei">📁</div>Nenhum projeto ainda.<br>Clique em <strong>+ Projeto</strong> para começar.</div>`;
+        </div>
+        <div class="proj-desc">${p.desc}</div>
+        <div class="proj-tags">
+          <span class="tag ${tagClass}">${p.cor}</span>
+          ${pNotas.slice(0,2).map(n => `<span class="tag">${n.tipo}</span>`).join('')}
+        </div>
+      </div>
+    `;
+  }).join('');
 
-  // Recentes
-  const recentes = [...notas].sort((a,b)=>new Date(b.atualizado)-new Date(a.atualizado)).slice(0,6);
-  document.getElementById('recentList').innerHTML = recentes.length
-    ? recentes.map(n => {
-        const p = projetos.find(p=>p.id===n.projeto);
-        return `<div class="recent-item" onclick="abrirNota('${n.id}')">
-          <div style="font-size:18px;width:28px;text-align:center">${TIPO_ICON[n.tipo]||'📝'} ${FONTE_ICON[n.fonteIA]||''}</div>
-          <div class="ri-body">
-            <div class="ri-title">${escH(n.titulo)}</div>
-            <div class="ri-meta">${p?.icon||''} ${escH(p?.nome||'Sem projeto')} · ${(n.tags||[]).join(', ')}</div>
-          </div>
-          <div style="font-size:11px;color:var(--muted);white-space:nowrap">${formatDate(n.atualizado)}</div>
-        </div>`;
-      }).join('')
-    : `<div class="empty-state"><div class="ei">✏️</div>Nenhuma nota ainda.<br>Clique em <strong>+ Nota</strong> para criar.</div>`;
+  // Recent
+  const recentes = [...notas].sort((a,b) => new Date(b.atualizado) - new Date(a.atualizado)).slice(0,6);
+  const tipoIcon = { nota:'📝', script:'💻', conversa:'💬', doc:'📄' };
+  document.getElementById('recentList').innerHTML = recentes.map(n => {
+    const proj = projetos.find(p => p.id === n.projeto);
+    return `
+      <div class="recent-item" onclick="abrirNota('${n.id}')">
+        <div class="ri-icon">${tipoIcon[n.tipo]||'📝'}</div>
+        <div class="ri-body">
+          <div class="ri-title">${n.titulo}</div>
+          <div class="ri-meta">${proj?.icon||''} ${proj?.nome||'Sem projeto'} · ${(n.tags||[]).join(', ')}</div>
+        </div>
+        <div class="ri-date">${formatDate(n.atualizado)}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Files grid
+  renderFiles(DB.get('_fileFilter', 'todos'));
 
   // Selects dos modais
-  const opts = '<option value="">— Sem projeto —</option>' +
-    projetos.map(p=>`<option value="${p.id}">${p.icon} ${escH(p.nome)}</option>`).join('');
-  ['novoProjetoNota','uploadProjeto','editMetaProjeto'].forEach(id => {
-    const el = document.getElementById(id); if (el) el.innerHTML = opts;
+  const optProjetos = '<option value="">Sem projeto</option>' + projetos.map(p => `<option value="${p.id}">${p.icon} ${p.nome}</option>`).join('');
+  ['novoProjetoNota','uploadProjeto'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = optProjetos;
   });
-
-  renderFiles(_cache._fileFilter || 'todos');
 }
 
-// ═══════════════════════════════════════════════════════════
-// FILES
-// ═══════════════════════════════════════════════════════════
+function selecionarFonte(btn, fonte) {
+  document.querySelectorAll('.fonte-btn').forEach(b => {
+    b.style.borderColor = 'var(--border)';
+    b.style.color = 'var(--muted)';
+    b.style.background = 'var(--bg)';
+  });
+  btn.style.borderColor = 'var(--primary)';
+  btn.style.color = 'var(--primary)';
+  btn.style.background = 'rgba(88,166,255,.1)';
+  document.getElementById('fonteIA').value = fonte;
+}
+
 function renderFiles(filtro) {
-  _cache._fileFilter = filtro;
-  const { notas, projetos } = _cache;
+  DB.set('_fileFilter', filtro);
+  const notas = DB.get('notas', []);
+  const projetos = DB.get('projetos', []);
+  const tipoIcon = { nota:'📝', script:'💻', conversa:'💬', doc:'📄' };
+  const fonteIcon = { claude:'🟠', chatgpt:'🟢', gemini:'🔵', grok:'⚫', outro:'➕', nenhuma:'' };
+
   let items = notas;
-  if (filtro === 'todos')        items = notas;
-  else if (filtro.startsWith('ia_')) { const ia=filtro.slice(3); items=notas.filter(n=>n.fonteIA===ia); }
-  else if (['python','html','js','sql'].includes(filtro)) items=notas.filter(n=>n.tipo==='script'&&(n.tags||[]).includes(filtro));
-  else items=notas.filter(n=>n.tipo===filtro);
+  if (filtro === 'todos') {
+    items = notas;
+  } else if (filtro.startsWith('ia_')) {
+    const ia = filtro.replace('ia_', '');
+    items = notas.filter(n => n.fonteIA === ia);
+  } else if (['python','html','js','sql'].includes(filtro)) {
+    items = notas.filter(n => n.tipo === 'script' && (n.tags||[]).includes(filtro));
+  } else {
+    items = notas.filter(n => n.tipo === filtro);
+  }
 
   const grid = document.getElementById('filesGrid');
-  if (!items.length) { grid.innerHTML='<div style="color:var(--muted);font-size:13px;grid-column:1/-1;padding:2rem;text-align:center">Nenhum arquivo encontrado</div>'; return; }
+  if (!items.length) { grid.innerHTML = '<div style="color:var(--muted);font-size:13px;grid-column:1/-1">Nenhum arquivo encontrado</div>'; return; }
+
   grid.innerHTML = items.map(n => {
-    const p = projetos.find(p=>p.id===n.projeto);
-    const ext = n.tipo==='script'?(n.tags?.find(t=>['py','js','html','sql','python'].includes(t))||'txt'):'md';
-    return `<div class="file-card" onclick="abrirNota('${n.id}')">
-      <button class="file-del" onclick="event.stopPropagation();confirmarDeletarNota('${n.id}')">🗑</button>
-      <div class="file-icon">${TIPO_ICON[n.tipo]||'📄'} ${FONTE_ICON[n.fonteIA]||''}</div>
-      <div class="file-name">${escH(n.titulo)}</div>
-      <div class="file-meta">${escH(p?.nome||'Sem projeto')} · .${ext}</div>
-      <div class="file-meta">${formatDate(n.atualizado)}</div>
-    </div>`;
+    const proj = projetos.find(p => p.id === n.projeto);
+    const ext = n.tipo === 'script' ? (n.tags?.find(t => ['py','js','html','sql','python'].includes(t)) || 'txt') : 'md';
+    const fi = fonteIcon[n.fonteIA] || '';
+    return `
+      <div class="file-card" onclick="abrirNota('${n.id}')">
+        <div class="file-icon">${tipoIcon[n.tipo]||'📄'} ${fi}</div>
+        <div class="file-name">${n.titulo}</div>
+        <div class="file-meta">${proj?.nome||'Sem projeto'} · .${ext}</div>
+        ${n.fonteIA && n.fonteIA !== 'nenhuma' ? `<div class="file-meta" style="color:var(--primary)">${fi} ${n.fonteIA}</div>` : ''}
+        <div class="file-meta">${formatDate(n.atualizado)}</div>
+      </div>
+    `;
   }).join('');
 }
 
-function filtrarFiles(f,btn) {
-  document.querySelectorAll('#filterTabs .btn').forEach(b=>b.classList.remove('active'));
-  if(btn)btn.classList.add('active');
-  renderFiles(f);
+function filtrarFiles(filtro, btn) {
+  document.querySelectorAll('#filterTabs .btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderFiles(filtro);
 }
-
-// ═══════════════════════════════════════════════════════════
-// GRAPH
-// ═══════════════════════════════════════════════════════════
-function seededRnd(seed){let s=Math.abs(seed)||1;return()=>{s=(s*1664525+1013904223)&0x7fffffff;return s/0x7fffffff;};}
-function hashStr(str){let h=0;for(let i=0;i<str.length;i++)h=Math.imul(31,h)+str.charCodeAt(i)|0;return Math.abs(h);}
 
 function renderGraph() {
-  const canvas=document.getElementById('graphCanvas');
-  const cont=document.getElementById('graphContainer');
-  canvas.width=cont.offsetWidth; canvas.height=cont.offsetHeight;
-  const ctx=canvas.getContext('2d');
-  const {notas,projetos}=_cache;
-  const W=canvas.width,H=canvas.height;
-  _graphNodes=[];
-  ctx.clearRect(0,0,W,H);
-  const nColor={nota:'#3fb950',script:'#bc8cff',conversa:'#ffa657',doc:'#58a6ff'};
+  const canvas = document.getElementById('graphCanvas');
+  const container = document.getElementById('graphContainer');
+  canvas.width = container.offsetWidth;
+  canvas.height = container.offsetHeight;
+  const ctx = canvas.getContext('2d');
+  const notas = DB.get('notas', []);
+  const projetos = DB.get('projetos', []);
+  const W = canvas.width, H = canvas.height;
 
-  const projNodes=projetos.map((p,i)=>{
-    const angle=(i/projetos.length)*Math.PI*2-Math.PI/2;
-    const r=Math.min(W,H)*0.28;
-    const cnt=notas.filter(n=>n.projeto===p.id).length;
-    const nd={id:p.id,tipo:'projeto',label:p.icon+' '+p.nome.split('—')[0].trim(),
-      x:W/2+Math.cos(angle)*r,y:H/2+Math.sin(angle)*r,size:12+cnt*1.5,color:'#58a6ff'};
-    _graphNodes.push(nd); return nd;
+  ctx.clearRect(0, 0, W, H);
+
+  // Posiciona nós
+  const nodes = projetos.map((p, i) => {
+    const angle = (i / projetos.length) * Math.PI * 2;
+    const r = Math.min(W, H) * 0.3;
+    return { id: p.id, label: p.icon + ' ' + p.nome.split('—')[0].trim(), x: W/2 + Math.cos(angle)*r, y: H/2 + Math.sin(angle)*r, size: 14+notas.filter(n=>n.projeto===p.id).length*2, color: '#58a6ff' };
   });
 
-  const notaNodes=notas.map(n=>{
-    const rnd=seededRnd(hashStr(n.id));
-    const proj=projNodes.find(nd=>nd.id===n.projeto);
-    const bx=proj?proj.x:W/2,by=proj?proj.y:H/2;
-    const angle=rnd()*Math.PI*2,dist=50+rnd()*70;
-    const nd={id:n.id,tipo:'nota',label:n.titulo.slice(0,18),
-      x:Math.max(10,Math.min(W-10,bx+Math.cos(angle)*dist)),
-      y:Math.max(10,Math.min(H-10,by+Math.sin(angle)*dist)),
-      size:5,color:nColor[n.tipo]||'#3fb950',parentId:n.projeto};
-    _graphNodes.push(nd); return nd;
+  // Nós de notas (menores)
+  const notaNodes = notas.slice(0, 20).map((n, i) => {
+    const proj = nodes.find(nd => nd.id === n.projeto);
+    const angle = (i / 20) * Math.PI * 2;
+    const r = 60 + Math.random() * 80;
+    const bx = proj ? proj.x : W/2;
+    const by = proj ? proj.y : H/2;
+    return { id: n.id, label: n.titulo.slice(0,20), x: bx + Math.cos(angle)*r, y: by + Math.sin(angle)*r, size: 6, color: '#3fb950', parentId: n.projeto };
   });
 
-  ctx.strokeStyle='rgba(48,54,61,0.7)'; ctx.lineWidth=1;
-  notaNodes.forEach(nd=>{
-    const p=projNodes.find(n=>n.id===nd.parentId);
-    if(p){ctx.beginPath();ctx.moveTo(p.x,p.y);ctx.lineTo(nd.x,nd.y);ctx.stroke();}
-  });
-  notaNodes.forEach(nd=>{ctx.fillStyle=nd.color;ctx.beginPath();ctx.arc(nd.x,nd.y,nd.size,0,Math.PI*2);ctx.fill();});
-  projNodes.forEach(nd=>{
-    ctx.fillStyle=nd.color;ctx.shadowColor=nd.color;ctx.shadowBlur=12;
-    ctx.beginPath();ctx.arc(nd.x,nd.y,nd.size,0,Math.PI*2);ctx.fill();
-    ctx.shadowBlur=0;ctx.fillStyle='#e6edf3';ctx.font='bold 11px sans-serif';
-    ctx.textAlign='center';ctx.fillText(nd.label,nd.x,nd.y+nd.size+14);
-  });
-}
-
-document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('graphCanvas').addEventListener('click',e=>{
-    const r=e.currentTarget.getBoundingClientRect();
-    const mx=e.clientX-r.left,my=e.clientY-r.top;
-    for(const nd of _graphNodes){
-      const dx=mx-nd.x,dy=my-nd.y;
-      if(Math.sqrt(dx*dx+dy*dy)<=nd.size+4){
-        nd.tipo==='nota'?abrirNota(nd.id):filtrarPorProjeto(nd.id); return;
-      }
+  // Desenha arestas
+  ctx.strokeStyle = 'rgba(48,54,61,0.8)';
+  ctx.lineWidth = 1;
+  notaNodes.forEach(nd => {
+    const parent = nodes.find(n => n.id === nd.parentId);
+    if (parent) {
+      ctx.beginPath();
+      ctx.moveTo(parent.x, parent.y);
+      ctx.lineTo(nd.x, nd.y);
+      ctx.stroke();
     }
   });
-});
 
-// ═══════════════════════════════════════════════════════════
-// BUSCA
-// ═══════════════════════════════════════════════════════════
-function parseBusca(q){
-  const f={},terms=[];
-  q.trim().split(/\s+/).forEach(part=>{
-    const [k,...v]=part.split(':'),val=v.join(':').toLowerCase();
-    if(val&&['projeto','tag','tipo','fonte'].includes(k))f[k]=val;
-    else if(part.trim())terms.push(part.trim().toLowerCase());
+  // Desenha nós de projeto
+  nodes.forEach(nd => {
+    ctx.fillStyle = nd.color;
+    ctx.shadowColor = nd.color;
+    ctx.shadowBlur = 10;
+    ctx.beginPath();
+    ctx.arc(nd.x, nd.y, nd.size, 0, Math.PI*2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#e6edf3';
+    ctx.font = '11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(nd.label, nd.x, nd.y + nd.size + 14);
   });
-  return{f,q:terms.join(' ')};
+
+  // Nós de notas
+  notaNodes.forEach(nd => {
+    ctx.fillStyle = nd.color;
+    ctx.beginPath();
+    ctx.arc(nd.x, nd.y, nd.size, 0, Math.PI*2);
+    ctx.fill();
+  });
 }
 
-function buscarAvancado(q) {
-  const {notas,projetos}=_cache;
-  const {f,q:texto}=parseBusca(q);
-  let res=notas;
-  if(f.projeto) res=res.filter(n=>n.projeto?.toLowerCase().includes(f.projeto)||projetos.find(p=>p.id===n.projeto)?.nome.toLowerCase().includes(f.projeto));
-  if(f.tag)     res=res.filter(n=>(n.tags||[]).some(t=>t.toLowerCase().includes(f.tag)));
-  if(f.tipo)    res=res.filter(n=>n.tipo?.toLowerCase().includes(f.tipo));
-  if(f.fonte)   res=res.filter(n=>n.fonteIA?.toLowerCase().includes(f.fonte));
-  if(texto)     res=res.filter(n=>n.titulo.toLowerCase().includes(texto)||n.conteudo.toLowerCase().includes(texto)||(n.tags||[]).some(t=>t.toLowerCase().includes(texto)));
-  const hl=(t,q)=>q?t.replace(new RegExp(escReg(q),'gi'),m=>`<mark>${m}</mark>`):t;
-  const cont=document.getElementById('searchResults');
-  if(!res.length){cont.innerHTML=`<div style="color:var(--muted);font-size:13px;text-align:center;padding:2rem">Nenhum resultado para "<strong>${escH(q)}</strong>"</div>`;return;}
-  cont.innerHTML=res.map(n=>{
-    const p=projetos.find(p=>p.id===n.projeto);
-    const exc=n.conteudo.slice(0,160).replace(/[#*`\n]/g,' ').replace(/\s+/g,' ');
-    return `<div class="sr-item" onclick="abrirNota('${n.id}')">
-      <div class="sr-title">${TIPO_ICON[n.tipo]||'📝'} ${FONTE_ICON[n.fonteIA]||''} ${hl(escH(n.titulo),texto)}</div>
-      <div class="sr-excerpt">${hl(escH(exc),texto)}...</div>
-      <div class="sr-path">📁 ${escH(p?.nome||'sem projeto')} · ${n.tipo} · ${(n.tags||[]).join(', ')}</div>
-    </div>`;
-  }).join('');
-}
-
-function buscarGlobal(q){if(!q||q.length<2)return;document.getElementById('advSearch').value=q;buscarAvancado(q);showView('search');}
-function inserirFiltro(t){const el=document.getElementById('advSearch');el.value=t;el.focus();buscarAvancado(t);}
-function filtrarPorTag(t){showView('search');document.getElementById('advSearch').value='tag:'+t;buscarAvancado('tag:'+t);}
-function filtrarPorProjeto(id){showView('search');document.getElementById('advSearch').value='projeto:'+id;buscarAvancado('projeto:'+id);}
-
 // ═══════════════════════════════════════════════════════════
-// AÇÕES CRUD
+// AÇÕES
 // ═══════════════════════════════════════════════════════════
+
 function showView(name, navEl) {
-  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('view-'+name).classList.add('active');
-  if(navEl)navEl.classList.add('active');
-  if(name==='graph')setTimeout(renderGraph,100);
-  if(name==='prompts')renderPromptsSalvos();
+  if (navEl) navEl.classList.add('active');
+  if (name === 'graph') setTimeout(renderGraph, 100);
   render();
 }
 
 function showModal(id) {
-  if(id==='modalEditMeta'&&notaAtual){
-    const nota=_cache.notas.find(n=>n.id===notaAtual);
-    if(nota){
-      render();
-      setTimeout(()=>{
-        document.getElementById('editMetaProjeto').value=nota.projeto||'';
-        document.getElementById('editMetaTipo').value=nota.tipo||'nota';
-        document.getElementById('editMetaTags').value=(nota.tags||[]).join(', ');
-        document.getElementById('editFonteIA').value=nota.fonteIA||'nenhuma';
-        document.querySelectorAll('#editFonteBtns .fonte-btn').forEach(b=>b.classList.remove('selected'));
-        const fb=document.querySelector(`#editFonteBtns .fonte-btn[onclick*="'${nota.fonteIA||'nenhuma'}'"]`);
-        if(fb)fb.classList.add('selected');
-      },50);
-    }
-  }
   document.getElementById(id).classList.add('show');
+  render();
 }
-function hideModal(id){document.getElementById(id).classList.remove('show');}
+function hideModal(id) { document.getElementById(id).classList.remove('show'); }
 
-async function criarProjeto() {
-  const nome=document.getElementById('projNome').value.trim();
-  if(!nome)return;
-  const id=nome.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'').slice(0,40);
-  const proj={id,nome,desc:document.getElementById('projDesc').value,icon:document.getElementById('projIcon').value||'📁',cor:document.getElementById('projCor').value,criado:new Date().toISOString()};
-  _cache.projetos.push(proj);
-  await dbSaveProj(proj);
+function criarProjeto() {
+  const nome = document.getElementById('projNome').value.trim();
+  if (!nome) return;
+  const projetos = DB.get('projetos', []);
+  const id = nome.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+  projetos.push({
+    id, nome,
+    desc: document.getElementById('projDesc').value,
+    icon: document.getElementById('projIcon').value || '📁',
+    cor: document.getElementById('projCor').value,
+    criado: new Date().toISOString()
+  });
+  DB.set('projetos', projetos);
   hideModal('modalProjeto');
-  document.getElementById('projNome').value='';
-  document.getElementById('projDesc').value='';
+  document.getElementById('projNome').value = '';
+  document.getElementById('projDesc').value = '';
   render();
 }
 
-async function criarNota() {
-  const titulo=document.getElementById('novoTitulo').value.trim();
-  if(!titulo){document.getElementById('novoTitulo').focus();return;}
-  const fonteIA=document.getElementById('fonteIA').value;
-  const nova={
-    id:'n_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
-    titulo, projeto:document.getElementById('novoProjetoNota').value,
-    tipo:document.getElementById('novoTipo').value,
-    tags:document.getElementById('novasTags').value.split(',').map(t=>t.trim()).filter(Boolean),
-    fonteIA, conteudo:`# ${titulo}\n\n${fonteIA!=='nenhuma'?`> 🤖 Fonte: ${fonteIA.toUpperCase()}\n\n`:''}`,
-    criado:new Date().toISOString(),atualizado:new Date().toISOString(),
+function criarNota() {
+  const titulo = document.getElementById('novoTitulo').value.trim();
+  if (!titulo) return;
+  const notas = DB.get('notas', []);
+  const fonteIA = document.getElementById('fonteIA')?.value || 'nenhuma';
+  const nova = {
+    id: n(),
+    titulo,
+    projeto: document.getElementById('novoProjetoNota').value,
+    tipo: document.getElementById('novoTipo').value,
+    tags: document.getElementById('novasTags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    fonteIA,
+    conteudo: `# ${titulo}\n\n${fonteIA !== 'nenhuma' ? `> 🤖 Fonte: ${fonteIA.toUpperCase()}\n\n` : ''}`,
+    criado: new Date().toISOString(),
+    atualizado: new Date().toISOString(),
   };
-  _cache.notas.unshift(nova);
-  await dbSaveNota(nova);
+  notas.push(nova);
+  DB.set('notas', notas);
   hideModal('modalNota');
-  document.getElementById('novoTitulo').value='';
-  document.getElementById('novasTags').value='';
-  document.getElementById('fonteIA').value='nenhuma';
-  document.querySelectorAll('#fonteBtns .fonte-btn').forEach(b=>b.classList.remove('selected'));
-  document.querySelector('#fonteBtns .fonte-btn').classList.add('selected');
+  // Reset fonte
+  document.getElementById('fonteIA').value = 'nenhuma';
+  document.querySelectorAll('.fonte-btn').forEach(b => b.style.borderColor = 'var(--border)');
   abrirNota(nova.id);
   render();
 }
 
 function abrirNota(id) {
-  const nota=_cache.notas.find(n=>n.id===id);
-  if(!nota)return;
-  notaAtual=id;
-  document.getElementById('editorTitle').value=nota.titulo;
-  document.getElementById('editorBody').value=nota.conteudo;
-  document.getElementById('metaTags').textContent=(nota.tags||[]).join(', ')||'Sem tags';
-  document.getElementById('metaData').textContent=formatDate(nota.atualizado);
-  const p=_cache.projetos.find(p=>p.id===nota.projeto);
-  document.getElementById('metaProjeto').textContent=p?.nome||'Sem projeto';
-  setSaveStatus('ok');_unsaved=false;
+  const notas = DB.get('notas', []);
+  const nota = notas.find(n => n.id === id);
+  if (!nota) return;
+  notaAtual = id;
+  document.getElementById('editorTitle').value = nota.titulo;
+  document.getElementById('editorBody').value = nota.conteudo;
+  document.getElementById('metaTags').textContent = (nota.tags||[]).join(', ') || 'Sem tags';
+  document.getElementById('metaData').textContent = formatDate(nota.atualizado);
+  const proj = DB.get('projetos', []).find(p => p.id === nota.projeto);
+  document.getElementById('metaProjeto').textContent = proj ? proj.nome : 'Sem projeto';
   showView('editor');
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.querySelectorAll('.nav-item')[1].classList.add('active');
-  document.getElementById('previewPanel').classList.remove('show');
-  document.getElementById('promptResult').classList.remove('show');
 }
 
-// AUTO-SAVE
-function triggerAutoSave(){
-  _unsaved=true; setSaveStatus('pending');
-  clearTimeout(_autoSave);
-  _autoSave=setTimeout(()=>{ if(document.getElementById('editorTitle').value.trim()) salvarNota(true); },2500);
-}
-
-function setSaveStatus(state){
-  const el=document.getElementById('saveStatus');
-  el.className='save-status '+(state==='ok'?'save-ok':state==='pending'?'save-pending':'save-saving');
-  el.textContent=state==='ok'?'✓ Salvo na nuvem':state==='pending'?'● Não salvo':'⟳ Salvando...';
-  if(state==='ok')_unsaved=false;
-}
-
-window.addEventListener('beforeunload',e=>{if(_unsaved){e.preventDefault();e.returnValue='';}});
-
-async function salvarNota(silent=false) {
-  const titulo=document.getElementById('editorTitle').value.trim();
-  const conteudo=document.getElementById('editorBody').value;
-  if(!titulo)return;
-  setSaveStatus('saving');
-  if(notaAtual){
-    const nota=_cache.notas.find(n=>n.id===notaAtual);
-    if(nota){nota.titulo=titulo;nota.conteudo=conteudo;nota.atualizado=new Date().toISOString();}
-    await dbSaveNota(_cache.notas.find(n=>n.id===notaAtual));
+function salvarNota() {
+  const titulo = document.getElementById('editorTitle').value.trim();
+  const conteudo = document.getElementById('editorBody').value;
+  if (!titulo) return;
+  const notas = DB.get('notas', []);
+  let nota;
+  if (notaAtual) {
+    nota = notas.find(n => n.id === notaAtual);
+    if (nota) { nota.titulo = titulo; nota.conteudo = conteudo; nota.atualizado = new Date().toISOString(); }
   } else {
-    const nova={id:'n_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),titulo,conteudo,tipo:'nota',tags:[],fonteIA:'nenhuma',criado:new Date().toISOString(),atualizado:new Date().toISOString()};
-    _cache.notas.unshift(nova);notaAtual=nova.id;
-    await dbSaveNota(nova);
+    nota = { id: n(), titulo, conteudo, tipo: 'nota', tags: [], criado: new Date().toISOString(), atualizado: new Date().toISOString() };
+    notas.push(nota);
+    notaAtual = nota.id;
   }
-  setSaveStatus('ok');
-  document.getElementById('metaData').textContent=formatDate(new Date().toISOString());
-  if(!silent){const btn=document.querySelector('.btn-primary[onclick="salvarNota()"]');if(btn){const o=btn.textContent;btn.textContent='✅ Salvo!';setTimeout(()=>btn.textContent=o,1500);}}
+  DB.set('notas', notas);
   render();
+  // Flash feedback
+  const btn = document.querySelector('.btn-primary[onclick="salvarNota()"]');
+  const orig = btn.textContent;
+  btn.textContent = '✅ Salvo!';
+  setTimeout(() => btn.textContent = orig, 1500);
 }
 
-async function salvarMetaNota() {
-  if(!notaAtual)return;
-  const nota=_cache.notas.find(n=>n.id===notaAtual);
-  if(!nota)return;
-  nota.projeto =document.getElementById('editMetaProjeto').value;
-  nota.tipo    =document.getElementById('editMetaTipo').value;
-  nota.tags    =document.getElementById('editMetaTags').value.split(',').map(t=>t.trim()).filter(Boolean);
-  nota.fonteIA =document.getElementById('editFonteIA').value;
-  nota.atualizado=new Date().toISOString();
-  await dbSaveNota(nota);
-  hideModal('modalEditMeta');
-  abrirNota(nota.id);render();
+function novoScript() {
+  document.getElementById('novoTipo').value = 'script';
+  showModal('modalNota');
 }
-
-function confirmarDeletarNota(id) {
-  if(!id)return;
-  const nota=_cache.notas.find(n=>n.id===id);
-  if(!nota)return;
-  mostrarConfirm('🗑️','Excluir nota?',`"${nota.titulo}" será excluída permanentemente.`,async()=>{
-    _cache.notas=_cache.notas.filter(n=>n.id!==id);
-    await dbDeleteNota(id);
-    if(notaAtual===id){notaAtual=null;showView('dashboard');}
-    render();
-  });
-}
-
-function confirmarDeletarProj(id) {
-  const p=_cache.projetos.find(p=>p.id===id);
-  if(!p)return;
-  const cnt=_cache.notas.filter(n=>n.projeto===id).length;
-  mostrarConfirm('⚠️','Excluir projeto?',`"${p.nome}" e ${cnt} nota${cnt!==1?'s':''} serão excluídos.`,async()=>{
-    _cache.projetos=_cache.projetos.filter(p=>p.id!==id);
-    _cache.notas=_cache.notas.filter(n=>n.projeto!==id);
-    await dbDeleteProj(id);render();
-  });
-}
-
-function mostrarConfirm(icon,titulo,msg,onOk){
-  document.getElementById('confirmIcon').textContent=icon;
-  document.getElementById('confirmTitle').textContent=titulo;
-  document.getElementById('confirmMsg').textContent=msg;
-  document.getElementById('confirmBtn').onclick=()=>{hideModal('modalConfirm');onOk();};
-  showModal('modalConfirm');
-}
-
-function confirmarLogout(){mostrarConfirm('👋','Sair do RAZEC?','Seus dados ficam salvos na nuvem.',async()=>await sb.auth.signOut());}
-
-// UPLOAD
-function novoScript(){document.getElementById('novoTipo').value='script';showModal('modalNota');}
 
 function fazerUpload() {
-  const files=document.getElementById('uploadFile').files;
-  const projetoId=document.getElementById('uploadProjeto').value;
-  const tipoMap={py:'script',js:'script',html:'script',css:'script',sql:'script',md:'nota',txt:'nota',json:'nota'};
-  Array.from(files).forEach(file=>{
-    const reader=new FileReader();
-    reader.onload=async e=>{
-      const ext=file.name.split('.').pop().toLowerCase();
-      const nova={id:'n_'+Date.now()+'_'+Math.random().toString(36).slice(2,6),titulo:file.name,projeto:projetoId,
-        tipo:tipoMap[ext]||'nota',tags:[ext],fonteIA:'nenhuma',
-        conteudo:['md','txt','json'].includes(ext)?e.target.result:'```'+ext+'\n'+e.target.result+'\n```',
-        criado:new Date().toISOString(),atualizado:new Date().toISOString()};
-      _cache.notas.unshift(nova);
-      await dbSaveNota(nova);render();
+  const files = document.getElementById('uploadFile').files;
+  const projetoId = document.getElementById('uploadProjeto').value;
+  const notas = DB.get('notas', []);
+
+  Array.from(files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const ext = file.name.split('.').pop().toLowerCase();
+      const tipoMap = { py:'script', js:'script', html:'script', css:'script', sql:'script', md:'nota', txt:'nota' };
+      notas.push({
+        id: n(),
+        titulo: file.name,
+        projeto: projetoId,
+        tipo: tipoMap[ext] || 'nota',
+        tags: [ext],
+        conteudo: ext === 'md' ? e.target.result : '```'+ext+'\n'+e.target.result+'\n```',
+        criado: new Date().toISOString(),
+        atualizado: new Date().toISOString(),
+      });
+      DB.set('notas', notas);
+      render();
     };
     reader.readAsText(file);
   });
   hideModal('modalUpload');
 }
 
-// PREVIEW
-function togglePreview(){const p=document.getElementById('previewPanel');p.classList.toggle('show');if(p.classList.contains('show'))renderPreview();}
-function renderPreview(){
-  let h=document.getElementById('editorBody').value;
-  h=h.replace(/```(\w*)\n([\s\S]*?)```/gm,(_,l,c)=>`<pre><code>${escH(c)}</code></pre>`)
-     .replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>')
-     .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\*(.+?)\*/g,'<em>$1</em>')
-     .replace(/`([^`]+)`/g,'<code>$1</code>').replace(/^- \[x\] (.+)$/gm,'<li>✅ $1</li>')
-     .replace(/^- \[ \] (.+)$/gm,'<li>⬜ $1</li>').replace(/^- (.+)$/gm,'<li>$1</li>')
-     .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>').replace(/\n\n/g,'</p><p>');
-  document.getElementById('previewPanel').innerHTML='<p>'+h+'</p>';
+function togglePreview() {
+  const panel = document.getElementById('previewPanel');
+  const show = !panel.classList.contains('show');
+  panel.classList.toggle('show', show);
+  if (show) renderPreview();
 }
-document.addEventListener('DOMContentLoaded',()=>{
-  document.getElementById('editorBody').addEventListener('input',()=>{
-    if(document.getElementById('previewPanel').classList.contains('show'))renderPreview();
-  });
+
+function renderPreview() {
+  const md = document.getElementById('editorBody').value;
+  let html = md
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/```(\w*)\n([\s\S]*?)```/g, '<pre><code class="lang-$1">$2</code></pre>')
+    .replace(/^- (.+)$/gm, '<li>$1</li>')
+    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+    .replace(/\[\[(.+?)\]\]/g, '<a href="#">[[$1]]</a>')
+    .replace(/\[x\]/g, '✅').replace(/\[ \]/g, '⬜')
+    .replace(/\n\n/g, '</p><p>');
+  document.getElementById('previewPanel').innerHTML = '<p>' + html + '</p>';
+}
+
+document.getElementById('editorBody').addEventListener('input', () => {
+  if (document.getElementById('previewPanel').classList.contains('show')) renderPreview();
 });
-function fmt(b,a){const ta=document.getElementById('editorBody');const s=ta.selectionStart,e=ta.selectionEnd;ta.value=ta.value.slice(0,s)+b+ta.value.slice(s,e)+a+ta.value.slice(e);ta.focus();ta.selectionStart=s+b.length;ta.selectionEnd=e+b.length;triggerAutoSave();}
+
+function fmt(before, after) {
+  const ta = document.getElementById('editorBody');
+  const start = ta.selectionStart, end = ta.selectionEnd;
+  const sel = ta.value.substring(start, end);
+  ta.value = ta.value.substring(0, start) + before + sel + after + ta.value.substring(end);
+  ta.focus();
+}
+
+function filtrarPorProjeto(projetoId) {
+  const notas = DB.get('notas', []).filter(n => n.projeto === projetoId);
+  const proj = DB.get('projetos', []).find(p => p.id === projetoId);
+  document.getElementById('advSearch').value = '';
+  const results = document.getElementById('searchResults');
+  results.innerHTML = `<div style="margin-bottom:12px;font-size:14px;font-weight:600;color:var(--text)">${proj?.icon||'📁'} ${proj?.nome}</div>` +
+    notas.map(n => `
+      <div class="sr-item" onclick="abrirNota('${n.id}')">
+        <div class="sr-title">${n.titulo}</div>
+        <div class="sr-excerpt">${n.conteudo.slice(0,120).replace(/[#*`]/g,'')}...</div>
+        <div class="sr-path">${n.tipo} · ${(n.tags||[]).join(', ')}</div>
+      </div>
+    `).join('');
+  showView('search');
+}
+
+function buscarGlobal(q) {
+  if (!q || q.length < 2) return;
+  buscarAvancado(q);
+  showView('search');
+}
+
+function buscarAvancado(q) {
+  const notas = DB.get('notas', []);
+  const resultados = q.length < 2 ? notas : notas.filter(n =>
+    n.titulo.toLowerCase().includes(q.toLowerCase()) ||
+    n.conteudo.toLowerCase().includes(q.toLowerCase()) ||
+    (n.tags||[]).some(t => t.toLowerCase().includes(q.toLowerCase()))
+  );
+  const hl = (text, q) => text.replace(new RegExp(q, 'gi'), m => `<mark>${m}</mark>`);
+  document.getElementById('searchResults').innerHTML = resultados.length
+    ? resultados.map(n => `
+        <div class="sr-item" onclick="abrirNota('${n.id}')">
+          <div class="sr-title">${q ? hl(n.titulo, q) : n.titulo}</div>
+          <div class="sr-excerpt">${q ? hl(n.conteudo.slice(0,150).replace(/[#*`]/g,''), q) : n.conteudo.slice(0,150)}...</div>
+          <div class="sr-path">📁 ${n.projeto || 'sem projeto'} · ${n.tipo} · ${(n.tags||[]).join(', ')}</div>
+        </div>
+      `).join('')
+    : '<div style="color:var(--muted);font-size:13px">Nenhum resultado para "'+q+'"</div>';
+}
+
+function filtroSearch(tipo) {
+  document.getElementById('advSearch').focus();
+  const hints = { projeto:'projeto:', tag:'tag:', tipo:'tipo:', data:'data:' };
+  document.getElementById('advSearch').value = hints[tipo] || '';
+}
 
 // ═══════════════════════════════════════════════════════════
-// PROMPT GENERATOR — BIBLIOTECA INTELIGENTE
+// IA — Anthropic Claude API
 // ═══════════════════════════════════════════════════════════
-const PROMPT_CATS = [
-  { id:'geral',      icon:'⚡', label:'Geral',      kw:[] },
-  { id:'marketing',  icon:'📊', label:'Marketing',  kw:['marketing','instagram','cliente','venda','produto','marca','campanha','social','conteúdo','engajamento','funil','lead','copy','anúncio','tráfego'] },
-  { id:'negocios',   icon:'💼', label:'Negócios',   kw:['negócio','empresa','startup','gestão','estratégia','reunião','meta','okr','kpi','receita','lucro','sócio','contrato','proposta','pitch'] },
-  { id:'tech',       icon:'💻', label:'Tech',       kw:['código','função','api','bug','deploy','banco','sql','python','javascript','react','sistema','software','backend','frontend','git','docker','aws'] },
-  { id:'educacao',   icon:'📚', label:'Educação',   kw:['estudo','aprender','curso','aula','prova','resumo','matéria','faculdade','concurso','livro','certificado','habilidade'] },
-  { id:'criativo',   icon:'🎨', label:'Criativo',   kw:['ideia','criativo','roteiro','história','personagem','blog','artigo','post','vídeo','podcast','design','branding','narrativa'] },
-  { id:'saude',      icon:'🏥', label:'Saúde',      kw:['saúde','treino','dieta','exercício','médico','suplemento','sono','estresse','ansiedade','bem-estar','alimentação','nutrição'] },
-  { id:'financas',   icon:'💰', label:'Finanças',   kw:['dinheiro','investimento','renda','despesa','orçamento','poupança','dividendo','ação','cripto','imposto','fluxo','patrimônio'] },
-  { id:'projetos',   icon:'🎯', label:'Projetos',   kw:['projeto','prazo','entrega','sprint','backlog','tarefa','equipe','cliente','escopo','risco','cronograma','milestone'] },
-  { id:'juridico',   icon:'⚖️', label:'Jurídico',   kw:['contrato','lei','cláusula','direito','obrigação','responsabilidade','compliance','lgpd','termo','acordo','litígio'] },
-];
 
-const PROMPT_LIB = {
-  geral: [
-    { icon:'📋', title:'Resumo executivo', desc:'Sintetiza em pontos-chave',
-      fn:(t,c)=>`Você é um especialista em síntese de informações. Crie um resumo executivo claro e objetivo da nota abaixo.\n\n**Nota:** ${t}\n\n${c}\n\n**Instruções:**\n- Liste 3-5 pontos principais em tópicos\n- Use linguagem direta e objetiva\n- Destaque insights mais relevantes\n- Finalize com uma conclusão de 1-2 frases` },
-    { icon:'✅', title:'Lista de tarefas', desc:'Extrai e organiza ações pendentes',
-      fn:(t,c)=>`Analise a nota abaixo e extraia todas as tarefas, ações e próximos passos.\n\n**Nota:** ${t}\n\n${c}\n\n**Organize em:**\n🔴 Urgente/Crítico\n🟡 Importante (esta semana)\n🟢 Pode aguardar\n✅ Já concluído\n\nSe não houver tarefas explícitas, sugira quais deveriam ser feitas com base no contexto.` },
-    { icon:'💡', title:'Expandir e aprofundar', desc:'Desenvolve com mais detalhes e exemplos',
-      fn:(t,c)=>`Você é um especialista no assunto abaixo. Expanda este conteúdo com profundidade, exemplos práticos e contexto adicional.\n\n**Nota:** ${t}\n\n${c}\n\n**Inclua:**\n- Explicações mais detalhadas de cada ponto\n- 2-3 exemplos práticos do mundo real\n- Contexto e por que isso é relevante\n- Possíveis desdobramentos ou próximos passos` },
-    { icon:'❓', title:'Perguntas poderosas', desc:'Gera questões para reflexão e estudo',
-      fn:(t,c)=>`Com base na nota abaixo, crie perguntas que estimulem o pensamento crítico e aprofundem a compreensão.\n\n**Nota:** ${t}\n\n${c}\n\n**Crie:**\n- 3 perguntas de compreensão (o quê/como/quando)\n- 3 perguntas de análise (por quê/qual o impacto)\n- 2 perguntas desafiadoras (e se/como aplicar)\n- 1 pergunta reflexiva (o que você faria diferente)` },
-    { icon:'🔄', title:'Perspectivas alternativas', desc:'Analisa o tema por ângulos diferentes',
-      fn:(t,c)=>`Analise a nota abaixo sob diferentes perspectivas e apresente pontos de vista alternativos.\n\n**Nota:** ${t}\n\n${c}\n\n**Apresente:**\n- Perspectiva otimista: quais oportunidades isso cria?\n- Perspectiva crítica: quais são os riscos e limitações?\n- Perspectiva prática: o que é realmente viável agora?\n- Perspectiva de longo prazo: como isso evolui nos próximos anos?` },
-    { icon:'📝', title:'Revisar e melhorar texto', desc:'Correção, clareza e fluidez',
-      fn:(t,c)=>`Você é um revisor profissional. Revise e melhore o texto abaixo mantendo a intenção original.\n\n**Título:** ${t}\n\n**Texto:**\n${c}\n\n**Corrija e melhore:**\n- Gramática e ortografia\n- Clareza e objetividade\n- Fluidez e ritmo de leitura\n- Estrutura e organização\n- Elimine redundâncias\n\nApresente a versão revisada completa.` },
-  ],
-  marketing: [
-    { icon:'🎯', title:'Estratégia de conteúdo', desc:'Plano completo de marketing de conteúdo',
-      fn:(t,c)=>`Você é um estrategista de marketing digital sênior. Crie uma estratégia de conteúdo completa com base nesta nota.\n\n**Contexto:** ${t}\n\n${c}\n\n**Entregue:**\n1. Público-alvo (persona detalhada)\n2. Objetivos SMART (3 meses)\n3. Canais prioritários e por quê\n4. Calendário editorial (4 semanas de temas)\n5. Formatos de conteúdo por canal\n6. KPIs para medir sucesso\n7. Dicas para primeiros 30 dias` },
-    { icon:'✍️', title:'Copy persuasivo', desc:'Texto de vendas que converte',
-      fn:(t,c)=>`Você é um copywriter especialista em conversão. Crie um copy persuasivo baseado nesta nota.\n\n**Produto/Serviço:** ${t}\n\n**Informações:**\n${c}\n\n**Crie versões para:**\n📱 Post Instagram (legenda completa com CTA)\n📧 Email de vendas (assunto + corpo)\n🎯 Anúncio Google/Facebook (headline + descrição)\n💬 WhatsApp (mensagem de abordagem)\n\nUse gatilhos: escassez, prova social, benefício claro, autoridade.` },
-    { icon:'👥', title:'Persona do cliente ideal', desc:'Define o ICP com profundidade',
-      fn:(t,c)=>`Baseado nas informações abaixo, crie uma persona detalhada do cliente ideal (ICP).\n\n**Contexto:** ${t}\n\n${c}\n\n**Perfil completo:**\n- Nome fictício, idade, ocupação, renda\n- Onde mora e estilo de vida\n- Dores e frustrações principais (top 3)\n- Desejos e objetivos (top 3)\n- Onde busca informação (canais, influencers)\n- Objeções de compra\n- Como toma decisão de compra\n- Frase que diria sobre o problema que você resolve` },
-    { icon:'📈', title:'Funil de vendas', desc:'Estratégia do topo ao fundo do funil',
-      fn:(t,c)=>`Você é especialista em funil de vendas. Crie uma estratégia completa para converter prospects em clientes.\n\n**Negócio/Produto:** ${t}\n\n${c}\n\n**Monte o funil:**\n🔝 TOPO (Conscientização): como atrair desconhecidos\n🔄 MEIO (Consideração): como nutrir leads com valor\n🔻 FUNDO (Decisão): como converter em vendas\n🔁 PÓS-VENDA: como fidelizar e gerar indicações\n\nPara cada etapa: conteúdos, canais, métricas e gatilhos de passagem para próxima fase.` },
-    { icon:'🚀', title:'Lançamento de produto', desc:'Plano de lançamento em 30 dias',
-      fn:(t,c)=>`Crie um plano de lançamento de 30 dias para o produto/serviço abaixo.\n\n**Produto:** ${t}\n\n${c}\n\n**Planejamento por semanas:**\n📅 Semana 1 (Preparação): o que preparar\n📢 Semana 2 (Aquecimento): como gerar antecipação\n🎯 Semana 3 (Lançamento): sequência de ações\n📊 Semana 4 (Pós-lançamento): otimização\n\nInclua: métricas de sucesso, checklist de pré-lançamento e estratégia de e-mail.` },
-    { icon:'💬', title:'Scripts de vendas', desc:'Roteiros para WhatsApp e chamadas',
-      fn:(t,c)=>`Crie scripts de vendas profissionais e naturais para abordar clientes.\n\n**Produto/Serviço:** ${t}\n\n${c}\n\n**Crie roteiros para:**\n📱 Primeiro contato WhatsApp (sem parecer spam)\n📞 Ligação de qualificação (perguntas + apresentação)\n🔄 Follow-up após proposta (sem ser chato)\n⚠️ Resposta a objeções comuns:\n  - "Está caro"\n  - "Vou pensar"\n  - "Não tenho tempo agora"\n  - "Já tenho fornecedor"` },
-  ],
-  negocios: [
-    { icon:'🎯', title:'Plano estratégico', desc:'Estratégia completa com metas e ações',
-      fn:(t,c)=>`Você é um consultor de negócios sênior. Crie um plano estratégico baseado nesta nota.\n\n**Contexto:** ${t}\n\n${c}\n\n**Estruture:**\n1. Diagnóstico atual (forças, fraquezas, oportunidades, ameaças)\n2. Visão e missão (onde quer chegar)\n3. OKRs para 90 dias (3 objetivos + resultados-chave mensuráveis)\n4. Iniciativas prioritárias (top 5 ações)\n5. Recursos necessários (pessoas, dinheiro, tempo)\n6. Riscos e planos de contingência\n7. Indicadores de acompanhamento semanal` },
-    { icon:'💰', title:'Modelo de negócio', desc:'Canvas e proposta de valor',
-      fn:(t,c)=>`Analise e estruture o modelo de negócio baseado nesta nota usando o Business Model Canvas.\n\n**Negócio:** ${t}\n\n${c}\n\n**Canvas completo:**\n🎯 Segmentos de clientes\n💎 Proposta de valor (por segmento)\n📡 Canais de distribuição\n🤝 Relacionamento com clientes\n💵 Fontes de receita\n🔑 Recursos-chave\n⚙️ Atividades-chave\n🤜 Parcerias principais\n💸 Estrutura de custos\n\n+ Análise de viabilidade e próximos passos.` },
-    { icon:'📊', title:'Análise de mercado', desc:'Oportunidades, concorrência e posicionamento',
-      fn:(t,c)=>`Faça uma análise de mercado completa baseada neste contexto.\n\n**Mercado/Segmento:** ${t}\n\n${c}\n\n**Analise:**\n📏 Tamanho do mercado (TAM, SAM, SOM estimados)\n📈 Tendências e crescimento\n🏆 Principais players e suas estratégias\n🎯 Oportunidades não exploradas\n⚠️ Barreiras de entrada\n✅ Diferencial competitivo possível\n🚀 Estratégia de posicionamento recomendada` },
-    { icon:'🤝', title:'Proposta comercial', desc:'Proposta profissional que fecha negócio',
-      fn:(t,c)=>`Crie uma proposta comercial profissional e persuasiva.\n\n**Serviço/Produto:** ${t}\n\n${c}\n\n**Estrutura da proposta:**\n1. Resumo executivo (problema + solução)\n2. Entendimento do desafio do cliente\n3. Nossa solução (metodologia e entregáveis)\n4. Por que nos escolher (diferenciais + cases)\n5. Investimento e opções\n6. Cronograma e próximos passos\n7. Garantias e condições\n\nTom: profissional, confiante e centrado no cliente.` },
-    { icon:'📋', title:'Ata de reunião', desc:'Estrutura profissional de ata',
-      fn:(t,c)=>`Transforme as notas desta reunião em uma ata profissional e organizada.\n\n**Reunião:** ${t}\n\n**Notas:**\n${c}\n\n**Ata estruturada:**\n📅 Data, participantes e objetivo\n📋 Pauta discutida\n✅ Decisões tomadas\n🎯 Ações (o quê + responsável + prazo)\n⚠️ Pontos em aberto / pendências\n📅 Próxima reunião\n\nTom formal e objetivo.` },
-    { icon:'🔍', title:'SWOT detalhado', desc:'Análise estratégica completa',
-      fn:(t,c)=>`Faça uma análise SWOT detalhada e acionável com base nesta nota.\n\n**Contexto:** ${t}\n\n${c}\n\n**Analise:**\n💪 FORÇAS (internas): o que faz muito bem\n⚠️ FRAQUEZAS (internas): onde está vulnerável\n🚀 OPORTUNIDADES (externas): o que o mercado oferece\n🌪️ AMEAÇAS (externas): o que pode prejudicar\n\n**Cruze as análises:**\n- Como usar forças para aproveitar oportunidades?\n- Como usar forças para mitigar ameaças?\n- Como superar fraquezas para capturar oportunidades?\n- Como se proteger de ameaças considerando as fraquezas?` },
-  ],
-  tech: [
-    { icon:'🐛', title:'Debug e solução de bugs', desc:'Análise e correção de problemas',
-      fn:(t,c)=>`Você é um engenheiro de software sênior. Analise o problema e ajude a resolver.\n\n**Problema:** ${t}\n\n**Contexto/Código:**\n${c}\n\n**Responda:**\n1. Diagnóstico: qual é o provável problema e por quê\n2. Possíveis causas (da mais para menos provável)\n3. Solução passo a passo\n4. Código corrigido (se aplicável)\n5. Como testar a correção\n6. Como evitar este problema no futuro` },
-    { icon:'🏗️', title:'Arquitetura e design', desc:'Boas práticas e estrutura do sistema',
-      fn:(t,c)=>`Você é um arquiteto de software. Analise e recomende a melhor arquitetura para este projeto.\n\n**Projeto:** ${t}\n\n${c}\n\n**Avalie e recomende:**\n1. Arquitetura adequada (monolito, microsserviços, serverless)\n2. Stack tecnológica recomendada e justificativa\n3. Estrutura de pastas e organização do código\n4. Padrões de design aplicáveis\n5. Estratégia de banco de dados\n6. Segurança (autenticação, autorização, dados)\n7. Escalabilidade e performance\n8. O que evitar neste caso` },
-    { icon:'📖', title:'Documentação técnica', desc:'Docs claras para devs e usuários',
-      fn:(t,c)=>`Crie documentação técnica clara e completa para o código/sistema abaixo.\n\n**Sistema:** ${t}\n\n${c}\n\n**Gere:**\n📌 README (visão geral, instalação, uso rápido)\n⚙️ Configuração e variáveis de ambiente\n🔌 Documentação da API (endpoints, parâmetros, exemplos)\n📋 Guia de contribuição (se open source)\n🚀 Deploy e CI/CD\n❓ FAQ e problemas comuns\n\nUse Markdown com exemplos de código.` },
-    { icon:'🔍', title:'Code review', desc:'Revisão com boas práticas e melhorias',
-      fn:(t,c)=>`Faça um code review detalhado do código abaixo com foco em qualidade e boas práticas.\n\n**Contexto:** ${t}\n\n**Código:**\n${c}\n\n**Avalie:**\n✅ O que está bem feito\n⚠️ Problemas de qualidade (naming, estrutura, legibilidade)\n🐛 Possíveis bugs ou comportamentos inesperados\n🔒 Vulnerabilidades de segurança\n⚡ Oportunidades de performance\n📋 Sugestões de refatoração\n\nPriorize por impacto: crítico > importante > sugestão.` },
-    { icon:'🧪', title:'Estratégia de testes', desc:'Plano de testes completo',
-      fn:(t,c)=>`Crie uma estratégia de testes abrangente para o sistema abaixo.\n\n**Sistema:** ${t}\n\n${c}\n\n**Plano de testes:**\n🔬 Testes unitários (o que testar, exemplos)\n🔗 Testes de integração (fluxos críticos)\n🖥️ Testes E2E (cenários do usuário)\n⚡ Testes de performance (gargalos esperados)\n🔒 Testes de segurança (vulnerabilidades comuns)\n\nInclua exemplos de código de teste e ferramentas recomendadas.` },
-    { icon:'🚀', title:'Otimização de performance', desc:'Identificar e resolver gargalos',
-      fn:(t,c)=>`Analise e sugira otimizações de performance para o código/sistema abaixo.\n\n**Sistema:** ${t}\n\n${c}\n\n**Analise:**\n⚡ Gargalos mais prováveis\n🗄️ Otimizações de banco de dados (queries, índices)\n💾 Estratégias de cache\n🌐 Otimizações de rede e API\n🖥️ Performance de frontend (se aplicável)\n📊 Métricas a monitorar\n\nPriorize pelo impacto × esforço e forneça exemplos de código.` },
-  ],
-  educacao: [
-    { icon:'📚', title:'Plano de estudos', desc:'Cronograma estruturado de aprendizado',
-      fn:(t,c)=>`Crie um plano de estudos detalhado e eficaz para o tema abaixo.\n\n**Assunto:** ${t}\n\n**Contexto:**\n${c}\n\n**Plano estruturado:**\n🎯 Objetivo final e nível esperado\n📅 Cronograma semanal (4-8 semanas)\n📖 Recursos por semana (livros, cursos, vídeos, artigos)\n✅ Exercícios e projetos práticos\n🔄 Revisões espaçadas (quando revisar o quê)\n📊 Como medir o progresso\n💡 Dicas de produtividade para este assunto` },
-    { icon:'🗺️', title:'Mapa mental', desc:'Estrutura visual do conhecimento',
-      fn:(t,c)=>`Crie um mapa mental completo e estruturado para o tema abaixo.\n\n**Tema:** ${t}\n\n${c}\n\n**Estrutura do mapa mental (em texto):**\n🌟 CENTRO: tema principal\n\n📌 RAMO 1: [primeiro conceito principal]\n  ├── subtópico\n  ├── subtópico\n  └── exemplo prático\n\n📌 RAMO 2: [segundo conceito]\n  ├── ...\n\nContinue para todos os conceitos relevantes. Inclua conexões entre ramos onde existirem.` },
-    { icon:'🎓', title:'Explicação didática', desc:'Explica como se fosse a primeira vez',
-      fn:(t,c)=>`Explique o conceito abaixo de forma didática, clara e progressiva.\n\n**Conceito:** ${t}\n\n${c}\n\n**Explique em 3 níveis:**\n🟢 BÁSICO: explique como se fosse para um iniciante completo (sem jargões)\n🟡 INTERMEDIÁRIO: aprofunde com terminologia e nuances\n🔴 AVANÇADO: casos complexos, exceções e aplicações profissionais\n\n**Para cada nível:** use analogias, exemplos do dia a dia e, quando possível, analogias visuais (descreva um diagrama).` },
-    { icon:'📝', title:'Questões de fixação', desc:'Exercícios e gabarito para revisar',
-      fn:(t,c)=>`Crie um conjunto de questões para testar e fixar o aprendizado sobre este tema.\n\n**Tema:** ${t}\n\n${c}\n\n**Crie:**\n✅ 5 questões de múltipla escolha (com gabarito e explicação)\n❓ 3 questões dissertativas (com resposta modelo)\n🧩 2 questões de aplicação prática (problema para resolver)\n💡 1 desafio avançado\n\nOrdenação: do mais simples ao mais complexo.` },
-    { icon:'🔗', title:'Conexões com outros temas', desc:'Relaciona com conhecimento já existente',
-      fn:(t,c)=>`Mapeie as conexões deste tema com outras áreas do conhecimento.\n\n**Tema:** ${t}\n\n${c}\n\n**Identifique conexões com:**\n- Outros campos do conhecimento (matemática, filosofia, história, ciências)\n- Aplicações no dia a dia e no mundo profissional\n- Como este conceito evolui historicamente\n- Debates e controvérsias atuais\n- Quem são os principais pensadores/pesquisadores\n- Recursos avançados para quem quer ir além` },
-  ],
-  criativo: [
-    { icon:'💡', title:'Brainstorming de ideias', desc:'Gera 20+ ideias criativas',
-      fn:(t,c)=>`Você é um especialista em criatividade e inovação. Faça um brainstorming intenso sobre o tema abaixo.\n\n**Tema:** ${t}\n\n${c}\n\n**Gere:**\n🔥 20 ideias sem filtro (quantidade sobre qualidade)\n⭐ Top 5 ideias mais promissoras (expandidas)\n🌀 3 ideias completamente fora da caixa\n🔗 Combinações interessantes entre as ideias\n🚀 Qual ideia você deveria começar hoje e por quê\n\nNão se limite por viabilidade agora — ouse!` },
-    { icon:'📖', title:'Roteiro e estrutura narrativa', desc:'Estrutura de história impactante',
-      fn:(t,c)=>`Crie uma estrutura narrativa poderosa para o conteúdo abaixo.\n\n**Tema/Produto:** ${t}\n\n${c}\n\n**Estruture usando a Jornada do Herói:**\n1. Mundo comum (situação atual do público)\n2. O chamado (o problema/oportunidade)\n3. Resistência (objeções e medos)\n4. Mentor/Guia (você/seu produto)\n5. A jornada (o processo de transformação)\n6. A provação (maior desafio)\n7. A recompensa (resultado final)\n\nAdapte para: vídeo, artigo, pitch de vendas ou post.` },
-    { icon:'🖊️', title:'Artigo/Blog completo', desc:'Artigo profissional otimizado',
-      fn:(t,c)=>`Escreva um artigo completo e profissional sobre o tema abaixo.\n\n**Tema:** ${t}\n\n${c}\n\n**Estrutura do artigo:**\n📰 Headline magnética (3 opções)\n🎯 Lead irresistível (primeiras 3 frases que prendem)\n📋 Índice (se artigo longo)\n📖 Desenvolvimento (com subtítulos, exemplos, dados)\n💡 Caixa de destaque com insight principal\n✅ Lista de ações práticas\n🔚 Conclusão com CTA\n\nTom: [informativo/persuasivo/inspirador] — ajuste ao objetivo.` },
-    { icon:'📱', title:'Conteúdo para redes sociais', desc:'Posts para Instagram, LinkedIn e YouTube',
-      fn:(t,c)=>`Crie conteúdo otimizado para diferentes plataformas sobre o tema abaixo.\n\n**Tema:** ${t}\n\n${c}\n\n**Crie para cada plataforma:**\n📸 Instagram:\n  - Legenda (com ganchos, desenvolvimento e CTA)\n  - 15 hashtags estratégicas\n  - Sugestão de visual/carrossel\n\n💼 LinkedIn:\n  - Post longo com storytelling profissional\n  - Gancho das primeiras linhas\n\n🎥 YouTube:\n  - Título clicável (5 opções)\n  - Roteiro resumido (intro + 3 tópicos + CTA)\n  - Descrição com palavras-chave` },
-    { icon:'🎙️', title:'Roteiro de podcast/vídeo', desc:'Script completo com timing',
-      fn:(t,c)=>`Crie um roteiro completo de podcast ou vídeo sobre o tema abaixo.\n\n**Tema:** ${t}\n\n${c}\n\n**Roteiro (30 min estimado):**\n⏱️ 0:00-2:00 — INTRO: gancho + o que o ouvinte vai aprender\n⏱️ 2:00-5:00 — CONTEXTO: por que este tema importa agora\n⏱️ 5:00-20:00 — DESENVOLVIMENTO:\n  • Bloco 1: [primeiro grande ponto]\n  • Bloco 2: [segundo grande ponto]\n  • Bloco 3: [terceiro grande ponto]\n⏱️ 20:00-27:00 — APROFUNDAMENTO: exemplos e casos reais\n⏱️ 27:00-30:00 — FECHAMENTO: resumo + CTA + próximo episódio` },
-  ],
-  saude: [
-    { icon:'🏋️', title:'Plano de treino', desc:'Rotina personalizada de exercícios',
-      fn:(t,c)=>`Você é um personal trainer especializado. Crie um plano de treino baseado nas informações abaixo.\n\n**Objetivo/Contexto:** ${t}\n\n${c}\n\n**Plano completo:**\n🎯 Objetivo principal e secundários\n📅 Divisão semanal (quantos dias, quais grupos musculares)\n\n**Para cada dia:**\n- Aquecimento (5-10 min)\n- Exercícios (série x repetição x descanso)\n- Volta à calma\n\n⚡ Progressão (como evoluir nas próximas 4 semanas)\n⚠️ Cuidados e prevenção de lesões\n🍎 Dicas nutricionais complementares` },
-    { icon:'🥗', title:'Plano alimentar e nutrição', desc:'Orientações nutricionais detalhadas',
-      fn:(t,c)=>`Você é nutricionista. Forneça orientações nutricionais baseadas no contexto abaixo.\n\n**Objetivo:** ${t}\n\n${c}\n\n**Guia nutricional:**\n🎯 Objetivo calórico estimado\n🍽️ Distribuição de macros (proteína, carbo, gordura)\n📅 Exemplo de cardápio semanal\n🛒 Lista de compras essencial\n⚠️ Alimentos a evitar/limitar\n💡 Dicas práticas para o dia a dia\n⏰ Timing das refeições\n💊 Suplementação (se aplicável)\n\n*Consulte um profissional de saúde para orientações personalizadas.*` },
-    { icon:'🧠', title:'Saúde mental e bem-estar', desc:'Estratégias para equilíbrio emocional',
-      fn:(t,c)=>`Você é especialista em saúde mental e bem-estar. Forneça estratégias baseadas no contexto abaixo.\n\n**Situação:** ${t}\n\n${c}\n\n**Plano de bem-estar:**\n🧘 Técnicas de gestão de estresse (3 práticas imediatas)\n😴 Higiene do sono (rotina e ambiente)\n🏃 Movimento e exercício (mínimo viável)\n🤝 Conexões sociais e apoio\n📱 Detox digital e limites saudáveis\n📔 Práticas de autoconhecimento (journaling, meditação)\n🆘 Quando buscar ajuda profissional\n\n*Para questões sérias de saúde mental, consulte um profissional.*` },
-    { icon:'📊', title:'Análise de hábitos', desc:'Identifica padrões e sugere mudanças',
-      fn:(t,c)=>`Analise os hábitos descritos abaixo e sugira um plano de mudança gradual e sustentável.\n\n**Contexto:** ${t}\n\n${c}\n\n**Análise completa:**\n✅ Hábitos positivos a manter e ampliar\n⚠️ Hábitos a eliminar (prioridade alta)\n🔄 Hábitos a modificar gradualmente\n\n**Plano de mudança (método dos pequenos passos):**\n- Semana 1-2: apenas uma mudança (qual?)\n- Semana 3-4: adicionar segunda mudança\n- Mês 2: consolidar e adicionar mais\n\n💡 Gatilhos, rotinas e recompensas (framework de hábitos)` },
-  ],
-  financas: [
-    { icon:'💰', title:'Planejamento financeiro', desc:'Orçamento e controle de gastos',
-      fn:(t,c)=>`Você é consultor financeiro. Crie um planejamento financeiro baseado neste contexto.\n\n**Situação:** ${t}\n\n${c}\n\n**Planejamento completo:**\n📊 Diagnóstico financeiro atual\n🎯 Metas financeiras (curto, médio e longo prazo)\n💸 Orçamento mensal otimizado (regra 50-30-20 adaptada)\n🏦 Estratégia de reserva de emergência\n📈 Primeiros investimentos recomendados\n💳 Gestão de dívidas (se houver)\n🗓️ Plano de ação para os próximos 90 dias\n⚠️ Erros financeiros a evitar` },
-    { icon:'📈', title:'Estratégia de investimentos', desc:'Carteira e alocação de ativos',
-      fn:(t,c)=>`Você é analista de investimentos. Oriente sobre estratégia de investimentos para o perfil abaixo.\n\n**Perfil/Objetivo:** ${t}\n\n${c}\n\n**Estratégia completa:**\n🎯 Definição do perfil de risco\n📊 Alocação sugerida de portfólio\n🏦 Tipos de investimentos recomendados (com %)\n⏰ Horizonte temporal por objetivo\n🔄 Estratégia de rebalanceamento\n⚠️ Riscos a considerar\n💡 Por onde começar (passo a passo)\n\n*Consulte um assessor de investimentos certificado.*` },
-    { icon:'🏢', title:'Finanças do negócio', desc:'Fluxo de caixa, custos e precificação',
-      fn:(t,c)=>`Você é CFO especialista em pequenas empresas. Analise e oriente sobre as finanças abaixo.\n\n**Negócio:** ${t}\n\n${c}\n\n**Análise e recomendações:**\n💵 Fluxo de caixa (como organizar e projetar)\n📊 Ponto de equilíbrio (break-even)\n💰 Precificação correta (markup, margem, valor percebido)\n🏦 Capital de giro necessário\n📋 DRE simplificado\n⚠️ Erros financeiros comuns em negócios\n🚀 Como melhorar a saúde financeira em 90 dias` },
-    { icon:'🔍', title:'Análise de viabilidade', desc:'Vale a pena? Estudo completo',
-      fn:(t,c)=>`Faça uma análise de viabilidade financeira completa para o projeto/investimento abaixo.\n\n**Projeto:** ${t}\n\n${c}\n\n**Análise:**\n💰 Investimento inicial estimado\n📅 Projeção de receitas (3 cenários: pessimista, base, otimista)\n💸 Custos fixos e variáveis\n📊 TIR e VPL (retorno esperado)\n⏰ Payback (tempo de recuperação do investimento)\n⚠️ Principais riscos e mitigações\n✅ Conclusão: vale a pena? Por quê?` },
-  ],
-  projetos: [
-    { icon:'🗓️', title:'Cronograma detalhado', desc:'Planejamento com marcos e prazos',
-      fn:(t,c)=>`Você é gerente de projetos sênior. Crie um cronograma detalhado para o projeto abaixo.\n\n**Projeto:** ${t}\n\n${c}\n\n**Cronograma completo:**\n🎯 Objetivo e escopo do projeto\n📋 Fases do projeto (com datas)\n🗓️ Marcos principais (milestones)\n📌 Backlog de tarefas priorizadas\n👥 Responsáveis sugeridos por área\n⚠️ Dependências entre tarefas\n🔴 Caminho crítico (o que não pode atrasar)\n🚨 Plano de contingência para riscos` },
-    { icon:'⚠️', title:'Gestão de riscos', desc:'Identificação e mitigação de riscos',
-      fn:(t,c)=>`Faça uma análise de riscos completa para o projeto abaixo.\n\n**Projeto:** ${t}\n\n${c}\n\n**Matriz de riscos:**\nPara cada risco identifique:\n- Descrição do risco\n- Probabilidade (Alta/Média/Baixa)\n- Impacto (Alto/Médio/Baixo)\n- Nível de risco (Probabilidade × Impacto)\n- Plano de mitigação (como prevenir)\n- Plano de contingência (o que fazer se ocorrer)\n- Responsável pelo monitoramento\n\nOrganize do maior para o menor risco.` },
-    { icon:'📊', title:'Status report', desc:'Relatório de progresso profissional',
-      fn:(t,c)=>`Crie um status report profissional e claro para o projeto abaixo.\n\n**Projeto:** ${t}\n\n**Informações:**\n${c}\n\n**Status Report:**\n📊 Semáforo geral: 🟢 No prazo / 🟡 Atenção / 🔴 Crítico\n✅ O que foi concluído (período)\n🔄 Em andamento (% de conclusão)\n📅 Próximas entregas (próximas 2 semanas)\n⚠️ Riscos e impedimentos ativos\n🆘 Decisões necessárias da liderança\n📈 KPIs do projeto (se definidos)` },
-    { icon:'👥', title:'Alinhamento de equipe', desc:'Comunicação e delegação eficaz',
-      fn:(t,c)=>`Crie uma estratégia de alinhamento e comunicação para a equipe do projeto abaixo.\n\n**Projeto/Equipe:** ${t}\n\n${c}\n\n**Plano de comunicação:**\n📅 Cadência de reuniões (quais, quando, com quem)\n📊 Formato de atualização de progresso\n🎯 Como dividir e delegar tarefas claramente\n💬 Canais de comunicação por tipo de assunto\n🔄 Como dar e recibir feedback\n⚠️ Como lidar com conflitos e bloqueios\n🏆 Como celebrar vitórias e manter motivação` },
-  ],
-  juridico: [
-    { icon:'📄', title:'Análise de contrato', desc:'Identifica riscos e cláusulas críticas',
-      fn:(t,c)=>`Você é advogado especialista em contratos. Analise o contrato/cláusulas abaixo.\n\n**Contrato:** ${t}\n\n${c}\n\n**Análise jurídica:**\n✅ Pontos favoráveis e bem redigidos\n⚠️ Cláusulas de risco ou abusivas\n🔴 Pontos críticos que precisam de negociação\n❓ Termos ambíguos que precisam de clareza\n📋 Obrigações de cada parte\n💡 Sugestões de alteração/adição\n\n*Esta análise é educacional. Consulte um advogado para orientação profissional.*` },
-    { icon:'⚖️', title:'Compliance e LGPD', desc:'Adequação regulatória e proteção de dados',
-      fn:(t,c)=>`Analise a conformidade legal e de proteção de dados para o contexto abaixo.\n\n**Negócio/Processo:** ${t}\n\n${c}\n\n**Análise de compliance:**\n🔒 LGPD: dados coletados, bases legais, direitos dos titulares\n📋 Documentos necessários (Política de Privacidade, Termos de Uso)\n⚙️ Processos a implementar (consentimento, exclusão, portabilidade)\n⚠️ Riscos de não conformidade\n🗓️ Plano de adequação (priorizado)\n\n*Consulte um advogado especializado em proteção de dados.*` },
-    { icon:'📝', title:'Termos e políticas', desc:'Minutas de Termos de Uso e Privacidade',
-      fn:(t,c)=>`Crie uma minuta de Termos de Uso e Política de Privacidade para o negócio abaixo.\n\n**Negócio:** ${t}\n\n${c}\n\n**Crie:**\n📜 TERMOS DE USO:\n- Aceitação dos termos\n- Serviços oferecidos\n- Obrigações do usuário\n- Limitação de responsabilidade\n- Propriedade intelectual\n- Rescisão\n\n🔒 POLÍTICA DE PRIVACIDADE:\n- Dados coletados e finalidade\n- Base legal (LGPD)\n- Compartilhamento de dados\n- Direitos do titular\n- Contato do DPO\n\n*Revise com advogado antes de publicar.*` },
-  ],
-};
+async function enviarIA() {
+  const input = document.getElementById('aiInput');
+  const q = input.value.trim();
+  if (!q) return;
+  input.value = '';
 
-let _promptCatAtual = 'geral';
+  const msgs = document.getElementById('aiMessages');
+  msgs.innerHTML += `<div class="ai-msg user">${q}</div>`;
+  msgs.innerHTML += `<div class="ai-msg loading" id="aiLoading">✨ Pensando...</div>`;
+  msgs.scrollTop = msgs.scrollHeight;
 
-function initPromptPanel() {
-  const catsEl = document.getElementById('promptCats');
-  if (!catsEl) return;
-  catsEl.innerHTML = PROMPT_CATS.map(c =>
-    `<button class="prompt-cat${c.id===_promptCatAtual?' active':''}" onclick="selecionarCatPrompt('${c.id}')">${c.icon} ${c.label}</button>`
-  ).join('');
-  renderPromptButtons();
-  carregarEMostrarPromptsComunidade(_promptCatAtual);
-}
+  const conteudoAtual = document.getElementById('editorBody').value;
+  const tituloAtual = document.getElementById('editorTitle').value;
 
-function selecionarCatPrompt(id) {
-  _promptCatAtual = id;
-  document.querySelectorAll('.prompt-cat').forEach(b => b.classList.toggle('active', b.textContent.includes(PROMPT_CATS.find(c=>c.id===id)?.label||'')));
-  renderPromptButtons();
-  carregarEMostrarPromptsComunidade(id);
-  document.getElementById('promptResult').classList.remove('show');
-}
-
-async function carregarEMostrarPromptsComunidade(cat) {
-  const body = document.getElementById('promptBody');
-  if (!body) return;
-  const { data } = await sb.from('prompts_comunidade')
-    .select('id, texto, titulo, uso_count')
-    .eq('categoria', cat)
-    .order('uso_count', { ascending: false })
-    .limit(6);
-  if (!data?.length) return;
-  // Check if promptBody still shows the same category (user may have switched)
-  if (_promptCatAtual !== cat) return;
-  const sep = document.createElement('div');
-  sep.className = 'prompt-community-sep';
-  sep.textContent = '👥 Da comunidade';
-  body.appendChild(sep);
-  data.forEach(p => {
-    const btn = document.createElement('button');
-    btn.className = 'prompt-preset prompt-community';
-    btn.innerHTML = `<div class="prompt-preset-icon">👥</div><div class="prompt-preset-info"><div class="prompt-preset-title">${escH(p.titulo||'Prompt da comunidade')}</div><div class="prompt-preset-desc">Usado ${p.uso_count} vez${p.uso_count!==1?'es':''}</div></div>`;
-    btn.onclick = () => usarPromptComunidade(p.id, p.texto);
-    body.appendChild(btn);
-  });
-}
-
-async function usarPromptComunidade(id, texto) {
-  document.getElementById('promptText').textContent = texto;
-  document.getElementById('promptResult').classList.add('show');
-  document.getElementById('promptCopyBtn').textContent = '📋 Copiar prompt';
-  document.getElementById('promptCopyBtn').classList.remove('copied');
-  document.getElementById('promptSaveBtn').textContent = '💾 Salvar prompt';
-  document.getElementById('promptSaveBtn').classList.remove('saved');
-  document.getElementById('promptSaveBtn').disabled = false;
-  await sb.rpc('increment_uso_prompt', { prompt_id: id });
-}
-
-function renderPromptButtons() {
-  const body = document.getElementById('promptBody');
-  if (!body) return;
-  const prompts = PROMPT_LIB[_promptCatAtual] || PROMPT_LIB.geral;
-  body.innerHTML = prompts.map((p, i) =>
-    `<button class="prompt-preset" onclick="gerarPromptLib(${i})">
-      <div class="prompt-preset-icon">${p.icon}</div>
-      <div class="prompt-preset-info">
-        <div class="prompt-preset-title">${p.title}</div>
-        <div class="prompt-preset-desc">${p.desc}</div>
-      </div>
-    </button>`
-  ).join('');
-}
-
-function gerarPromptLib(idx) {
-  const t = document.getElementById('editorTitle').value || '(sem título)';
-  const c = document.getElementById('editorBody').value || '(sem conteúdo)';
-  const p = (PROMPT_LIB[_promptCatAtual] || PROMPT_LIB.geral)[idx];
-  if (!p) return;
-  document.getElementById('promptText').textContent = p.fn(t, c);
-  document.getElementById('promptResult').classList.add('show');
-  document.getElementById('promptCopyBtn').textContent = '📋 Copiar prompt';
-  document.getElementById('promptCopyBtn').classList.remove('copied');
-  document.getElementById('promptSaveBtn').textContent = '💾 Salvar prompt';
-  document.getElementById('promptSaveBtn').classList.remove('saved');
-  document.getElementById('promptSaveBtn').disabled = false;
-}
-
-function autoDetectarCategoria() {
-  const titulo = (document.getElementById('editorTitle').value || '').toLowerCase();
-  const corpo  = (document.getElementById('editorBody').value || '').toLowerCase();
-  const texto  = titulo + ' ' + corpo;
-  let melhorCat = 'geral', melhorScore = 0;
-  PROMPT_CATS.forEach(cat => {
-    if (!cat.kw.length) return;
-    const score = cat.kw.filter(kw => texto.includes(kw)).length;
-    if (score > melhorScore) { melhorScore = score; melhorCat = cat.id; }
-  });
-  selecionarCatPrompt(melhorCat);
-  document.querySelectorAll('.prompt-cat').forEach(b => {
-    const cat = PROMPT_CATS.find(c => c.id === melhorCat);
-    b.classList.toggle('active', cat && b.textContent.includes(cat.label));
-  });
-}
-
-// Keep legacy for compatibility
-const PROMPTS={
-  resumo:(t,c)=>`Preciso de um resumo objetivo desta nota.\n\nTítulo: ${t}\n\nConteúdo:\n${c}\n\nResuma em 3-5 pontos principais.`,
-  tarefas:(t,c)=>`Liste todas as tarefas desta nota separando pendentes ([ ]) e feitas ([x]).\n\nTítulo: ${t}\n\nConteúdo:\n${c}`,
-  melhorar:(t,c)=>`Revise esta nota e sugira melhorias de conteúdo, estrutura e clareza.\n\nTítulo: ${t}\n\nConteúdo:\n${c}`,
-  codigo:(t,c)=>`Explique o código presente nesta nota de forma didática.\n\nTítulo: ${t}\n\nConteúdo:\n${c}`,
-  perguntas:(t,c)=>`Crie 5 perguntas de revisão para testar o entendimento deste conteúdo.\n\nTítulo: ${t}\n\nConteúdo:\n${c}`,
-  expandir:(t,c)=>`Expanda os pontos desta nota com mais detalhes e exemplos.\n\nTítulo: ${t}\n\nConteúdo:\n${c}`,
-};
-function gerarPrompt(tipo){
-  const t=document.getElementById('editorTitle').value||'(sem título)';
-  const c=document.getElementById('editorBody').value||'(sem conteúdo)';
-  document.getElementById('promptText').textContent=PROMPTS[tipo](t,c);
-  document.getElementById('promptResult').classList.add('show');
-  document.getElementById('promptCopyBtn').textContent='📋 Copiar prompt';
-  document.getElementById('promptCopyBtn').classList.remove('copied');
-}
-function copiarPrompt(){
-  navigator.clipboard.writeText(document.getElementById('promptText').textContent).then(()=>{
-    const btn=document.getElementById('promptCopyBtn');
-    btn.textContent='✅ Copiado! Cole no Claude ou outra IA';btn.classList.add('copied');
-    setTimeout(()=>{btn.textContent='📋 Copiar prompt';btn.classList.remove('copied');},3000);
-  });
-}
-
-async function salvarPrompt(){
-  const texto=document.getElementById('promptText').textContent;
-  if(!texto)return;
-  const titulo=document.getElementById('editorTitle').value||'(sem título)';
-  const btn=document.getElementById('promptSaveBtn');
-  btn.disabled=true;btn.textContent='Salvando...';
-  const id='p-'+Date.now();
-  const agora=new Date().toISOString();
-  const nota={
-    id, titulo:`Prompt — ${titulo}`, conteudo:texto,
-    tipo:'prompt', projeto:'', tags:[], fonteIA:'nenhuma',
-    criado:agora, atualizado:agora
-  };
-  const { error }=await sb.from('notas').insert([{
-    id, user_id:currentUser.id, titulo:nota.titulo,
-    conteudo:texto, tipo:'prompt', projeto_id:'',
-    tags:[], fonte_ia:'nenhuma', criado:agora, atualizado:agora
-  }]);
-  if(!error){
-    _cache.notas.unshift(nota);
-    btn.textContent='✅ Salvo!';btn.classList.add('saved');
-    render();
-    // Também salva na base da comunidade (fire and forget)
-    const comId='pc_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
-    sb.from('prompts_comunidade').insert([{
-      id:comId, user_id:currentUser.id,
-      texto, categoria:_promptCatAtual,
-      titulo:document.getElementById('editorTitle').value||'(sem título)'
-    }]);
-    setTimeout(()=>{btn.textContent='💾 Salvar prompt';btn.classList.remove('saved');btn.disabled=false;},2000);
-  } else {
-    btn.textContent='💾 Salvar prompt';btn.disabled=false;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        system: `Você é um assistente de base de conhecimento pessoal. 
+O usuário está editando uma nota chamada "${tituloAtual}".
+Conteúdo atual da nota:\n\n${conteudoAtual}\n\nAjude a expandir, resumir, corrigir ou gerar conteúdo relacionado.`,
+        messages: [{ role: 'user', content: q }]
+      })
+    });
+    const data = await res.json();
+    const resposta = data.content?.[0]?.text || 'Sem resposta.';
+    document.getElementById('aiLoading').remove();
+    msgs.innerHTML += `<div class="ai-msg assistant">${resposta.replace(/\n/g,'<br>')}</div>`;
+  } catch (e) {
+    document.getElementById('aiLoading').textContent = '⚠️ Erro ao conectar à IA. Configure a API key.';
   }
+  msgs.scrollTop = msgs.scrollHeight;
 }
 
-function renderPromptsSalvos(){
-  const lista=_cache.notas.filter(n=>n.tipo==='prompt');
-  const el=document.getElementById('promptsSalvosLista');
-  document.getElementById('badgePrompts').textContent=lista.length;
-  if(!el)return;
-  if(!lista.length){
-    el.innerHTML='<div style="text-align:center;color:var(--muted);padding:3rem;font-size:14px;">Nenhum prompt salvo ainda.<br><br>Abra uma nota, gere um prompt no painel direito e clique em 💾 Salvar.</div>';
-    return;
+// ═══════════════════════════════════════════════════════════
+// GITHUB SYNC
+// ═══════════════════════════════════════════════════════════
+
+function syncGitHub() {
+  const token = DB.get('ghToken', '');
+  if (!token) { showModal('modalGithub'); return; }
+  fazerSync();
+}
+
+function salvarGithubConfig() {
+  DB.set('ghUser', document.getElementById('ghUser').value);
+  DB.set('ghToken', document.getElementById('ghToken').value);
+  DB.set('ghRepo', document.getElementById('ghRepo').value);
+  hideModal('modalGithub');
+  fazerSync();
+}
+
+async function fazerSync() {
+  const user = DB.get('ghUser', 'cezar-moreira');
+  const token = DB.get('ghToken', '');
+  const repo = DB.get('ghRepo', 'razec');
+  if (!token) return;
+
+  const notas = DB.get('notas', []);
+  const projetos = DB.get('projetos', []);
+
+  // Gera README
+  const readme = `# RAZEC — Base de Conhecimento\n\nAtualizado: ${new Date().toLocaleString('pt-BR')}\n\n## Projetos\n\n${projetos.map(p=>`- ${p.icon} **${p.nome}** — ${p.desc}`).join('\n')}\n\n## Estatísticas\n\n- 📝 ${notas.length} notas\n- 📁 ${projetos.length} projetos\n- 💻 ${notas.filter(n=>n.tipo==='script').length} scripts\n`;
+
+  await pushToGitHub(user, token, repo, 'README.md', btoa(unescape(encodeURIComponent(readme))));
+
+  // Salva notas por projeto
+  for (const proj of projetos) {
+    const notasDoProjeto = notas.filter(n => n.projeto === proj.id);
+    for (const nota of notasDoProjeto) {
+      const path = `projetos/${proj.id}/${nota.titulo.replace(/[^a-zA-Z0-9\s-]/g,'').replace(/\s+/g,'-')}.md`;
+      const content = btoa(unescape(encodeURIComponent(nota.conteudo)));
+      await pushToGitHub(user, token, repo, path, content);
+    }
   }
-  el.innerHTML=lista.map(p=>`
-    <div class="saved-prompt-card">
-      <div class="saved-prompt-title">
-        <span>${p.titulo}</span>
-      </div>
-      <div class="saved-prompt-meta">${new Date(p.criado).toLocaleString('pt-BR')}</div>
-      <div class="saved-prompt-text">${p.conteudo}</div>
-      <div class="saved-prompt-actions">
-        <button class="spa-copy" onclick="copiarPromptSalvo('${p.id}')">📋 Copiar</button>
-        <button class="spa-del" onclick="deletarPromptSalvo('${p.id}')">🗑️ Excluir</button>
-      </div>
-    </div>
-  `).join('');
+
+  alert('✅ Sincronizado com GitHub!\ngithub.com/' + user + '/' + repo);
 }
 
-function copiarPromptSalvo(id){
-  const p=_cache.notas.find(n=>n.id===id);
-  if(!p)return;
-  navigator.clipboard.writeText(p.conteudo).then(()=>{
-    const btns=document.querySelectorAll('.spa-copy');
-    btns.forEach(b=>{if(b.onclick.toString().includes(id)){b.textContent='✅ Copiado!';setTimeout(()=>b.textContent='📋 Copiar',2000);}});
-  });
+async function pushToGitHub(user, token, repo, path, content) {
+  try {
+    // Verifica se arquivo existe
+    let sha = null;
+    try {
+      const check = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${path}`, {
+        headers: { 'Authorization': 'token ' + token }
+      });
+      if (check.ok) { const d = await check.json(); sha = d.sha; }
+    } catch {}
+
+    await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${path}`, {
+      method: 'PUT',
+      headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: `chore: sync RAZEC ${new Date().toISOString()}`, content, ...(sha ? { sha } : {}) })
+    });
+  } catch (e) { console.error('GitHub sync error:', e); }
 }
 
-async function deletarPromptSalvo(id){
-  if(!confirm('Excluir este prompt salvo?'))return;
-  _cache.notas=_cache.notas.filter(n=>n.id!==id);
-  await dbDeleteNota(id);
-  renderPromptsSalvos();
-}
-
-// EXPORT JSON
-function exportarJSON(){
-  const data={versao:'2.0',exportado:new Date().toISOString(),email:currentUser?.email,projetos:_cache.projetos,notas:_cache.notas};
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download=`razec-backup-${new Date().toISOString().slice(0,10)}.json`;a.click();
-  URL.revokeObjectURL(url);
-}
-
-// FONTE
-function selFonte(btn,fonte){document.querySelectorAll('#fonteBtns .fonte-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');document.getElementById('fonteIA').value=fonte;}
-function selFonteEdit(btn,fonte){document.querySelectorAll('#editFonteBtns .fonte-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');document.getElementById('editFonteIA').value=fonte;}
-
+// ═══════════════════════════════════════════════════════════
 // UTILS
-function formatDate(iso){if(!iso)return'—';const d=Date.now()-new Date(iso);if(d<60000)return'agora';if(d<3600000)return Math.round(d/60000)+'min';if(d<86400000)return Math.round(d/3600000)+'h';if(d<604800000)return Math.round(d/86400000)+'d';return new Date(iso).toLocaleDateString('pt-BR');}
-function escH(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function escReg(s){return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');}
+// ═══════════════════════════════════════════════════════════
 
-// START
-init();
+function formatDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  const diff = Date.now() - d;
+  if (diff < 60000) return 'agora';
+  if (diff < 3600000) return Math.round(diff/60000) + 'min';
+  if (diff < 86400000) return Math.round(diff/3600000) + 'h';
+  return d.toLocaleDateString('pt-BR');
+}
+
+// INIT
+inicializarDados();
+render();
+</script>
+
+<!-- BOTTOM NAV MOBILE -->
+<nav class="bottom-nav">
+  <button class="bn-item active" id="bn-dashboard" onclick="showView('dashboard');setActiveNav('bn-dashboard')">
+    <span class="bn-icon">🏠</span><span class="bn-label">Início</span>
+  </button>
+  <button class="bn-item" id="bn-files" onclick="showView('files');setActiveNav('bn-files')">
+    <span class="bn-icon">📁</span><span class="bn-label">Arquivos</span>
+  </button>
+  <button class="bn-item" id="bn-search" onclick="showView('search');setActiveNav('bn-search')">
+    <span class="bn-icon">🔍</span><span class="bn-label">Buscar</span>
+  </button>
+  <button class="bn-item" id="bn-graph" onclick="showView('graph');setActiveNav('bn-graph')">
+    <span class="bn-icon">🕸️</span><span class="bn-label">Mapa</span>
+  </button>
+  <button class="bn-item" id="bn-github" onclick="syncGitHub()">
+    <span class="bn-icon">⬆️</span><span class="bn-label">GitHub</span>
+  </button>
+</nav>
+
+<!-- FAB -->
+<button class="fab" onclick="toggleFab()" id="fabBtn">＋</button>
+<div class="fab-menu" id="fabMenu">
+  <div class="fab-opt" onclick="showModal('modalNota');toggleFab()">✏️ Nova nota</div>
+  <div class="fab-opt" onclick="showModal('modalProjeto');toggleFab()">📁 Novo projeto</div>
+  <div class="fab-opt" onclick="novoScript();toggleFab()">💻 Novo script</div>
+  <div class="fab-opt" onclick="showModal('modalUpload');toggleFab()">⬆ Upload arquivo</div>
+</div>
+
+<script>
+function setActiveNav(id) {
+  document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+}
+
+function toggleFab() {
+  const menu = document.getElementById('fabMenu');
+  const btn = document.getElementById('fabBtn');
+  const open = menu.classList.toggle('open');
+  btn.textContent = open ? '✕' : '＋';
+}
+
+// Fecha fab ao clicar fora
+document.addEventListener('click', e => {
+  if (!e.target.closest('.fab') && !e.target.closest('.fab-menu')) {
+    document.getElementById('fabMenu').classList.remove('open');
+    document.getElementById('fabBtn').textContent = '＋';
+  }
+});
 </script>
 </body>
 </html>
