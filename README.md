@@ -1,6 +1,6 @@
 # RAZEC — Central de Projetos e Conhecimento
 
-> Organize projetos, notas e conhecimento em um só lugar. Acesse de qualquer dispositivo com sincronização em tempo real.
+> Organize projetos, notas, scripts e conversas em um só lugar. Acesse de qualquer dispositivo, sem precisar de conta.
 
 **Acesse:** [cezar-moreira.github.io/razec](https://cezar-moreira.github.io/razec/)
 
@@ -8,9 +8,9 @@
 
 ## O que é o RAZEC?
 
-RAZEC é uma aplicação web pessoal para gestão de conhecimento e projetos. Funciona como um segundo cérebro digital — você escreve notas, organiza por projetos, adiciona tags e visualiza tudo em um mapa de conhecimento interativo.
+RAZEC é uma aplicação web pessoal para gestão de conhecimento e projetos. Funciona como um segundo cérebro digital — você escreve notas, organiza por projetos, adiciona tags e visualiza tudo em um mapa de conhecimento interativo estilo Obsidian.
 
-Todos os dados ficam salvos na nuvem (Supabase), então você acessa do computador, celular ou tablet com a mesma conta.
+Todos os dados ficam salvos no **localStorage do navegador** (até 5MB por dispositivo). Sem login, sem conta, sem servidor — abre e já funciona.
 
 ---
 
@@ -18,29 +18,36 @@ Todos os dados ficam salvos na nuvem (Supabase), então você acessa do computad
 
 | Funcionalidade | Descrição |
 |---|---|
-| **Login seguro** | Conta com email e senha, dados isolados por usuário |
-| **Projetos** | Agrupe notas por projeto com ícone e cor personalizados |
-| **Notas** | Editor com suporte a Markdown e preview em tempo real |
-| **Tags** | Classifique notas com múltiplas tags |
-| **Busca avançada** | Filtros por `projeto:`, `tag:`, `tipo:` e texto livre |
-| **Mapa de conhecimento** | Visualização gráfica das conexões entre notas e projetos |
-| **Gerador de Prompts IA** | 60+ templates profissionais em 10 categorias (Marketing, Tech, Negócios, Educação, Criativo, Saúde, Finanças, Projetos, Jurídico, Geral) |
-| **Auto-detecção de categoria** | Detecta automaticamente a melhor categoria de prompt pelo conteúdo da nota |
-| **Prompts Salvos** | Salva prompts gerados na nuvem para reutilizar a qualquer momento |
-| **Sync em tempo real** | Alterações aparecem em todos os dispositivos instantaneamente |
+| **Dashboard** | Painel com totais de notas, projetos, scripts e conversas, além das notas recentes |
+| **Projetos** | Crie projetos com nome, ícone emoji e cor. Exclua projetos pelo botão 🗑️ no card |
+| **Notas** | Editor com suporte a Markdown, preview em tempo real e auto-save |
+| **Excluir notas** | Botão 🗑️ no toolbar do editor e em cada card na lista de arquivos |
+| **Tags** | Classifique notas com múltiplas tags; clique na tag na sidebar para filtrar |
+| **Tipos de conteúdo** | nota · script · conversa · doc — cada tipo tem ícone e cor próprios no mapa |
+| **Busca avançada** | Filtros por `projeto:`, `tag:`, `tipo:` e texto livre combinados |
+| **Mapa de conhecimento** | Grafo interativo D3.js estilo Obsidian: zoom, arraste nós, tooltips, física ajustável |
+| **Auto-fit do mapa** | O grafo se ajusta automaticamente ao tamanho da tela (funciona no celular) |
+| **Abas (tabs)** | Abra múltiplas notas em abas, feche com ✕ ou Ctrl+W |
+| **Atalhos de teclado** | 16 atalhos: Ctrl+N/S/F/P/U/G/W/L, Ctrl+1–5, Ctrl+Shift+P, Ctrl+/, Escape |
+| **Drag & drop** | Arraste arquivos .py/.js/.html/.sql/.md/.txt para importar como notas |
+| **Filtros de arquivo** | Filtre por tipo: Python, HTML, JS, SQL, Conversas, Claude, ChatGPT, Gemini, Grok |
+| **Resolução de conflito** | Detecção de título duplicado com opções: substituir, manter ambas ou cancelar |
+| **Sidebar inteligente** | Atalhos rápidos para Scripts e Conversas com contagem em tempo real |
+| **Status bar** | Barra inferior com mensagens de feedback (salvo, erro, pronto…) |
+| **i18n** | Interface em pt-BR, English e Español — alterne com Ctrl+L |
+| **Navegação mobile** | Bottom navigation bar + botão FAB (+) para criar conteúdo no celular |
+| **Armazenamento** | Indicador de uso localStorage (KB / 5MB) no rodapé da sidebar |
 | **Export JSON** | Faça backup completo dos seus dados |
-| **Auto-save** | Salva automaticamente enquanto você digita |
 
 ---
 
 ## Tecnologias
 
 - **Frontend:** HTML5 + CSS3 + JavaScript puro (sem frameworks)
-- **Banco de dados:** [Supabase](https://supabase.com) (PostgreSQL na nuvem)
-- **Autenticação:** Supabase Auth (email + senha)
+- **Gráfico:** [D3.js v7](https://d3js.org) via CDN — força simulada, zoom, drag
+- **Armazenamento:** localStorage do navegador (5MB por origem)
 - **Hospedagem:** GitHub Pages
 - **Deploy:** GitHub Actions (automático ao fazer push na `main`)
-- **Segurança:** Row Level Security (RLS) — cada usuário acessa apenas seus próprios dados
 
 ---
 
@@ -49,50 +56,60 @@ Todos os dados ficam salvos na nuvem (Supabase), então você acessa do computad
 ```
 RAZEC
 ├── razec/
-│   └── index.html          # App completo (HTML + CSS + JS em um arquivo)
+│   └── index.html          # App completo (HTML + CSS + JS em um único arquivo)
 ├── .github/
 │   └── workflows/
 │       └── deploy.yml      # Pipeline CI/CD para GitHub Pages
-├── projetos/               # Documentação de projetos individuais
-├── templates/              # Templates reutilizáveis
-└── README.md
+├── README.md               # Este arquivo
+└── MANUAL.md               # Manual completo de uso
 ```
 
-O app inteiro vive em um único arquivo `index.html`. Sem build, sem Node.js, sem dependências locais. O Supabase JS é carregado via CDN.
+O app inteiro vive em um único arquivo `index.html`. Sem build, sem Node.js, sem dependências locais além do D3.js via CDN.
 
 ---
 
-## Banco de dados (Supabase)
+## Armazenamento local
 
-Duas tabelas com Row Level Security ativado:
+Os dados ficam no **localStorage do navegador**:
 
-```sql
--- Projetos do usuário
-create table projetos (
-  id        text not null,
-  user_id   uuid references auth.users(id) on delete cascade not null,
-  nome      text not null,
-  descricao text default '',
-  icon      text default '📁',
-  cor       text default 'blue',
-  criado    timestamptz default now(),
-  primary key (id, user_id)
-);
+- Limite: **5MB por origem** (suficiente para milhares de notas)
+- Indicador de uso visível no rodapé da sidebar esquerda
+- Os dados ficam no dispositivo atual — use **Exportar JSON** para fazer backup ou migrar para outro dispositivo
 
--- Notas do usuário
-create table notas (
-  id         text primary key,
-  user_id    uuid references auth.users(id) on delete cascade not null,
-  titulo     text not null,
-  conteudo   text default '',
-  tipo       text default 'nota',
-  projeto_id text default '',
-  tags       text[] default '{}',
-  fonte_ia   text default 'nenhuma',
-  criado     timestamptz default now(),
-  atualizado timestamptz default now()
-);
-```
+---
+
+## Atalhos de teclado
+
+| Atalho | Ação |
+|---|---|
+| `Ctrl+N` | Nova nota |
+| `Ctrl+S` | Salvar nota |
+| `Ctrl+F` | Focar na busca |
+| `Ctrl+W` | Fechar aba atual |
+| `Ctrl+P` | Toggle preview Markdown |
+| `Ctrl+U` | Upload de arquivo |
+| `Ctrl+G` | Sincronizar GitHub |
+| `Ctrl+L` | Alternar idioma (pt-BR → en → es) |
+| `Ctrl+Shift+P` | Novo projeto |
+| `Ctrl+1` | Dashboard |
+| `Ctrl+2` | Editor |
+| `Ctrl+3` | Arquivos |
+| `Ctrl+4` | Mapa visual |
+| `Ctrl+5` | Busca avançada |
+| `Ctrl+/` | Ver todos os atalhos |
+| `Escape` | Fechar modal |
+
+---
+
+## Tipos de conteúdo e cores no mapa
+
+| Tipo | Ícone | Cor no mapa |
+|---|---|---|
+| Projeto | emoji do projeto | Azul |
+| Nota | 📝 | Verde |
+| Script | 💻 | Laranja |
+| Conversa | 💬 | Roxo |
+| Doc | 📄 | Cinza claro |
 
 ---
 
@@ -110,35 +127,14 @@ O GitHub Actions detecta o push, faz o deploy do conteúdo da pasta `razec/` par
 
 ---
 
-## Segurança
-
-- A chave pública do Supabase (`sb_publishable_`) no frontend é segura e esperada
-- A chave secreta nunca está exposta no código
-- RLS garante que cada usuário só lê e escreve seus próprios dados
-- GitHub Pages serve o app via HTTPS
-- Senhas são gerenciadas pelo Supabase Auth (hash bcrypt)
-
----
-
-## Projetos cadastrados
-
-| Projeto | Descrição |
-|---------|-----------|
-| `ultravida` | Projeto Ultravida |
-| `clinicaos` | Sistema para clínicas |
-| `paulo-jose` | Projeto Paulo José |
-| `instagram` | Gestão e estratégia Instagram |
-
----
-
 ## Roadmap futuro
 
-- [ ] Login com Google
+- [ ] Sincronização entre dispositivos (via GitHub Gist ou nuvem opcional)
+- [ ] Login com Google (modo nuvem opcional)
 - [ ] Compartilhamento de notas públicas
-- [ ] Modo multi-usuário / equipes
-- [ ] App mobile nativo (PWA)
-- [ ] Editor de rich text (além de Markdown)
-- [ ] Integração direta com IAs (via backend seguro)
+- [ ] Editor de rich text além de Markdown
+- [ ] PWA com suporte offline completo
+- [ ] Integração direta com IAs via API
 
 ---
 
