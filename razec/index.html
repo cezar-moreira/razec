@@ -512,6 +512,20 @@ kbd{background:var(--card);border:1px solid var(--border);border-bottom-width:2p
   </div>
 </div>
 
+<div class="modal-overlay" id="modalExcluirProjeto">
+  <div class="modal">
+    <h3>🗑️ Excluir projeto</h3>
+    <p style="color:var(--muted);margin-bottom:12px">Tem certeza que quer excluir o projeto <strong id="excluirProjetoNome" style="color:var(--text)"></strong>?</p>
+    <p style="font-size:12px;color:var(--warning);background:rgba(210,153,34,.1);border:1px solid rgba(210,153,34,.3);border-radius:6px;padding:8px 12px;margin-bottom:16px">
+      ⚠️ As notas dentro do projeto <strong>não</strong> serão excluídas — elas ficam sem projeto associado.
+    </p>
+    <div class="modal-actions">
+      <button class="btn" onclick="hideModal('modalExcluirProjeto')">Cancelar</button>
+      <button class="btn" style="background:var(--danger);color:#fff;border-color:transparent" onclick="excluirProjeto()">Excluir</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="modalUpload">
   <div class="modal">
     <h3>⬆ Upload de arquivo</h3>
@@ -742,9 +756,13 @@ function render() {
     return `<div class="proj-card" onclick="filtrarPorProjeto('${p.id}')">
       <div class="proj-header">
         <div class="proj-icon" style="background:rgba(88,166,255,.1)">${escH(p.icon)}</div>
-        <div>
+        <div style="flex:1">
           <div class="proj-name">${escH(p.nome)}</div>
           <div style="font-size:11px;color:var(--muted)">${pNotas.length} itens</div>
+        </div>
+        <div style="display:flex;gap:4px;margin-left:auto" onclick="event.stopPropagation()">
+          <button class="btn" style="padding:3px 8px;font-size:12px" title="Excluir projeto"
+            onclick="confirmarExcluirProjeto('${p.id}','${escH(p.nome)}')">🗑️</button>
         </div>
       </div>
       <div class="proj-desc">${escH(p.desc)}</div>
@@ -1048,6 +1066,22 @@ function showView(name, navEl) {
 
 function showModal(id) { document.getElementById(id).classList.add('show'); render(); }
 function hideModal(id) { document.getElementById(id).classList.remove('show'); }
+
+let _excluirProjetoId = null;
+function confirmarExcluirProjeto(id, nome) {
+  _excluirProjetoId = id;
+  document.getElementById('excluirProjetoNome').textContent = nome;
+  showModal('modalExcluirProjeto');
+}
+function excluirProjeto() {
+  if (!_excluirProjetoId) return;
+  const projetos = DB.get('projetos', []).filter(p => p.id !== _excluirProjetoId);
+  DB.set('projetos', projetos);
+  hideModal('modalExcluirProjeto');
+  _excluirProjetoId = null;
+  render();
+  setStatus('Projeto excluído', 'ok');
+}
 
 function criarProjeto() {
   const nome = document.getElementById('projNome').value.trim();
