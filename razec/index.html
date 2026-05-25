@@ -137,9 +137,28 @@ a{color:var(--primary);text-decoration:none}
 .file-name{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px;word-break:break-all}
 .file-meta{font-size:11px;color:var(--muted)}
 
-/* GRAPH VIEW */
+/* GRAPH VIEW — D3 */
 .graph-container{flex:1;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);position:relative;overflow:hidden;min-height:400px}
-canvas#graphCanvas{position:absolute;inset:0;width:100%;height:100%}
+.graph-filters{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;align-items:center}
+.graph-filters select,.graph-filters input{padding:5px 9px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:12px;outline:none}
+.graph-filters select:focus,.graph-filters input:focus{border-color:var(--primary)}
+.graph-legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.gl-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted)}
+.gl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+#graphSvg{width:100%;height:100%;cursor:grab;display:block}
+#graphSvg:active{cursor:grabbing}
+.g-link{stroke:rgba(48,54,61,.9);stroke-width:1.2;fill:none;transition:stroke .2s,opacity .2s}
+.g-link.hl{stroke:var(--primary);stroke-width:2;opacity:.9}
+.g-link.dim{opacity:.06}
+.g-node{cursor:pointer}
+.g-node circle{transition:filter .15s,r .15s}
+.g-node:hover circle{filter:brightness(1.35)}
+.g-node.hl circle{filter:brightness(1.4) drop-shadow(0 0 6px currentColor)}
+.g-node.dim{opacity:.15}
+.g-label{font-size:10px;fill:#7d8590;pointer-events:none;text-anchor:middle;dominant-baseline:hanging;user-select:none}
+.graph-tooltip{position:fixed;display:none;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:9px 13px;font-size:12px;color:var(--text);pointer-events:none;z-index:500;max-width:230px;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.gt-title{font-weight:600;margin-bottom:5px;color:var(--text)}
+.gt-meta{color:var(--muted);font-size:11px;line-height:1.6}
 
 /* SEARCH RESULTS */
 .search-results{display:flex;flex-direction:column;gap:8px}
@@ -370,12 +389,39 @@ kbd{background:var(--card);border:1px solid var(--border);border-bottom-width:2p
 
     <!-- GRAPH -->
     <div class="view" id="view-graph">
-      <div style="margin-bottom:1rem;display:flex;align-items:center;gap:10px">
-        <h2 style="font-size:1.1rem;flex:1">🕸️ Mapa visual de conhecimento</h2>
-        <span style="font-size:12px;color:var(--muted)">Clique em um nó para abrir a nota</span>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px">
+        <h2 style="font-size:1.1rem">🕸️ Mapa de conhecimento</h2>
+        <div class="graph-legend">
+          <span class="gl-item"><span class="gl-dot" style="background:#58a6ff"></span>Projeto</span>
+          <span class="gl-item"><span class="gl-dot" style="background:#3fb950"></span>Nota</span>
+          <span class="gl-item"><span class="gl-dot" style="background:#ffa657"></span>Script</span>
+          <span class="gl-item"><span class="gl-dot" style="background:#bc8cff"></span>Conversa</span>
+          <span class="gl-item"><span class="gl-dot" style="background:#e6edf3"></span>Doc</span>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:6px">
+          <button class="btn" onclick="resetGraphZoom()">⟲ Resetar</button>
+          <button class="btn" id="pauseBtn" onclick="toggleGraphPhysics()">⏸ Pausar</button>
+        </div>
+      </div>
+      <div class="graph-filters">
+        <select id="gfProject" onchange="filterGraph()"><option value="">Todos os projetos</option></select>
+        <select id="gfType" onchange="filterGraph()">
+          <option value="">Todos os tipos</option>
+          <option value="nota">📝 Nota</option>
+          <option value="script">💻 Script</option>
+          <option value="conversa">💬 Conversa</option>
+          <option value="doc">📄 Doc</option>
+        </select>
+        <input id="gfSearch" placeholder="🔍 Buscar nó..." oninput="filterGraph()" style="flex:1;min-width:120px;padding:5px 9px;background:var(--card);border:1px solid var(--border);border-radius:var(--radius);color:var(--text);font-size:12px">
+        <span style="font-size:11px;color:var(--muted);white-space:nowrap" id="gfCount"></span>
       </div>
       <div class="graph-container" id="graphContainer">
-        <canvas id="graphCanvas"></canvas>
+        <svg id="graphSvg">
+          <g id="graphG">
+            <g id="gLinks"></g>
+            <g id="gNodes"></g>
+          </g>
+        </svg>
       </div>
     </div>
 
@@ -546,6 +592,7 @@ kbd{background:var(--card);border:1px solid var(--border);border-bottom-width:2p
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
 <script>
 // ═══════════════════════════════════════════════════════════
 // STORAGE
@@ -766,40 +813,197 @@ function filtrarFiles(filtro, btn) {
   renderFiles(filtro);
 }
 
+// ═══════════════════════════════════════════════════════════
+// GRAPH — D3 force-directed (Obsidian-style)
+// ═══════════════════════════════════════════════════════════
+let _sim = null, _graphPhysics = true, _gZoom = null;
+const NODE_COLOR = { projeto:'#58a6ff', nota:'#3fb950', script:'#ffa657', conversa:'#bc8cff', doc:'#e6edf3' };
+
 function renderGraph() {
-  const canvas = document.getElementById('graphCanvas');
-  const cont   = document.getElementById('graphContainer');
-  canvas.width = cont.offsetWidth; canvas.height = cont.offsetHeight;
-  const ctx = canvas.getContext('2d');
+  if (!window.d3) { setTimeout(renderGraph, 300); return; }
   const notas    = DB.get('notas', []);
   const projetos = DB.get('projetos', []);
-  const W = canvas.width, H = canvas.height;
-  ctx.clearRect(0, 0, W, H);
+  const cont     = document.getElementById('graphContainer');
+  const W = cont.offsetWidth || 800, H = cont.offsetHeight || 500;
 
-  const nodes = projetos.map((p, i) => {
-    const angle = (i / projetos.length) * Math.PI * 2;
-    const r = Math.min(W,H) * 0.3;
-    return { id:p.id, label:p.icon+' '+p.nome.split('—')[0].trim(), x:W/2+Math.cos(angle)*r, y:H/2+Math.sin(angle)*r, size:14+notas.filter(n=>n.projeto===p.id).length*2, color:'#58a6ff' };
-  });
-  const notaNodes = notas.slice(0,20).map((n,i) => {
-    const proj = nodes.find(nd => nd.id === n.projeto);
-    const angle = (i/20)*Math.PI*2, r = 60+Math.random()*80;
-    return { id:n.id, label:n.titulo.slice(0,20), x:(proj?proj.x:W/2)+Math.cos(angle)*r, y:(proj?proj.y:H/2)+Math.sin(angle)*r, size:6, color:'#3fb950', parentId:n.projeto };
+  if (_sim) _sim.stop();
+
+  // Populate project filter
+  const gfProj = document.getElementById('gfProject');
+  const prevProj = gfProj.value;
+  gfProj.innerHTML = '<option value="">Todos os projetos</option>' +
+    projetos.map(p => `<option value="${p.id}">${escH(p.icon)} ${escH(p.nome.split('—')[0].trim())}</option>`).join('');
+  gfProj.value = prevProj;
+
+  // Build nodes
+  const saved = DB.get('graphPos', {});
+  const nodes = [
+    ...projetos.map(p => ({
+      id:'p_'+p.id, tipo:'projeto', label:p.icon+' '+p.nome.split('—')[0].trim(),
+      ref:p.id, color:NODE_COLOR.projeto,
+      r: Math.min(26, 12 + notas.filter(n=>n.projeto===p.id).length * 1.5),
+      x: saved['p_'+p.id]?.x ?? (W/2 + (Math.random()-.5)*200),
+      y: saved['p_'+p.id]?.y ?? (H/2 + (Math.random()-.5)*200),
+    })),
+    ...notas.map(n => ({
+      id:n.id, tipo:n.tipo||'nota', label:n.titulo,
+      ref:n.id, projetoId:n.projeto, tags:n.tags||[],
+      color:NODE_COLOR[n.tipo||'nota']||NODE_COLOR.nota, r:7,
+      x: saved[n.id]?.x ?? (W/2 + (Math.random()-.5)*350),
+      y: saved[n.id]?.y ?? (H/2 + (Math.random()-.5)*350),
+    }))
+  ];
+
+  const links = notas
+    .filter(n => n.projeto && projetos.find(p=>p.id===n.projeto))
+    .map(n => ({ source:n.id, target:'p_'+n.projeto }));
+
+  document.getElementById('gfCount').textContent = nodes.length+' nós · '+links.length+' links';
+
+  // SVG setup
+  const svg = d3.select('#graphSvg').attr('width',W).attr('height',H);
+  const g   = d3.select('#graphG');
+  d3.select('#gLinks').selectAll('*').remove();
+  d3.select('#gNodes').selectAll('*').remove();
+
+  // Zoom
+  _gZoom = d3.zoom().scaleExtent([0.05, 6]).on('zoom', e => g.attr('transform', e.transform));
+  svg.call(_gZoom).on('dblclick.zoom', null);
+
+  // Simulation
+  _sim = d3.forceSimulation(nodes)
+    .force('link', d3.forceLink(links).id(d=>d.id).distance(d => (d.source.tipo==='projeto'||d.target?.tipo==='projeto') ? 130 : 80).strength(.6))
+    .force('charge', d3.forceManyBody().strength(d => d.tipo==='projeto' ? -900 : -220))
+    .force('center', d3.forceCenter(W/2, H/2).strength(.05))
+    .force('collide', d3.forceCollide().radius(d => d.r+10).strength(.8))
+    .alphaDecay(.015);
+
+  // Links
+  const link = d3.select('#gLinks').selectAll('line').data(links).enter()
+    .append('line').attr('class','g-link');
+
+  // Nodes
+  const node = d3.select('#gNodes').selectAll('g').data(nodes).enter()
+    .append('g').attr('class','g-node')
+    .call(d3.drag()
+      .on('start', (e,d) => { if (!e.active) _sim.alphaTarget(.3).restart(); d.fx=d.x; d.fy=d.y; })
+      .on('drag',  (e,d) => { d.fx=e.x; d.fy=e.y; })
+      .on('end',   (e,d) => { if (!e.active) _sim.alphaTarget(0); _saveGraphPos(nodes); })
+    )
+    .on('click', (e,d) => { if (d.tipo==='projeto') filtrarPorProjeto(d.ref); else abrirNota(d.ref); })
+    .on('mouseenter', (e,d) => { _graphHover(d, node, link, true);  _showTip(e,d,projetos); })
+    .on('mousemove',  (e)   => _moveTip(e))
+    .on('mouseleave', ()    => { _graphHover(null, node, link, false); _hideTip(); });
+
+  // Glow filter
+  const defs = svg.append('defs');
+  ['proj','note'].forEach((id,i) => {
+    const f = defs.append('filter').attr('id','glow'+id).attr('x','-50%').attr('y','-50%').attr('width','200%').attr('height','200%');
+    f.append('feGaussianBlur').attr('stdDeviation', i===0?5:3).attr('result','blur');
+    const merge = f.append('feMerge');
+    merge.append('feMergeNode').attr('in','blur');
+    merge.append('feMergeNode').attr('in','SourceGraphic');
   });
 
-  ctx.strokeStyle='rgba(48,54,61,.8)'; ctx.lineWidth=1;
-  notaNodes.forEach(nd => {
-    const parent = nodes.find(n => n.id===nd.parentId);
-    if (parent) { ctx.beginPath(); ctx.moveTo(parent.x,parent.y); ctx.lineTo(nd.x,nd.y); ctx.stroke(); }
+  node.append('circle')
+    .attr('r', d=>d.r)
+    .attr('fill', d=>d.color)
+    .attr('stroke', d=>d.tipo==='projeto'?'rgba(255,255,255,.18)':'transparent')
+    .attr('stroke-width', 1.5)
+    .style('filter', d=>d.tipo==='projeto'?'url(#glowproj)':'url(#glownote)');
+
+  node.append('text').attr('class','g-label')
+    .attr('dy', d=>d.r+4)
+    .text(d=>d.label.length>24 ? d.label.slice(0,22)+'…' : d.label);
+
+  _sim.on('tick', () => {
+    link.attr('x1',d=>d.source.x).attr('y1',d=>d.source.y)
+        .attr('x2',d=>d.target.x).attr('y2',d=>d.target.y);
+    node.attr('transform', d=>`translate(${d.x},${d.y})`);
   });
-  nodes.forEach(nd => {
-    ctx.fillStyle=nd.color; ctx.shadowColor=nd.color; ctx.shadowBlur=10;
-    ctx.beginPath(); ctx.arc(nd.x,nd.y,nd.size,0,Math.PI*2); ctx.fill();
-    ctx.shadowBlur=0; ctx.fillStyle='#e6edf3'; ctx.font='11px sans-serif'; ctx.textAlign='center';
-    ctx.fillText(nd.label, nd.x, nd.y+nd.size+14);
+
+  _graphPhysics = true;
+  document.getElementById('pauseBtn').textContent='⏸ Pausar';
+  filterGraph();
+}
+
+function _saveGraphPos(nodes) {
+  const pos = {};
+  nodes.forEach(n => { pos[n.id] = { x:n.x, y:n.y }; });
+  DB.set('graphPos', pos);
+}
+
+function _graphHover(d, node, link, on) {
+  if (!on) {
+    node.classed('hl',false).classed('dim',false);
+    link.classed('hl',false).classed('dim',false);
+    return;
+  }
+  const connected = new Set([d.id]);
+  link.each(l => {
+    const s=l.source.id||l.source, t=l.target.id||l.target;
+    if (s===d.id) connected.add(t);
+    if (t===d.id) connected.add(s);
   });
-  notaNodes.forEach(nd => {
-    ctx.fillStyle=nd.color; ctx.beginPath(); ctx.arc(nd.x,nd.y,nd.size,0,Math.PI*2); ctx.fill();
+  node.classed('hl', n=>n.id===d.id).classed('dim', n=>!connected.has(n.id));
+  link.classed('hl', l=>(l.source.id||l.source)===d.id||(l.target.id||l.target)===d.id)
+      .classed('dim',l=>!((l.source.id||l.source)===d.id||(l.target.id||l.target)===d.id));
+}
+
+function _showTip(e, d, projetos) {
+  const proj = projetos.find(p=>p.id===d.projetoId);
+  const tt = document.getElementById('graphTooltip');
+  document.getElementById('gtTitle').textContent = d.label;
+  document.getElementById('gtMeta').innerHTML = [
+    d.tipo==='projeto' ? '📁 Projeto' : `Tipo: <strong>${d.tipo}</strong>`,
+    proj ? `Projeto: ${escH(proj.nome.split('—')[0].trim())}` : '',
+    d.tags?.length ? `Tags: ${d.tags.map(t=>`<span style="color:var(--primary)">${escH(t)}</span>`).join(', ')}` : '',
+    `<span style="color:var(--primary);font-size:10px">${d.tipo==='projeto'?'Clique para filtrar':'Clique para abrir · Arraste para mover'}</span>`,
+  ].filter(Boolean).join('<br>');
+  tt.style.display='block';
+  _moveTip(e);
+}
+function _moveTip(e) {
+  const tt=document.getElementById('graphTooltip');
+  const x=e.clientX+14, y=e.clientY-10;
+  tt.style.left = (x+200>window.innerWidth ? x-220 : x)+'px';
+  tt.style.top  = (y+120>window.innerHeight ? y-130 : y)+'px';
+}
+function _hideTip() { document.getElementById('graphTooltip').style.display='none'; }
+
+function resetGraphZoom() {
+  if (!_gZoom) return;
+  d3.select('#graphSvg').transition().duration(600)
+    .call(_gZoom.transform, d3.zoomIdentity.translate(0,0).scale(1));
+}
+
+function toggleGraphPhysics() {
+  _graphPhysics = !_graphPhysics;
+  const btn = document.getElementById('pauseBtn');
+  if (_sim) {
+    if (_graphPhysics) { _sim.alphaTarget(.2).restart(); btn.textContent='⏸ Pausar'; }
+    else { _sim.stop(); btn.textContent='▶ Retomar'; }
+  }
+}
+
+function filterGraph() {
+  if (!window.d3) return;
+  const proj = document.getElementById('gfProject')?.value||'';
+  const tipo = document.getElementById('gfType')?.value||'';
+  const q    = (document.getElementById('gfSearch')?.value||'').toLowerCase();
+  d3.select('#gNodes').selectAll('.g-node').style('display', function(d) {
+    if (d.tipo==='projeto') return '';
+    if (proj && d.projetoId!==proj) return 'none';
+    if (tipo && d.tipo!==tipo) return 'none';
+    if (q && !d.label.toLowerCase().includes(q)) return 'none';
+    return '';
+  });
+  d3.select('#gLinks').selectAll('line').style('display', function(d) {
+    const s=d.source.id||d.source, t=d.target.id||d.target;
+    const sEl=d3.select('#gNodes').selectAll('.g-node').filter(n=>n.id===s);
+    const tEl=d3.select('#gNodes').selectAll('.g-node').filter(n=>n.id===t);
+    if (sEl.style('display')==='none'||tEl.style('display')==='none') return 'none';
+    return '';
   });
 }
 
@@ -1176,6 +1380,12 @@ setLang(_lang);
 render();
 setStatus(t('ready'));
 </script>
+
+<!-- GRAPH TOOLTIP -->
+<div class="graph-tooltip" id="graphTooltip">
+  <div class="gt-title" id="gtTitle"></div>
+  <div class="gt-meta" id="gtMeta"></div>
+</div>
 
 <!-- BOTTOM NAV MOBILE -->
 <nav class="bottom-nav">
