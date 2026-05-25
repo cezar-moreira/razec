@@ -1069,12 +1069,12 @@
 
   <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:8px;">
     <div style="background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px; padding:14px;">
-      <div style="font-weight:700; color:#15803d; margin-bottom:6px; font-size:13px;">🔒 Isolamento por usuário</div>
-      <div style="font-size:12px; color:#14532d; line-height:1.6;">Cada conta só acessa os próprios dados. Nenhum usuário vê dados de outro.</div>
+      <div style="font-weight:700; color:#15803d; margin-bottom:6px; font-size:13px;">🔒 Dados só no seu dispositivo</div>
+      <div style="font-size:12px; color:#14532d; line-height:1.6;">Tudo fica no localStorage do seu navegador. Nenhum servidor externo acessa seus dados.</div>
     </div>
     <div style="background:#eff6ff; border:1px solid #bfdbfe; border-radius:8px; padding:14px;">
-      <div style="font-weight:700; color:#1d4ed8; margin-bottom:6px; font-size:13px;">🔐 HTTPS + Supabase</div>
-      <div style="font-size:12px; color:#1e40af; line-height:1.6;">Conexão criptografada. Senhas armazenadas com hash bcrypt — nunca em texto.</div>
+      <div style="font-weight:700; color:#1d4ed8; margin-bottom:6px; font-size:13px;">🔐 HTTPS + GitHub Pages</div>
+      <div style="font-size:12px; color:#1e40af; line-height:1.6;">Conexão criptografada via HTTPS. O app é servido pelo GitHub Pages com certificado SSL.</div>
     </div>
   </div>
 
@@ -1172,7 +1172,7 @@
   </div>
 
   <div style="font-size:14px; color:#475569; margin-bottom:20px; line-height:1.7;">
-    Após fazer login, você cai no <strong>Dashboard</strong>. Ele mostra um resumo completo do seu sistema: quantos projetos e notas você tem, quais foram as últimas notas modificadas e a distribuição por tipo.
+    Ao abrir o app, você vai direto ao <strong>Dashboard</strong>. Ele mostra um resumo completo: quantos projetos, notas, scripts e conversas você tem, além das notas modificadas recentemente.
   </div>
 
   <!-- Mockup completo do app no Dashboard -->
@@ -1180,27 +1180,25 @@
     <div class="app-header">
       <div class="app-header-logo"><span>⚡</span> RAZEC</div>
       <div class="app-header-right">
-        <div class="app-status"><div class="app-status-dot"></div> Conectado</div>
-        <div class="app-email">cezarharpa@gmail.com</div>
-        <div class="app-btn-logout">Sair</div>
+        <div class="app-status"><div class="app-status-dot"></div> Pronto</div>
       </div>
     </div>
     <div class="app-body">
       <div class="app-sidebar">
         <div class="app-nav-item active"><div class="app-nav-icon">🏠</div> Dashboard</div>
-        <div class="app-nav-item"><div class="app-nav-icon">📁</div> Projetos</div>
-        <div class="app-nav-item"><div class="app-nav-icon">📝</div> Notas</div>
+        <div class="app-nav-item"><div class="app-nav-icon">✏️</div> Editor</div>
+        <div class="app-nav-item"><div class="app-nav-icon">📁</div> Arquivos</div>
+        <div class="app-nav-item"><div class="app-nav-icon">🕸️</div> Mapa visual</div>
         <div class="app-nav-item"><div class="app-nav-icon">🔍</div> Busca</div>
-        <div class="app-nav-item"><div class="app-nav-icon">🕸️</div> Mapa</div>
-        <div class="app-nav-item"><div class="app-nav-icon">🤖</div> Prompts</div>
+        <div class="app-nav-item"><div class="app-nav-icon">💻</div> Scripts</div>
       </div>
       <div class="app-main">
         <div class="app-main-title">Dashboard</div>
         <div class="app-stats">
           <div class="app-stat"><div class="app-stat-num">4</div><div class="app-stat-label">Projetos</div></div>
           <div class="app-stat"><div class="app-stat-num">12</div><div class="app-stat-label">Notas</div></div>
-          <div class="app-stat"><div class="app-stat-num">7</div><div class="app-stat-label">Tarefas</div></div>
-          <div class="app-stat"><div class="app-stat-num">3</div><div class="app-stat-label">Ideias</div></div>
+          <div class="app-stat"><div class="app-stat-num">5</div><div class="app-stat-label">Scripts</div></div>
+          <div class="app-stat"><div class="app-stat-num">3</div><div class="app-stat-label">Conversas</div></div>
         </div>
         <div style="font-size:12px; font-weight:600; color:#94a3b8; text-transform:uppercase; letter-spacing:1px; margin-bottom:8px;">Notas Recentes</div>
         <div class="note-row">
@@ -1225,7 +1223,7 @@
 
   <div class="tip-box" style="margin-top:16px;">
     <div class="tip-box-title">💡 O que cada número significa</div>
-    <p><strong>Projetos</strong> = pastas criadas · <strong>Notas</strong> = total de anotações · <strong>Tarefas</strong> = notas do tipo "tarefa" · <strong>Ideias</strong> = notas do tipo "ideia"</p>
+    <p><strong>Projetos</strong> = pastas criadas · <strong>Notas</strong> = total de anotações · <strong>Scripts</strong> = notas do tipo "script" · <strong>Conversas</strong> = notas do tipo "conversa"</p>
   </div>
 
   <div class="page-footer">
