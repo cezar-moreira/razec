@@ -356,9 +356,9 @@ kbd{background:var(--card);border:1px solid var(--border);border-bottom-width:2p
         </div>
         <div class="preview-panel" id="previewPanel"></div>
         <div class="ai-panel">
-          <div class="ai-header">🤖 IA Assistente</div>
+          <div class="ai-header">🤖 IA Assistente <button onclick="showModal('modalApiKey')" style="margin-left:auto;background:transparent;border:none;cursor:pointer;font-size:16px;color:var(--muted)" title="Configurar API key">⚙️</button></div>
           <div class="ai-messages" id="aiMessages">
-            <div class="ai-msg assistant">Olá! Posso ajudar com suas notas. Pergunte sobre o conteúdo atual, peça resumos, ou gere código.</div>
+            <div class="ai-msg assistant">Olá! Posso ajudar com suas notas. Pergunte sobre o conteúdo atual, peça resumos, ou gere código.<br><br><small style="color:var(--muted)">Configure sua API key clicando em ⚙️ acima.</small></div>
           </div>
           <div class="ai-input-row">
             <input class="ai-input" id="aiInput" placeholder="Pergunte algo..." onkeydown="if(event.key==='Enter')enviarIA()">
@@ -546,6 +546,24 @@ kbd{background:var(--card);border:1px solid var(--border);border-bottom-width:2p
     <div class="modal-actions">
       <button class="btn" onclick="hideModal('modalUpload')">Cancelar</button>
       <button class="btn btn-primary" onclick="fazerUpload()">Upload</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modalApiKey">
+  <div class="modal">
+    <h3>⚙️ Configurar IA Assistente</h3>
+    <div class="field">
+      <label>Claude API Key (Anthropic)</label>
+      <input id="claudeApiKey" type="password" placeholder="sk-ant-...">
+    </div>
+    <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6">
+      Obtenha sua chave em: <strong>console.anthropic.com</strong> → API Keys → Create Key.<br>
+      A chave fica salva localmente no navegador.
+    </div>
+    <div class="modal-actions">
+      <button class="btn" onclick="hideModal('modalApiKey')">Cancelar</button>
+      <button class="btn btn-primary" onclick="salvarApiKey()">Salvar</button>
     </div>
   </div>
 </div>
@@ -1079,7 +1097,14 @@ function showView(name, navEl) {
   render();
 }
 
-function showModal(id) { document.getElementById(id).classList.add('show'); render(); }
+function showModal(id) {
+  document.getElementById(id).classList.add('show');
+  if (id==='modalApiKey') {
+    const saved = DB.get('claudeApiKey','');
+    document.getElementById('claudeApiKey').value = saved;
+  }
+  render();
+}
 function hideModal(id) { document.getElementById(id).classList.remove('show'); }
 
 let _excluirNotaId = null;
@@ -1351,10 +1376,24 @@ function filtroSearch(tipo) {
 // ═══════════════════════════════════════════════════════════
 // IA — Claude API
 // ═══════════════════════════════════════════════════════════
+function salvarApiKey() {
+  const key = document.getElementById('claudeApiKey').value.trim();
+  if (!key) return;
+  DB.set('claudeApiKey', key);
+  hideModal('modalApiKey');
+  setStatus('API key salva!', 'ok');
+}
+
 async function enviarIA() {
   const input = document.getElementById('aiInput');
   const q = input.value.trim();
   if (!q) return;
+  const apiKey = DB.get('claudeApiKey', '');
+  if (!apiKey) {
+    document.getElementById('claudeApiKey').value = '';
+    showModal('modalApiKey');
+    return;
+  }
   input.value='';
   const msgs = document.getElementById('aiMessages');
   msgs.innerHTML+=`<div class="ai-msg user">${escH(q)}</div>`;
@@ -1362,11 +1401,32 @@ async function enviarIA() {
   msgs.scrollTop=msgs.scrollHeight;
   const c=document.getElementById('editorBody').value, tl=document.getElementById('editorTitle').value;
   try {
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:`Você é um assistente de base de conhecimento pessoal. Nota atual: "${tl}"\n\n${c}`,messages:[{role:'user',content:q}]})});
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-haiku-4-5-20251001',
+        max_tokens:1024,
+        system:`Você é um assistente pessoal de conhecimento. Responda de forma objetiva e em português. Nota atual: "${tl}"\n\n${c}`,
+        messages:[{role:'user',content:q}]
+      })
+    });
     const data=await res.json();
     document.getElementById('aiLoading')?.remove();
-    msgs.innerHTML+=`<div class="ai-msg assistant">${(data.content?.[0]?.text||'Sem resposta.').replace(/\n/g,'<br>')}</div>`;
-  } catch { document.getElementById('aiLoading').textContent='⚠️ Erro ao conectar à IA. Configure a API key.'; }
+    if (data.error) {
+      msgs.innerHTML+=`<div class="ai-msg" style="color:var(--danger)">⚠️ ${escH(data.error.message||'Erro na API.')}</div>`;
+    } else {
+      msgs.innerHTML+=`<div class="ai-msg assistant">${(data.content?.[0]?.text||'Sem resposta.').replace(/\n/g,'<br>')}</div>`;
+    }
+  } catch(e) {
+    const el=document.getElementById('aiLoading');
+    if(el) el.textContent='⚠️ Erro de conexão. Verifique sua API key em ⚙️.';
+  }
   msgs.scrollTop=msgs.scrollHeight;
 }
 
