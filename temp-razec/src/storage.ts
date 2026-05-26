@@ -65,11 +65,9 @@ export const StorageAdapter = {
   getGhUser(): string { return this.getRaw<string>('ghUser', 'cezar-moreira'); },
   setGhUser(v: string) { this.setRaw('ghUser', v); },
   getGhToken(): string {
-    const t = sessionStorage.getItem(PREFIX + 'ghToken');
-    return t || this.getRaw<string>('ghToken', '');
+    return this.getRaw<string>('ghToken', '');
   },
   setGhToken(v: string) {
-    sessionStorage.setItem(PREFIX + 'ghToken', v);
     this.setRaw('ghToken', v);
   },
   getGhRepo(): string { return this.getRaw<string>('ghRepo', 'razec'); },
