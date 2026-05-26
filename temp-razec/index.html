@@ -12,6 +12,31 @@
 </head>
 <body>
 
+<!-- AUTH SCREEN -->
+<div id="authScreen" style="display:none;position:fixed;inset:0;background:var(--bg);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:2rem;width:100%;max-width:360px;box-shadow:0 20px 60px rgba(0,0,0,.5)">
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div style="font-size:2rem;margin-bottom:8px">⚡</div>
+      <div style="font-size:1.3rem;font-weight:700;color:var(--primary)">RAZEC AI</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px">Central de Inteligência</div>
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:1.25rem">
+      <button id="tabLogin" onclick="setAuthMode('login')" style="flex:1;padding:8px;border-radius:6px;border:1px solid var(--primary);background:var(--primary);color:#fff;cursor:pointer;font-size:13px">Entrar</button>
+      <button id="tabSignup" onclick="setAuthMode('signup')" style="flex:1;padding:8px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--muted);cursor:pointer;font-size:13px">Criar conta</button>
+    </div>
+    <div class="field" style="margin-bottom:10px"><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Email</label><input id="authEmail" type="email" placeholder="seu@email.com" style="width:100%;padding:9px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px"></div>
+    <div class="field" style="margin-bottom:16px"><label style="font-size:12px;color:var(--muted);display:block;margin-bottom:4px">Senha</label><input id="authPass" type="password" placeholder="••••••" style="width:100%;padding:9px 12px;background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:13px" onkeydown="if(event.key==='Enter')submitAuth()"></div>
+    <button id="authBtn" onclick="submitAuth()" style="width:100%;padding:10px;border-radius:6px;border:none;background:var(--primary);color:#fff;font-size:14px;font-weight:600;cursor:pointer">Entrar</button>
+    <div id="authMsg" style="margin-top:10px;font-size:12px;text-align:center;min-height:18px"></div>
+  </div>
+</div>
+
+<!-- LOADING SCREEN -->
+<div id="loadingScreen" style="display:flex;position:fixed;inset:0;background:var(--bg);z-index:9998;align-items:center;justify-content:center;flex-direction:column;gap:12px">
+  <div style="font-size:2rem">⚡</div>
+  <div style="font-size:14px;color:var(--muted)" id="loadingMsg">Conectando à nuvem...</div>
+</div>
+
 <!-- TOPBAR -->
 <div class="topbar">
   <div class="logo" id="logoHome">⚡ RAZEC<span> AI</span></div>
@@ -20,9 +45,10 @@
     <input type="text" id="globalSearch" placeholder="Buscar notas, scripts, projetos...">
   </div>
   <div class="topbar-right">
+    <div id="cloudStatus" style="font-size:11px;padding:4px 10px;border-radius:999px;border:1px solid var(--border);color:var(--muted);white-space:nowrap">☁️ <span id="cloudTxt">Conectando...</span></div>
     <button class="btn" data-action="new-note">+ Nova nota</button>
     <button class="btn btn-primary" data-action="new-project">+ Projeto</button>
-    <button class="btn" data-action="sync">⬆ GitHub</button>
+    <button class="btn" id="logoutBtn" data-action="logout" title="Sair" style="color:var(--muted)">Sair</button>
   </div>
 </div>
 
@@ -46,9 +72,9 @@
       <div id="sidebarTags" style="padding:4px 12px;display:flex;flex-wrap:wrap;gap:4px"></div>
     </div>
     <div style="margin-top:auto;padding:12px;border-top:1px solid var(--border)">
-      <div style="font-size:11px;color:var(--muted);margin-bottom:6px">Armazenamento local</div>
-      <div style="height:4px;background:var(--border);border-radius:2px"><div id="storageBar" style="height:100%;background:var(--primary);border-radius:2px;width:0%"></div></div>
-      <div id="storageTxt" style="font-size:10px;color:var(--muted);margin-top:4px"></div>
+      <div style="font-size:11px;color:var(--muted);margin-bottom:6px">☁️ Supabase — <span id="userEmailSidebar" style="color:var(--text)"></span></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:4px" id="storageTxt"></div>
+      <div style="height:4px;background:var(--border);border-radius:2px;margin-top:4px"><div id="storageBar" style="height:100%;background:var(--primary);border-radius:2px;width:0%"></div></div>
     </div>
   </div>
 

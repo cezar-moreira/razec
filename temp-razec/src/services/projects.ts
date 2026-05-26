@@ -1,5 +1,6 @@
 import type { Projeto, CorProjeto } from '../types';
 import { StorageAdapter } from '../storage';
+import { syncProjeto, deleteProjeto } from './supabase';
 
 export function listarProjetos(): Projeto[] {
   return StorageAdapter.getDados().projetos;
@@ -11,6 +12,7 @@ export function criarProjeto(nome: string, desc: string, icon: string, cor: CorP
   const projeto: Projeto = { id, nome, desc, icon: icon || '📁', cor, criado: new Date().toISOString() };
   projetos.push(projeto);
   StorageAdapter.saveDados({ projetos, notas });
+  syncProjeto(projeto).catch(console.error);
   return projeto;
 }
 
@@ -20,4 +22,5 @@ export function excluirProjeto(id: string): void {
     projetos: projetos.filter(p => p.id !== id),
     notas: notas.filter(n => n.projeto !== id),
   });
+  deleteProjeto(id).catch(console.error);
 }

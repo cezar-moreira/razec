@@ -1,6 +1,7 @@
 import type { Nota, FonteIA, VersaoNota } from '../types';
 import { StorageAdapter } from '../storage';
 import { gerarIdNota } from '../data';
+import { syncNota, deleteNota } from './supabase';
 
 export function listarNotas(): Nota[] {
   return StorageAdapter.getDados().notas;
@@ -29,6 +30,7 @@ export function criarNota(dados: {
   };
   notas.push(nova);
   StorageAdapter.saveDados({ projetos, notas });
+  syncNota(nova).catch(console.error);
   return nova;
 }
 
@@ -51,6 +53,7 @@ export function salvarNota(id: string, titulo: string, conteudo: string): Nota |
   nota.conteudo = conteudo;
   nota.atualizado = new Date().toISOString();
   StorageAdapter.saveDados({ projetos, notas });
+  syncNota(nota).catch(console.error);
   return nota;
 }
 
@@ -58,6 +61,7 @@ export function excluirNota(id: string): void {
   const { projetos, notas } = StorageAdapter.getDados();
   StorageAdapter.saveDados({ projetos, notas: notas.filter(n => n.id !== id) });
   StorageAdapter.remove('hist_' + id);
+  deleteNota(id).catch(console.error);
 }
 
 export function getHistorico(notaId: string): VersaoNota[] {

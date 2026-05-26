@@ -2,34 +2,103 @@ import './style.css';
 import { inicializarDados } from './data';
 import { render, showView, showModal, hideModal } from './components/render';
 import { abrirNota, handleSalvarNota, novoScript, togglePreview, fmt, handleExcluirNota, setupEditorAutoPreview } from './components/editor';
-import { handleCriarProjeto, handleCriarNota, selecionarFonte, handleUpload, handleSalvarGithubConfig } from './components/modals';
+import { handleCriarProjeto, handleCriarNota, selecionarFonte, handleUpload } from './components/modals';
 import { buscarAvancado, buscarGlobal } from './services/search';
 import { renderFiles, filtrarFiles } from './components/render';
-import { fazerSync } from './services/sync';
 import { setIdioma, getIdioma, proximoIdioma } from './i18n/index';
 import { StorageAdapter } from './storage';
 import { excluirNota } from './services/notes';
 import { excluirProjeto } from './services/projects';
+import { initAuth, login, signup, logout, carregarDoSupabase, setupRealtime, isLoggedIn } from './services/supabase';
 import type { ViewName } from './types';
 
 // Estado da confirmação de exclusão
 let _confirmCallback: (() => void) | null = null;
 
-// Auto-sync debounced — dispara 2s após a última mudança se token estiver configurado
-let _syncTimer: ReturnType<typeof setTimeout> | null = null;
-function autoSync(): void {
-  if (!StorageAdapter.getGhToken()) return;
-  if (_syncTimer) clearTimeout(_syncTimer);
-  _syncTimer = setTimeout(() => fazerSyncWithFeedback(), 2000);
+// ─── Auth helpers (expostos ao window para os handlers inline do HTML) ────────
+(window as any).setAuthMode = setAuthMode;
+(window as any).submitAuth  = submitAuth;
+
+let _authMode: 'login' | 'signup' = 'login';
+
+function setAuthMode(mode: 'login' | 'signup'): void {
+  _authMode = mode;
+  const btnLogin  = document.getElementById('tabLogin')!;
+  const btnSignup = document.getElementById('tabSignup')!;
+  const authBtn   = document.getElementById('authBtn')!;
+  if (mode === 'login') {
+    btnLogin.style.background  = 'var(--primary)'; btnLogin.style.color  = '#fff'; btnLogin.style.borderColor = 'var(--primary)';
+    btnSignup.style.background = 'transparent';    btnSignup.style.color = 'var(--muted)'; btnSignup.style.borderColor = 'var(--border)';
+    authBtn.textContent = 'Entrar';
+  } else {
+    btnSignup.style.background = 'var(--primary)'; btnSignup.style.color = '#fff'; btnSignup.style.borderColor = 'var(--primary)';
+    btnLogin.style.background  = 'transparent';   btnLogin.style.color  = 'var(--muted)'; btnLogin.style.borderColor = 'var(--border)';
+    authBtn.textContent = 'Criar conta';
+  }
+  setAuthMsg('');
 }
 
-function init(): void {
+async function submitAuth(): Promise<void> {
+  const email = (document.getElementById('authEmail') as HTMLInputElement).value.trim();
+  const pass  = (document.getElementById('authPass')  as HTMLInputElement).value;
+  const btn   = document.getElementById('authBtn')!;
+  if (!email || !pass) { setAuthMsg('Preencha email e senha.'); return; }
+  btn.setAttribute('disabled', 'true');
+  btn.textContent = '...';
+
+  if (_authMode === 'login') {
+    const err = await login(email, pass);
+    if (err) { setAuthMsg(err); btn.removeAttribute('disabled'); btn.textContent = 'Entrar'; }
+  } else {
+    if (pass.length < 6) { setAuthMsg('Senha deve ter ao menos 6 caracteres.'); btn.removeAttribute('disabled'); btn.textContent = 'Criar conta'; return; }
+    const err = await signup(email, pass);
+    if (err) { setAuthMsg(err); } else { setAuthMsg('✅ Conta criada! Verifique seu email e faça login.'); }
+    btn.removeAttribute('disabled'); btn.textContent = 'Criar conta';
+  }
+}
+
+function setAuthMsg(msg: string): void {
+  const el = document.getElementById('authMsg');
+  if (el) { el.textContent = msg; el.style.color = msg.startsWith('✅') ? 'var(--success)' : 'var(--danger)'; }
+}
+
+function setCloud(tipo: 'ok' | 'sync' | 'err', txt: string): void {
+  const el  = document.getElementById('cloudStatus');
+  const txt_el = document.getElementById('cloudTxt');
+  if (!el || !txt_el) return;
+  txt_el.textContent = txt;
+  el.style.color = tipo === 'ok' ? 'var(--success)' : tipo === 'sync' ? 'var(--primary)' : 'var(--danger)';
+  el.style.borderColor = tipo === 'ok' ? 'var(--success)' : tipo === 'sync' ? 'var(--primary)' : 'var(--danger)';
+}
+
+async function onLogin(email: string): Promise<void> {
+  setCloud('sync', 'Carregando dados...');
+  document.getElementById('loadingScreen')!.style.display = 'flex';
+  document.getElementById('authScreen')!.style.display    = 'none';
+
   inicializarDados();
+  const ok = await carregarDoSupabase();
+  setCloud(ok ? 'ok' : 'err', ok ? `☁️ ${email}` : '⚠️ Offline');
+
+  const emailEl = document.getElementById('userEmailSidebar');
+  if (emailEl) emailEl.textContent = email;
+
+  document.getElementById('loadingScreen')!.style.display = 'none';
   setIdioma(getIdioma());
   render();
   setupEditorAutoPreview();
   setupEventDelegation();
   setupDragAndDrop();
+  setupRealtime(() => { render(); setCloud('ok', `☁️ ${email}`); });
+}
+
+function onLogout(): void {
+  document.getElementById('authScreen')!.style.display = 'flex';
+  document.getElementById('loadingScreen')!.style.display = 'none';
+}
+
+async function init(): Promise<void> {
+  await initAuth(onLogin, onLogout);
 }
 
 // ─── Event delegation — um único listener para toda a UI ─────────────────────
@@ -54,8 +123,7 @@ function setupEventDelegation(): void {
       const view = navEl.dataset.view as ViewName;
       if (view === 'github') {
         e.stopPropagation();
-        if (!StorageAdapter.getGhToken()) showModal('modalGithub');
-        else fazerSyncWithFeedback();
+        if (!isLoggedIn()) { document.getElementById('authScreen')!.style.display = 'flex'; }
         return;
       }
       e.stopPropagation();
@@ -75,22 +143,17 @@ function setupEventDelegation(): void {
       switch (actionEl.dataset.action) {
         case 'new-note':    showModal('modalNota'); break;
         case 'new-project': showModal('modalProjeto'); break;
-        case 'sync':
-          if (!StorageAdapter.getGhToken()) showModal('modalGithub');
-          else fazerSyncWithFeedback();
-          break;
+        case 'logout':      logout().catch(console.error); break;
         case 'new-script':   novoScript(); break;
         case 'upload':       showModal('modalUpload'); break;
         case 'preview':      togglePreview(); break;
-        case 'save':         handleSalvarNota(); autoSync(); break;
-        case 'criar-projeto': handleCriarProjeto(); autoSync(); break;
-        case 'criar-nota':   handleCriarNota(); autoSync(); break;
-        case 'fazer-upload': handleUpload(); autoSync(); break;
-        case 'salvar-github': handleSalvarGithubConfig(); break;
+        case 'save':         handleSalvarNota(); break;
+        case 'criar-projeto': handleCriarProjeto(); break;
+        case 'criar-nota':   handleCriarNota(); break;
+        case 'fazer-upload': handleUpload(); break;
         case 'confirmar-excluir':
           if (_confirmCallback) { _confirmCallback(); _confirmCallback = null; }
           hideModal('modalConfirm');
-          autoSync();
           break;
         case 'excluir-projeto': {
           const id   = actionEl.dataset.projetoId!;
@@ -111,7 +174,7 @@ function setupEventDelegation(): void {
           break;
         }
         case 'excluir-nota-editor':
-          handleExcluirNota(); autoSync();
+          handleExcluirNota();
           break;
       }
       return;
@@ -191,7 +254,7 @@ function setupEventDelegation(): void {
       case 'f': e.preventDefault(); (document.getElementById('globalSearch') as HTMLInputElement)?.focus(); break;
       case 'p': e.preventDefault(); togglePreview(); break;
       case 'u': e.preventDefault(); showModal('modalUpload'); break;
-      case 'g': e.preventDefault(); fazerSyncWithFeedback(); break;
+      case 'g': e.preventDefault(); carregarDoSupabase().then(() => render()).catch(console.error); break;
       case 'l': e.preventDefault(); { const next = proximoIdioma(); setIdioma(next); render(); break; }
       case 'w': e.preventDefault(); fecharEditor(); break;
       case '1': e.preventDefault(); showView('dashboard'); break;
@@ -240,17 +303,6 @@ function fecharEditor(): void {
   showView('dashboard');
 }
 
-async function fazerSyncWithFeedback(): Promise<void> {
-  const bar = document.getElementById('statusBar');
-  if (bar) bar.textContent = 'Sincronizando...';
-  const result = await fazerSync(msg => { if (bar) bar.textContent = msg; });
-  if (result.success) {
-    if (bar) bar.textContent = `✅ Sincronizado! github.com/${StorageAdapter.getGhUser()}/${StorageAdapter.getGhRepo()}`;
-    setTimeout(() => { if (bar) bar.textContent = ''; }, 5000);
-  } else {
-    if (bar) bar.textContent = '❌ Erro: ' + result.error;
-  }
-}
 
 function setupDragAndDrop(): void {
   document.addEventListener('dragover', e => e.preventDefault());
