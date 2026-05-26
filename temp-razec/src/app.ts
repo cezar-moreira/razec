@@ -1,214 +1,219 @@
 import './style.css';
 import { inicializarDados } from './data';
-import { render, showView, showModal, hideModal, formatDate } from './components/render';
-import { renderGraph } from './components/graph';
+import { render, showView, showModal, hideModal } from './components/render';
 import { abrirNota, handleSalvarNota, novoScript, togglePreview, fmt, handleExcluirNota, setupEditorAutoPreview } from './components/editor';
 import { handleCriarProjeto, handleCriarNota, selecionarFonte, handleUpload, handleSalvarGithubConfig } from './components/modals';
 import { buscarAvancado, buscarGlobal } from './services/search';
-import { renderFiles, filtrarFiles, filtrarPorProjeto } from './components/render';
+import { renderFiles, filtrarFiles } from './components/render';
 import { fazerSync } from './services/sync';
-import { setIdioma, getIdioma, t, proximoIdioma } from './i18n/index';
+import { setIdioma, getIdioma, proximoIdioma } from './i18n/index';
 import { StorageAdapter } from './storage';
-import type { ViewName, Idioma } from './types';
+import type { ViewName } from './types';
 
 function init(): void {
   inicializarDados();
-
-  const savedLang = getIdioma();
-  setIdioma(savedLang);
-
+  setIdioma(getIdioma());
   render();
   setupEditorAutoPreview();
-
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById('view-dashboard')?.classList.add('active');
-
-  document.getElementById('logoHome')?.addEventListener('click', () => showView('dashboard'));
-  setupKeyboardShortcuts();
-  setupGlobalEvents();
+  setupEventDelegation();
   setupDragAndDrop();
-  setupFecharFabFora();
 }
 
-function setupKeyboardShortcuts(): void {
-  document.addEventListener('keydown', (e) => {
-    const ctrl = e.ctrlKey || e.metaKey;
+// ─── Event delegation — um único listener para toda a UI ─────────────────────
+function setupEventDelegation(): void {
+  document.addEventListener('click', (e: MouseEvent) => {
+    const t = e.target as HTMLElement;
 
-    if (e.key === 'Escape') {
-      document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show'));
+    // Fechar FAB se clicar fora
+    if (!t.closest('#fabBtn') && !t.closest('#fabMenu')) {
+      closeFab();
+    }
+
+    // Fechar modal ao clicar no overlay
+    if (t.classList.contains('modal-overlay')) {
+      t.classList.remove('show');
       return;
     }
 
-    if (!ctrl) return;
+    // Navegação via [data-view]
+    const navEl = t.closest('[data-view]') as HTMLElement | null;
+    if (navEl) {
+      const view = navEl.dataset.view as ViewName;
+      if (view === 'github') {
+        e.stopPropagation();
+        if (!StorageAdapter.getGhToken()) showModal('modalGithub');
+        else fazerSyncWithFeedback();
+        return;
+      }
+      e.stopPropagation();
+      // Atualiza estado ativo da bottom nav mobile
+      if (navEl.classList.contains('bn-item')) {
+        document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
+        navEl.classList.add('active');
+      }
+      showView(view);
+      return;
+    }
 
+    // Botões [data-action]
+    const actionEl = t.closest('[data-action]') as HTMLElement | null;
+    if (actionEl) {
+      e.stopPropagation();
+      switch (actionEl.dataset.action) {
+        case 'new-note':    showModal('modalNota'); break;
+        case 'new-project': showModal('modalProjeto'); break;
+        case 'sync':
+          if (!StorageAdapter.getGhToken()) showModal('modalGithub');
+          else fazerSyncWithFeedback();
+          break;
+        case 'new-script':   novoScript(); break;
+        case 'upload':       showModal('modalUpload'); break;
+        case 'preview':      togglePreview(); break;
+        case 'save':         handleSalvarNota(); break;
+        case 'criar-projeto': handleCriarProjeto(); break;
+        case 'criar-nota':   handleCriarNota(); break;
+        case 'fazer-upload': handleUpload(); break;
+        case 'salvar-github': handleSalvarGithubConfig(); break;
+      }
+      return;
+    }
+
+    // Botão FAB principal
+    if (t.closest('#fabBtn')) {
+      e.stopPropagation();
+      toggleFab();
+      return;
+    }
+
+    // Opções do FAB menu
+    const fabOpt = t.closest('.fab-opt') as HTMLElement | null;
+    if (fabOpt) {
+      e.stopPropagation();
+      const action = fabOpt.dataset.action;
+      if (action === 'nota')    showModal('modalNota');
+      if (action === 'projeto') showModal('modalProjeto');
+      if (action === 'script')  novoScript();
+      if (action === 'upload')  showModal('modalUpload');
+      closeFab();
+      return;
+    }
+
+    // Filtros da view de arquivos
+    const filterBtn = t.closest('#filterTabs [data-filter]') as HTMLElement | null;
+    if (filterBtn) {
+      filtrarFiles(filterBtn.dataset.filter || 'todos', filterBtn);
+      return;
+    }
+
+    // Botões de formatação do editor
+    const fmtBtn = t.closest('.tb-btn[data-fmt]') as HTMLElement | null;
+    if (fmtBtn) {
+      const [before, after] = fmtBtn.dataset.fmt!.split('|');
+      fmt(before, after);
+      return;
+    }
+
+    // Hints de busca avançada
+    const hintBtn = t.closest('[data-search-hint]') as HTMLElement | null;
+    if (hintBtn) {
+      const hint = hintBtn.dataset.searchHint!;
+      const input = document.getElementById('advSearch') as HTMLInputElement;
+      if (input) { input.value = hint; input.focus(); }
+      return;
+    }
+
+    // Fonte IA
+    const fonteBtn = t.closest('.fonte-btn') as HTMLElement | null;
+    if (fonteBtn) {
+      selecionarFonte(fonteBtn, (fonteBtn.dataset.fonte as any) || 'nenhuma');
+      return;
+    }
+  });
+
+  // Inputs
+  document.addEventListener('input', (e: Event) => {
+    const t = e.target as HTMLInputElement;
+    if (t.id === 'globalSearch') buscarGlobal(t.value);
+    if (t.id === 'advSearch')    buscarAvancado(t.value);
+  });
+
+  // Atalhos de teclado
+  document.addEventListener('keydown', (e: KeyboardEvent) => {
+    const ctrl = e.ctrlKey || e.metaKey;
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.show').forEach(m => m.classList.remove('show'));
+      closeFab();
+      return;
+    }
+    if (!ctrl) return;
     switch (e.key) {
       case 'n': e.preventDefault(); showModal('modalNota'); break;
       case 's': e.preventDefault(); handleSalvarNota(); break;
-      case 'f': e.preventDefault(); document.getElementById('globalSearch')?.focus(); break;
+      case 'f': e.preventDefault(); (document.getElementById('globalSearch') as HTMLInputElement)?.focus(); break;
       case 'p': e.preventDefault(); togglePreview(); break;
       case 'u': e.preventDefault(); showModal('modalUpload'); break;
       case 'g': e.preventDefault(); fazerSyncWithFeedback(); break;
-      case 'l': e.preventDefault(); const next = proximoIdioma(); setIdioma(next); render(); break;
+      case 'l': e.preventDefault(); { const next = proximoIdioma(); setIdioma(next); render(); break; }
       case 'w': e.preventDefault(); fecharEditor(); break;
       case '1': e.preventDefault(); showView('dashboard'); break;
       case '2': e.preventDefault(); showView('editor'); break;
       case '3': e.preventDefault(); showView('files'); break;
-      case '4': e.preventDefault(); showView('graph'); setTimeout(renderGraph, 100); break;
+      case '4': e.preventDefault(); showView('graph'); break;
       case '5': e.preventDefault(); showView('search'); break;
+      case '/': e.preventDefault(); showView('ajuda'); break;
     }
-
     if (e.shiftKey && e.key === 'P') { e.preventDefault(); showModal('modalProjeto'); }
-    if (e.key === '/') { e.preventDefault(); showView('ajuda'); }
   });
 }
 
-function setupGlobalEvents(): void {
-  // Global search
-  document.getElementById('globalSearch')?.addEventListener('input', (e) => {
-    buscarGlobal((e.target as HTMLInputElement).value);
-  });
+function toggleFab(): void {
+  const menu = document.getElementById('fabMenu');
+  const btn  = document.getElementById('fabBtn');
+  if (!menu || !btn) return;
+  const open = menu.classList.toggle('open');
+  btn.textContent = open ? '✕' : '＋';
+}
 
-  // Topbar buttons
-  document.querySelectorAll('[data-action="new-note"]').forEach(el => {
-    el.addEventListener('click', () => showModal('modalNota'));
-  });
-  document.querySelectorAll('[data-action="new-project"]').forEach(el => {
-    el.addEventListener('click', () => showModal('modalProjeto'));
-  });
+function closeFab(): void {
+  const menu = document.getElementById('fabMenu');
+  const btn  = document.getElementById('fabBtn');
+  if (menu) menu.classList.remove('open');
+  if (btn)  btn.textContent = '＋';
+}
 
-  // Filter files buttons
-  document.querySelectorAll('#filterTabs .btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const filtro = (btn as HTMLElement).dataset.filter || 'todos';
-      filtrarFiles(filtro, btn as HTMLElement);
-    });
-  });
+function fecharEditor(): void {
+  (document.getElementById('editorTitle') as HTMLInputElement).value = '';
+  (document.getElementById('editorBody') as HTMLTextAreaElement).value = '';
+  showView('dashboard');
+}
 
-  // Modal overlay clicks to close
-  document.querySelectorAll('.modal-overlay').forEach(modal => {
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) modal.classList.remove('show');
-    });
-  });
-
-  // Toolbar formatting
-  document.querySelectorAll('.tb-btn[data-fmt]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const data = (btn as HTMLElement).dataset.fmt!;
-      const [before, after] = data.split('|');
-      fmt(before, after);
-    });
-  });
-
-  // Preview toggle
-  document.querySelector('[data-action="preview"]')?.addEventListener('click', togglePreview);
-
-  // Save button
-  document.querySelector('[data-action="save"]')?.addEventListener('click', handleSalvarNota);
-
-  // Advanced search
-  document.getElementById('advSearch')?.addEventListener('input', (e) => {
-    buscarAvancado((e.target as HTMLInputElement).value);
-  });
-
-  // Search hint buttons
-  document.querySelectorAll('[data-search-hint]').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const hint = (btn as HTMLElement).dataset.searchHint!;
-      const input = document.getElementById('advSearch') as HTMLInputElement;
-      if (input) { input.value = hint; input.focus(); buscarAvancado(hint); }
-    });
-  });
-
-  // GitHub sync
-  document.querySelector('[data-action="sync"]')?.addEventListener('click', () => {
-    const token = StorageAdapter.getGhToken();
-    if (!token) showModal('modalGithub');
-    else fazerSyncWithFeedback();
-  });
-
-  // New script
-  document.querySelectorAll('[data-action="new-script"]').forEach(el => {
-    el.addEventListener('click', novoScript);
-  });
-
-  // Upload
-  document.querySelectorAll('[data-action="upload"]').forEach(el => {
-    el.addEventListener('click', () => showModal('modalUpload'));
-  });
-
-  // Modal buttons
-  document.querySelector('[data-action="criar-projeto"]')?.addEventListener('click', handleCriarProjeto);
-  document.querySelector('[data-action="criar-nota"]')?.addEventListener('click', handleCriarNota);
-  document.querySelector('[data-action="fazer-upload"]')?.addEventListener('click', handleUpload);
-  document.querySelector('[data-action="salvar-github"]')?.addEventListener('click', handleSalvarGithubConfig);
-
-  // Fonte IA buttons
-  document.querySelectorAll('.fonte-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const fonte = (btn as HTMLElement).dataset.fonte as any || 'nenhuma';
-      selecionarFonte(btn as HTMLElement, fonte);
-    });
-  });
-
-  // Mobile nav
-  document.querySelectorAll('.bn-item').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const view = (btn as HTMLElement).dataset.view as ViewName;
-      if (view === 'github') {
-        const token = StorageAdapter.getGhToken();
-        if (!token) showModal('modalGithub');
-        else fazerSyncWithFeedback();
-        return;
-      }
-      document.querySelectorAll('.bn-item').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      if (view === 'graph') { showView(view); setTimeout(renderGraph, 100); }
-      else showView(view);
-    });
-  });
-
-  // FAB
-  const fab = document.getElementById('fabBtn');
-  fab?.addEventListener('click', toggleFab);
-  document.querySelectorAll('.fab-opt').forEach(opt => {
-    opt.addEventListener('click', () => {
-      const action = (opt as HTMLElement).dataset.action;
-      if (action === 'nota') showModal('modalNota');
-      else if (action === 'projeto') showModal('modalProjeto');
-      else if (action === 'script') novoScript();
-      else if (action === 'upload') showModal('modalUpload');
-      toggleFab();
-    });
-  });
+async function fazerSyncWithFeedback(): Promise<void> {
+  const bar = document.getElementById('statusBar');
+  if (bar) bar.textContent = 'Sincronizando...';
+  const result = await fazerSync(msg => { if (bar) bar.textContent = msg; });
+  if (result.success) {
+    if (bar) bar.textContent = `✅ Sincronizado! github.com/${StorageAdapter.getGhUser()}/${StorageAdapter.getGhRepo()}`;
+    setTimeout(() => { if (bar) bar.textContent = ''; }, 5000);
+  } else {
+    if (bar) bar.textContent = '❌ Erro: ' + result.error;
+  }
 }
 
 function setupDragAndDrop(): void {
-  document.addEventListener('dragover', (e) => e.preventDefault());
-  document.addEventListener('drop', (e) => {
+  document.addEventListener('dragover', e => e.preventDefault());
+  document.addEventListener('drop', (e: DragEvent) => {
     e.preventDefault();
     const files = e.dataTransfer?.files;
     if (!files?.length) return;
-
-    const notas = StorageAdapter.getDados().notas;
-    const projetos = StorageAdapter.getDados().projetos;
+    const { notas, projetos } = StorageAdapter.getDados();
     Array.from(files).forEach(file => {
       const reader = new FileReader();
-      reader.onload = (ev) => {
+      reader.onload = ev => {
         const ext = file.name.split('.').pop()?.toLowerCase() || '';
         const tipoMap: Record<string, 'script' | 'nota'> = { py: 'script', js: 'script', html: 'script', css: 'script', sql: 'script', md: 'nota', txt: 'nota' };
         const isMd = ext === 'md';
-        notas.push({
-          id: 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
-          titulo: file.name,
-          projeto: '',
-          tipo: tipoMap[ext] || 'nota',
-          tags: [ext],
-          fonteIA: 'nenhuma',
-          conteudo: isMd ? ev.target?.result as string : '```' + ext + '\n' + (ev.target?.result as string) + '\n```',
-          criado: new Date().toISOString(),
-          atualizado: new Date().toISOString(),
-        });
+        const conteudo = isMd ? (ev.target?.result as string) : '```' + ext + '\n' + (ev.target?.result as string) + '\n```';
+        notas.push({ id: 'n_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6), titulo: file.name, projeto: '', tipo: tipoMap[ext] || 'nota', tags: [ext], fonteIA: 'nenhuma', conteudo, criado: new Date().toISOString(), atualizado: new Date().toISOString() });
         StorageAdapter.saveDados({ notas, projetos });
         render();
       };
@@ -217,51 +222,7 @@ function setupDragAndDrop(): void {
   });
 }
 
-function toggleFab(): void {
-  const menu = document.getElementById('fabMenu');
-  const btn = document.getElementById('fabBtn');
-  if (!menu || !btn) return;
-  const open = menu.classList.toggle('open');
-  btn.textContent = open ? '✕' : '＋';
-}
+// Módulo inicializa direto (type="module" já garante DOM pronto)
+init();
 
-function setupFecharFabFora(): void {
-  document.addEventListener('click', (e) => {
-    if (!(e.target as HTMLElement)?.closest('.fab') && !(e.target as HTMLElement)?.closest('.fab-menu')) {
-      const menu = document.getElementById('fabMenu');
-      const btn = document.getElementById('fabBtn');
-      if (menu) menu.classList.remove('open');
-      if (btn) btn.textContent = '＋';
-    }
-  });
-}
-
-function fecharEditor(): void {
-  const titleInput = document.getElementById('editorTitle') as HTMLInputElement;
-  const bodyTextarea = document.getElementById('editorBody') as HTMLTextAreaElement;
-  if (titleInput) titleInput.value = '';
-  if (bodyTextarea) bodyTextarea.value = '';
-  showView('dashboard');
-}
-
-async function fazerSyncWithFeedback(): Promise<void> {
-  const statusBar = document.getElementById('statusBar');
-  if (statusBar) statusBar.textContent = 'Sincronizando...';
-
-  const result = await fazerSync((msg) => {
-    if (statusBar) statusBar.textContent = msg;
-  });
-
-  if (result.success) {
-    if (statusBar) statusBar.textContent = '✅ Sincronizado com GitHub! github.com/' + StorageAdapter.getGhUser() + '/' + StorageAdapter.getGhRepo();
-    setTimeout(() => { if (statusBar) statusBar.textContent = ''; }, 5000);
-  } else {
-    if (statusBar) statusBar.textContent = '❌ Erro: ' + result.error;
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  init();
-});
-
-export { init, abrirNota };
+export { init, abrirNota, hideModal, handleExcluirNota, renderFiles };
