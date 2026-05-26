@@ -91,7 +91,7 @@ function renderProjectsGrid(projetos: Projeto[], notas: Nota[]): void {
             <div class="proj-name">${p.nome}</div>
             <div style="font-size:11px;color:var(--muted)">${pNotas.length} itens</div>
           </div>
-          <button class="btn-delete-proj" data-action="excluir-projeto" data-projeto-id="${p.id}" data-nome="${p.nome}" title="Excluir projeto" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:2px 6px;border-radius:4px;flex-shrink:0" onmouseenter="this.style.color='var(--danger)'" onmouseleave="this.style.color='var(--muted)'">🗑</button>
+          <button class="btn-delete-proj" data-action="excluir-projeto" data-projeto-id="${p.id}" data-nome="${p.nome}" title="Excluir projeto" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:13px;padding:2px 6px;border-radius:4px;flex-shrink:0;opacity:0;transition:opacity .15s">🗑 Excluir</button>
         </div>
         <div class="proj-desc">${p.desc}</div>
         <div class="proj-tags">
@@ -103,6 +103,14 @@ function renderProjectsGrid(projetos: Projeto[], notas: Nota[]): void {
   }).join('');
 
   el.querySelectorAll('.proj-card').forEach(card => {
+    card.addEventListener('mouseenter', () => {
+      const btn = card.querySelector('.btn-delete-proj') as HTMLElement;
+      if (btn) btn.style.opacity = '1';
+    });
+    card.addEventListener('mouseleave', () => {
+      const btn = card.querySelector('.btn-delete-proj') as HTMLElement;
+      if (btn) btn.style.opacity = '0';
+    });
     card.addEventListener('click', (e) => {
       if ((e.target as HTMLElement).closest('[data-action]')) return;
       const id = (card as HTMLElement).dataset.projeto!;
