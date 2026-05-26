@@ -87,10 +87,11 @@ function renderProjectsGrid(projetos: Projeto[], notas: Nota[]): void {
       <div class="proj-card" data-projeto="${p.id}">
         <div class="proj-header">
           <div class="proj-icon" style="background:rgba(88,166,255,.1)">${p.icon}</div>
-          <div>
+          <div style="flex:1">
             <div class="proj-name">${p.nome}</div>
             <div style="font-size:11px;color:var(--muted)">${pNotas.length} itens</div>
           </div>
+          <button class="btn-delete-proj" data-action="excluir-projeto" data-projeto-id="${p.id}" data-nome="${p.nome}" title="Excluir projeto" style="background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:2px 6px;border-radius:4px;flex-shrink:0" onmouseenter="this.style.color='var(--danger)'" onmouseleave="this.style.color='var(--muted)'">🗑</button>
         </div>
         <div class="proj-desc">${p.desc}</div>
         <div class="proj-tags">
@@ -102,7 +103,8 @@ function renderProjectsGrid(projetos: Projeto[], notas: Nota[]): void {
   }).join('');
 
   el.querySelectorAll('.proj-card').forEach(card => {
-    card.addEventListener('click', () => {
+    card.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('[data-action]')) return;
       const id = (card as HTMLElement).dataset.projeto!;
       filtrarPorProjeto(id);
     });
@@ -152,7 +154,8 @@ export function renderFiles(filtro: string): void {
     const ext = n.tipo === 'script' ? (n.tags?.find(t => ['py', 'js', 'html', 'sql', 'python'].includes(t)) || 'txt') : 'md';
     const fi = FONTE_ICON[n.fonteIA] || '';
     return `
-      <div class="file-card" data-nota="${n.id}">
+      <div class="file-card" data-nota="${n.id}" style="position:relative">
+        <button data-action="excluir-nota" data-nota-id="${n.id}" data-nome="${n.titulo}" title="Excluir" style="position:absolute;top:6px;right:6px;background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;padding:2px 5px;border-radius:4px;opacity:0;transition:opacity .15s" class="btn-delete-nota">🗑</button>
         <div class="file-icon">${TIPO_ICON[n.tipo] || '📄'} ${fi}</div>
         <div class="file-name">${n.titulo}</div>
         <div class="file-meta">${proj?.nome || 'Sem projeto'} · .${ext}</div>
@@ -163,7 +166,16 @@ export function renderFiles(filtro: string): void {
   }).join('');
 
   grid.querySelectorAll('.file-card').forEach(card => {
-    card.addEventListener('click', () => {
+    card.addEventListener('mouseenter', () => {
+      const btn = card.querySelector('.btn-delete-nota') as HTMLElement;
+      if (btn) btn.style.opacity = '1';
+    });
+    card.addEventListener('mouseleave', () => {
+      const btn = card.querySelector('.btn-delete-nota') as HTMLElement;
+      if (btn) btn.style.opacity = '0';
+    });
+    card.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('[data-action]')) return;
       const id = (card as HTMLElement).dataset.nota!;
       abrirNota(id);
     });

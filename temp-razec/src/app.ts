@@ -8,7 +8,12 @@ import { renderFiles, filtrarFiles } from './components/render';
 import { fazerSync } from './services/sync';
 import { setIdioma, getIdioma, proximoIdioma } from './i18n/index';
 import { StorageAdapter } from './storage';
+import { excluirNota } from './services/notes';
+import { excluirProjeto } from './services/projects';
 import type { ViewName } from './types';
+
+// Estado da confirmação de exclusão
+let _confirmCallback: (() => void) | null = null;
 
 function init(): void {
   inicializarDados();
@@ -74,6 +79,31 @@ function setupEventDelegation(): void {
         case 'criar-nota':   handleCriarNota(); break;
         case 'fazer-upload': handleUpload(); break;
         case 'salvar-github': handleSalvarGithubConfig(); break;
+        case 'confirmar-excluir':
+          if (_confirmCallback) { _confirmCallback(); _confirmCallback = null; }
+          hideModal('modalConfirm');
+          break;
+        case 'excluir-projeto': {
+          const id   = actionEl.dataset.projetoId!;
+          const nome = actionEl.dataset.nome || 'este projeto';
+          pedirConfirmacao(
+            `Excluir o projeto "${nome}"? Todas as notas vinculadas também serão excluídas.`,
+            () => { excluirProjeto(id); render(); setStatus('Projeto excluído'); }
+          );
+          break;
+        }
+        case 'excluir-nota': {
+          const id   = actionEl.dataset.notaId!;
+          const nome = actionEl.dataset.nome || 'esta nota';
+          pedirConfirmacao(
+            `Excluir a nota "${nome}"?`,
+            () => { excluirNota(id); render(); setStatus('Nota excluída'); }
+          );
+          break;
+        }
+        case 'excluir-nota-editor':
+          handleExcluirNota();
+          break;
       }
       return;
     }
@@ -164,6 +194,20 @@ function setupEventDelegation(): void {
     }
     if (e.shiftKey && e.key === 'P') { e.preventDefault(); showModal('modalProjeto'); }
   });
+}
+
+function pedirConfirmacao(mensagem: string, callback: () => void): void {
+  _confirmCallback = callback;
+  const msg = document.getElementById('confirmMessage');
+  if (msg) msg.textContent = mensagem;
+  showModal('modalConfirm');
+}
+
+function setStatus(msg: string): void {
+  const bar = document.getElementById('statusBar');
+  if (!bar) return;
+  bar.textContent = msg;
+  setTimeout(() => { bar.textContent = ''; }, 3000);
 }
 
 function toggleFab(): void {

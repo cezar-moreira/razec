@@ -84,6 +84,7 @@
             <button class="tb-btn" data-fmt="[[|]]">🔗 Linkar nota</button>
             <div style="margin-left:auto;display:flex;gap:6px">
               <button class="tb-btn" data-action="preview">👁 Visualizar</button>
+              <button class="tb-btn" data-action="excluir-nota-editor" style="color:var(--danger);border-color:var(--danger)" title="Excluir nota">🗑 Excluir</button>
               <button class="btn btn-primary btn-save" data-action="save">💾 Salvar nota</button>
             </div>
           </div>
@@ -280,7 +281,7 @@
     <p id="confirmMessage" style="font-size:14px;color:var(--text);margin-bottom:1rem"></p>
     <div class="modal-actions">
       <button class="btn" onclick="document.getElementById('modalConfirm').classList.remove('show')">Cancelar</button>
-      <button class="btn btn-danger" id="confirmYesBtn">Sim, excluir</button>
+      <button class="btn btn-danger" id="confirmYesBtn" data-action="confirmar-excluir">Sim, excluir</button>
     </div>
   </div>
 </div>
