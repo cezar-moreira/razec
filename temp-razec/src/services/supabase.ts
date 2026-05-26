@@ -57,7 +57,7 @@ export async function logout(): Promise<void> {
   await sb.auth.signOut();
 }
 
-// Carrega todos os dados do Supabase e salva no localStorage
+// Carrega do Supabase — se estiver vazio mas localStorage tem dados, migra primeiro
 export async function carregarDoSupabase(): Promise<boolean> {
   if (!_userId) return false;
   try {
@@ -65,6 +65,17 @@ export async function carregarDoSupabase(): Promise<boolean> {
       sb.from('projetos').select('*').eq('user_id', _userId).order('criado', { ascending: true }),
       sb.from('notas').select('*').eq('user_id', _userId).order('atualizado', { ascending: false }),
     ]);
+
+    const supabaseVazio = !projData?.length && !notasData?.length;
+    const dadosLocais   = StorageAdapter.getDados();
+    const localTemDados = dadosLocais.notas.length > 0 || dadosLocais.projetos.length > 0;
+
+    if (supabaseVazio && localTemDados) {
+      // Migra dados locais para o Supabase antes de qualquer coisa
+      await migrarLocalParaSupabase(dadosLocais.projetos, dadosLocais.notas);
+      return true;
+    }
+
     const projetos: Projeto[] = (projData ?? []).map(r => ({
       id: r.id, nome: r.nome, desc: r.descricao ?? '',
       icon: r.icon ?? '📁', cor: r.cor ?? 'blue', criado: r.criado,
@@ -81,6 +92,28 @@ export async function carregarDoSupabase(): Promise<boolean> {
     console.error('[Supabase] carregarDoSupabase:', e);
     return false;
   }
+}
+
+// Migra todos os dados do localStorage para o Supabase (executado uma única vez no primeiro login)
+async function migrarLocalParaSupabase(projetos: Projeto[], notas: Nota[]): Promise<void> {
+  if (!_userId) return;
+  const projetosPayload = projetos.map(p => ({
+    id: p.id, user_id: _userId!,
+    nome: p.nome, descricao: p.desc ?? '',
+    icon: p.icon ?? '📁', cor: p.cor ?? 'blue',
+    criado: p.criado ?? new Date().toISOString(),
+  }));
+  const notasPayload = notas.map(n => ({
+    id: n.id, user_id: _userId!,
+    titulo: n.titulo, conteudo: n.conteudo ?? '',
+    tipo: n.tipo ?? 'nota', projeto_id: n.projeto ?? '',
+    tags: n.tags ?? [], fonte_ia: n.fonteIA ?? 'nenhuma',
+    criado: n.criado ?? new Date().toISOString(),
+    atualizado: n.atualizado ?? new Date().toISOString(),
+  }));
+  if (projetosPayload.length) await sb.from('projetos').upsert(projetosPayload);
+  if (notasPayload.length)    await sb.from('notas').upsert(notasPayload);
+  console.log(`[Supabase] Migração concluída: ${projetos.length} projetos, ${notas.length} notas`);
 }
 
 // Sincroniza uma nota ao Supabase
