@@ -1,6 +1,7 @@
 import { criarProjeto } from '../services/projects';
 import { criarNota } from '../services/notes';
 import { importarArquivos } from '../services/upload';
+import { fazerSync } from '../services/sync';
 import { StorageAdapter } from '../storage';
 import { hideModal, render, showModal } from './render';
 import { abrirNota, setNotaAtual } from './editor';
@@ -66,14 +67,26 @@ export function handleUpload(): void {
   render();
 }
 
-export function handleSalvarGithubConfig(): void {
+export async function handleSalvarGithubConfig(): Promise<void> {
   const user = (document.getElementById('ghUser') as HTMLInputElement)?.value;
   const token = (document.getElementById('ghToken') as HTMLInputElement)?.value;
   const repo = (document.getElementById('ghRepo') as HTMLInputElement)?.value;
-  if (user) StorageAdapter.setGhUser(user);
+  StorageAdapter.setGhUser(user || 'cezar-moreira');
   if (token) StorageAdapter.setGhToken(token);
-  if (repo) StorageAdapter.setGhRepo(repo);
+  StorageAdapter.setGhRepo(repo || 'razec');
   hideModal('modalGithub');
+
+  const statusBar = document.getElementById('statusBar');
+  if (statusBar) statusBar.textContent = 'Sincronizando...';
+  const result = await fazerSync((msg) => {
+    if (statusBar) statusBar.textContent = msg;
+  });
+  if (result.success) {
+    if (statusBar) statusBar.textContent = '✅ Sincronizado com GitHub!';
+    setTimeout(() => { if (statusBar) statusBar.textContent = ''; }, 5000);
+  } else {
+    if (statusBar) statusBar.textContent = '❌ Erro: ' + result.error;
+  }
 }
 
 export function handleSyncGitHub(): void {
