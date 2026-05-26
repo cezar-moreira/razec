@@ -15,6 +15,14 @@ import type { ViewName } from './types';
 // Estado da confirmação de exclusão
 let _confirmCallback: (() => void) | null = null;
 
+// Auto-sync debounced — dispara 2s após a última mudança se token estiver configurado
+let _syncTimer: ReturnType<typeof setTimeout> | null = null;
+function autoSync(): void {
+  if (!StorageAdapter.getGhToken()) return;
+  if (_syncTimer) clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(() => fazerSyncWithFeedback(), 2000);
+}
+
 function init(): void {
   inicializarDados();
   setIdioma(getIdioma());
@@ -74,14 +82,15 @@ function setupEventDelegation(): void {
         case 'new-script':   novoScript(); break;
         case 'upload':       showModal('modalUpload'); break;
         case 'preview':      togglePreview(); break;
-        case 'save':         handleSalvarNota(); break;
-        case 'criar-projeto': handleCriarProjeto(); break;
-        case 'criar-nota':   handleCriarNota(); break;
-        case 'fazer-upload': handleUpload(); break;
+        case 'save':         handleSalvarNota(); autoSync(); break;
+        case 'criar-projeto': handleCriarProjeto(); autoSync(); break;
+        case 'criar-nota':   handleCriarNota(); autoSync(); break;
+        case 'fazer-upload': handleUpload(); autoSync(); break;
         case 'salvar-github': handleSalvarGithubConfig(); break;
         case 'confirmar-excluir':
           if (_confirmCallback) { _confirmCallback(); _confirmCallback = null; }
           hideModal('modalConfirm');
+          autoSync();
           break;
         case 'excluir-projeto': {
           const id   = actionEl.dataset.projetoId!;
@@ -102,7 +111,7 @@ function setupEventDelegation(): void {
           break;
         }
         case 'excluir-nota-editor':
-          handleExcluirNota();
+          handleExcluirNota(); autoSync();
           break;
       }
       return;

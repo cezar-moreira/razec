@@ -1,8 +1,8 @@
 import { StorageAdapter } from '../storage';
 import { listarNotas } from '../services/notes';
-import { listarProjetos, criarProjeto } from '../services/projects';
+import { listarProjetos } from '../services/projects';
 import { filtrarPorTipo, todasTags, storageInfo, notasPorProjeto } from '../services/search';
-import { COR_PROJETO_MAP, TIPO_ICON, FONTE_ICON, type Projeto, type Nota, type CorProjeto, type ViewName } from '../types';
+import { COR_PROJETO_MAP, TIPO_ICON, FONTE_ICON, type Projeto, type Nota, type ViewName } from '../types';
 import { renderGraph } from './graph';
 import { buscarAvancado } from '../services/search';
 import { abrirNota } from './editor';
@@ -45,14 +45,26 @@ function renderSidebarProjetos(projetos: Projeto[]): void {
   const el = document.getElementById('sidebarProjects');
   if (!el) return;
   el.innerHTML = projetos.map(p => `
-    <div class="project-item" data-projeto="${p.id}">
-      <div class="dot" style="background:${COR_PROJETO_MAP[p.cor] || '#58a6ff'}"></div>
-      ${p.icon} ${p.nome.split('—')[0].trim()}
+    <div class="project-item" data-projeto="${p.id}" style="display:flex;align-items:center;justify-content:space-between;position:relative">
+      <div style="display:flex;align-items:center;gap:8px;flex:1;min-width:0">
+        <div class="dot" style="background:${COR_PROJETO_MAP[p.cor] || '#58a6ff'};flex-shrink:0"></div>
+        <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${p.icon} ${p.nome.split('—')[0].trim()}</span>
+      </div>
+      <button class="btn-delete-sidebar" data-action="excluir-projeto" data-projeto-id="${p.id}" data-nome="${p.nome}" title="Excluir projeto" style="background:none;border:none;cursor:pointer;color:var(--danger);font-size:11px;padding:1px 4px;border-radius:3px;flex-shrink:0;opacity:0;transition:opacity .15s">✕</button>
     </div>
   `).join('');
 
   el.querySelectorAll('.project-item').forEach(item => {
-    item.addEventListener('click', () => {
+    item.addEventListener('mouseenter', () => {
+      const btn = item.querySelector('.btn-delete-sidebar') as HTMLElement;
+      if (btn) btn.style.opacity = '1';
+    });
+    item.addEventListener('mouseleave', () => {
+      const btn = item.querySelector('.btn-delete-sidebar') as HTMLElement;
+      if (btn) btn.style.opacity = '0';
+    });
+    item.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('[data-action]')) return;
       const id = (item as HTMLElement).dataset.projeto!;
       filtrarPorProjeto(id);
     });

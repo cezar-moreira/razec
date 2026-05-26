@@ -11,6 +11,10 @@ export async function fazerSync(onProgress?: (msg: string) => void): Promise<{ s
   const notas = listarNotas();
   const projetos = listarProjetos();
 
+  onProgress?.('Salvando backup completo...');
+  const dados = { projetos, notas, atualizado: new Date().toISOString() };
+  await pushToGitHub(user, token, repo, 'dados.json', btoa(unescape(encodeURIComponent(JSON.stringify(dados, null, 2)))));
+
   onProgress?.('Gerando README...');
   const readme = `# RAZEC — Base de Conhecimento\n\nAtualizado: ${new Date().toLocaleString('pt-BR')}\n\n## Projetos\n\n${projetos.map(p => `- ${p.icon} **${p.nome}** — ${p.desc}`).join('\n')}\n\n## Estatísticas\n\n- 📝 ${notas.length} notas\n- 📁 ${projetos.length} projetos\n`;
   await pushToGitHub(user, token, repo, 'README.md', btoa(unescape(encodeURIComponent(readme))));
@@ -52,6 +56,25 @@ async function pushToGitHub(user: string, token: string, repo: string, path: str
 }
 
 export async function pullFromGitHub(): Promise<{ success: boolean; error?: string }> {
-  // stubbed for future bidirectional sync
-  return { success: true, error: 'Pull ainda não implementado' };
+  const user = StorageAdapter.getGhUser();
+  const token = StorageAdapter.getGhToken();
+  const repo = StorageAdapter.getGhRepo();
+  if (!token) return { success: false, error: 'Token não configurado' };
+
+  try {
+    const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/dados.json`, {
+      headers: { Authorization: 'token ' + token },
+    });
+    if (!res.ok) return { success: false, error: 'dados.json não encontrado no repositório' };
+    const file = await res.json();
+    const json = decodeURIComponent(escape(atob(file.content.replace(/\n/g, ''))));
+    const dados = JSON.parse(json);
+    if (dados.notas && dados.projetos) {
+      StorageAdapter.saveDados({ notas: dados.notas, projetos: dados.projetos });
+      return { success: true };
+    }
+    return { success: false, error: 'Formato inválido' };
+  } catch (e) {
+    return { success: false, error: String(e) };
+  }
 }
