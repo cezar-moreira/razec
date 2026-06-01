@@ -71,34 +71,52 @@ function setCloud(tipo: 'ok' | 'sync' | 'err', txt: string): void {
   el.style.borderColor = tipo === 'ok' ? 'var(--success)' : tipo === 'sync' ? 'var(--primary)' : 'var(--danger)';
 }
 
+// Chamado quando sessão Supabase é detectada (login manual ou sessão salva)
 async function onLogin(email: string): Promise<void> {
-  setCloud('sync', 'Carregando dados...');
-  document.getElementById('loadingScreen')!.style.display = 'flex';
-  document.getElementById('authScreen')!.style.display    = 'none';
-
-  inicializarDados();
-  const ok = await carregarDoSupabase();
-  setCloud(ok ? 'ok' : 'err', ok ? `☁️ ${email}` : '⚠️ Offline');
-
+  document.getElementById('authScreen')!.style.display = 'none';
+  setCloud('sync', `☁️ ${email}...`);
   const emailEl = document.getElementById('userEmailSidebar');
   if (emailEl) emailEl.textContent = email;
+  try {
+    const ok = await carregarDoSupabase();
+    setCloud(ok ? 'ok' : 'err', ok ? `☁️ ${email}` : '⚠️ Offline');
+    if (ok) {
+      render();
+      setupRealtime(() => { render(); setCloud('ok', `☁️ ${email}`); });
+    }
+  } catch {
+    setCloud('err', '⚠️ Offline');
+  }
+}
 
-  document.getElementById('loadingScreen')!.style.display = 'none';
+// Chamado quando não há sessão ativa — app continua com localStorage
+function onLogout(): void {
+  setCloud('err', 'Offline');
+  const emailEl = document.getElementById('userEmailSidebar');
+  if (emailEl) emailEl.textContent = '';
+}
+
+async function init(): Promise<void> {
+  // 1. Carrega o app IMEDIATAMENTE com localStorage — sem bloquear
+  inicializarDados();
   setIdioma(getIdioma());
   render();
   setupEditorAutoPreview();
   setupEventDelegation();
   setupDragAndDrop();
-  setupRealtime(() => { render(); setCloud('ok', `☁️ ${email}`); });
-}
-
-function onLogout(): void {
-  document.getElementById('authScreen')!.style.display = 'flex';
   document.getElementById('loadingScreen')!.style.display = 'none';
-}
+  document.getElementById('authScreen')!.style.display    = 'none';
+  setCloud('err', 'Offline');
 
-async function init(): Promise<void> {
-  await initAuth(onLogin, onLogout);
+  // 2. Tenta Supabase em background (opcional — 4s timeout)
+  try {
+    await Promise.race([
+      initAuth(onLogin, onLogout),
+      new Promise<void>(resolve => setTimeout(resolve, 4000)),
+    ]);
+  } catch {
+    console.warn('[RAZEC] Supabase opcional — operando em modo offline.');
+  }
 }
 
 // ─── Event delegation — um único listener para toda a UI ─────────────────────
