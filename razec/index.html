@@ -174,6 +174,7 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
   .files-grid{grid-template-columns:1fr 1fr}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
 
@@ -188,6 +189,7 @@ mark{background:rgba(255,210,0,.3);color:var(--text);border-radius:2px;padding:0
     <button class="btn" onclick="showModal('modalNota')">+ Nova nota</button>
     <button class="btn btn-primary" onclick="showModal('modalProjeto')">+ Projeto</button>
     <button class="btn" onclick="syncGitHub()" title="Sincronizar GitHub">⬆ GitHub</button>
+    <button class="btn" onclick="syncSupabase()" title="Sincronizar Supabase" style="background:#3ecf8e;color:#1a1a1a;font-weight:600">☁ Supabase</button>
   </div>
 </div>
 
@@ -985,6 +987,96 @@ async function pushToGitHub(user, token, repo, path, content) {
       body: JSON.stringify({ message: `chore: sync RAZEC ${new Date().toISOString()}`, content, ...(sha ? { sha } : {}) })
     });
   } catch (e) { console.error('GitHub sync error:', e); }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SUPABASE SYNC
+// ═══════════════════════════════════════════════════════════
+
+const SB_URL = 'https://vxbpnfetfnpvxptapovu.supabase.co';
+const SB_KEY = 'sb_publishable_cMyWTOEUCD995xTufiQwIw_TZ3rPZzo';
+let _sbClient = null;
+
+function getSB() {
+  if (!_sbClient) _sbClient = supabase.createClient(SB_URL, SB_KEY);
+  return _sbClient;
+}
+
+async function syncSupabase() {
+  const sb     = getSB();
+  const todas  = DB.get('notas',    []);
+  const projs  = DB.get('projetos', []);
+
+  const notasOnly     = todas.filter(n => n.tipo === 'nota'     || !n.tipo);
+  const scriptsOnly   = todas.filter(n => n.tipo === 'script');
+  const conversasOnly = todas.filter(n => n.tipo === 'conversa');
+
+  let erros = 0;
+
+  // Projetos
+  if (projs.length) {
+    const { error } = await sb.from('projetos').upsert(
+      projs.map(p => ({
+        id: p.id, nome: p.nome, descricao: p.desc || '',
+        icon: p.icon || '', cor: p.cor || 'blue',
+        criado_em: p.criado || new Date().toISOString(),
+      }))
+    );
+    if (error) { console.error('[Supabase] projetos:', error); erros++; }
+  }
+
+  // Notas
+  if (notasOnly.length) {
+    const { error } = await sb.from('notas').upsert(
+      notasOnly.map(n => ({
+        id: n.id, titulo: n.titulo, conteudo: n.conteudo || '',
+        projeto_id: n.projeto || null, tags: n.tags || [],
+        criado_em: n.criado || new Date().toISOString(),
+        atualizado_em: n.atualizado || new Date().toISOString(),
+      }))
+    );
+    if (error) { console.error('[Supabase] notas:', error); erros++; }
+  }
+
+  // Scripts
+  if (scriptsOnly.length) {
+    const { error } = await sb.from('scripts').upsert(
+      scriptsOnly.map(n => ({
+        id: n.id, titulo: n.titulo, conteudo: n.conteudo || '',
+        linguagem: 'text', projeto_id: n.projeto || null, tags: n.tags || [],
+        criado_em: n.criado || new Date().toISOString(),
+        atualizado_em: n.atualizado || new Date().toISOString(),
+      }))
+    );
+    if (error) { console.error('[Supabase] scripts:', error); erros++; }
+  }
+
+  // Conversas
+  if (conversasOnly.length) {
+    const { error } = await sb.from('conversas').upsert(
+      conversasOnly.map(n => ({
+        id: n.id, titulo: n.titulo, conteudo: n.conteudo || '',
+        fonte: n.fonteIA || 'nenhuma', projeto_id: n.projeto || null,
+        criado_em: n.criado || new Date().toISOString(),
+        atualizado_em: n.atualizado || new Date().toISOString(),
+      }))
+    );
+    if (error) { console.error('[Supabase] conversas:', error); erros++; }
+  }
+
+  const total = projs.length + notasOnly.length + scriptsOnly.length + conversasOnly.length;
+  if (erros === 0) {
+    alert(
+      'Supabase sincronizado com sucesso!\n\n' +
+      'Projetos: '  + projs.length          + '\n' +
+      'Notas: '     + notasOnly.length       + '\n' +
+      'Scripts: '   + scriptsOnly.length     + '\n' +
+      'Conversas: ' + conversasOnly.length   + '\n' +
+      'Total: '     + total + ' itens'
+    );
+  } else {
+    alert('Sync com ' + erros + ' erro(s). Abra o Console (F12) para detalhes.');
+  }
 }
 
 // ═══════════════════════════════════════════════════════════
