@@ -1,0 +1,15 @@
+# Dependabot: abre PR sozinho quando sai correção de segurança.
+# Ecossistema que não existir no repositório é ignorado sem erro.
+version: 2
+updates:
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule: { interval: "weekly", day: "monday", time: "07:00", timezone: "America/Fortaleza" }
+    open-pull-requests-limit: 5
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule: { interval: "weekly", day: "monday", time: "07:00", timezone: "America/Fortaleza" }
+    open-pull-requests-limit: 5
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule: { interval: "weekly", day: "monday", time: "07:00", timezone: "America/Fortaleza" }
