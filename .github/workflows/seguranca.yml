@@ -1,0 +1,115 @@
+# Portão de segurança — SoftwareHouse Fortaleza (Hacker Guardião)
+# Roda a cada push, em todo Pull Request e toda segunda às 07h (Fortaleza).
+# Falha grave barra o merge. Nenhum segredo do repositório é usado aqui.
+name: seguranca
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 10 * * 1"   # 10h UTC = 07h em Fortaleza
+  workflow_dispatch:
+
+# Mínimo de permissão: só ler o código. Se algo aqui for adulterado, não consegue escrever nada.
+permissions:
+  contents: read
+
+concurrency:
+  group: seguranca-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  segredos:
+    name: Senhas e chaves no historico (gitleaks)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "stable"
+          cache: false
+      - name: gitleaks (historico inteiro, versao fixa conferida pelo checksum do Go)
+        run: |
+          go install github.com/zricethezav/gitleaks/v8@v8.24.0
+          "$(go env GOPATH)/bin/gitleaks" git . --redact --no-banner --exit-code 1
+
+  dependencias:
+    name: Bibliotecas com falha conhecida
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: pip-audit (Python)
+        run: |
+          shopt -s nullglob globstar
+          arquivos=( **/requirements*.txt )
+          if [ ${#arquivos[@]} -eq 0 ]; then echo "Sem requirements*.txt - pulando."; exit 0; fi
+          pip install --quiet pip-audit==2.10.1
+          falhou=0
+          for f in "${arquivos[@]}"; do
+            case "$f" in node_modules/*|.venv/*|venv/*) continue;; esac
+            echo "== $f"; pip-audit -r "$f" --progress-spinner off || falhou=1
+          done
+          exit $falhou
+      - name: npm audit (Node) - so alta e critica barram
+        run: |
+          if [ ! -f package-lock.json ]; then echo "Sem package-lock.json - pulando."; exit 0; fi
+          npm audit --audit-level=high --omit=dev
+
+  codigo:
+    name: Codigo inseguro (bandit + semgrep)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Instala as ferramentas (versoes fixas)
+        run: pip install --quiet bandit==1.9.4 semgrep==1.185.0
+      - name: bandit (Python) - alta severidade barra, media so relatorio
+        run: |
+          if ! find . -name "*.py" -not -path "./.venv/*" -not -path "./venv/*" -not -path "./node_modules/*" | grep -q .; then
+            echo "Sem codigo Python - pulando."; exit 0; fi
+          bandit -r . -x ./.venv,./venv,./tests,./node_modules -ll -f txt || true
+          bandit -r . -x ./.venv,./venv,./tests,./node_modules -lll -iii -q
+      - name: semgrep (OWASP, Flask, Python, JS, segredos) - so ERROR barra
+        run: |
+          semgrep scan --config p/owasp-top-ten --config p/secrets --config p/flask \
+            --config p/python --config p/javascript \
+            --severity ERROR --error --metrics off --quiet
+
+  workflows:
+    name: Sinais do ataque wfx e workflow perigoso
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Procura arquivos, enderecos e gatilhos suspeitos
+        run: |
+          ruim=0
+          if ls .github/workflows/build-audit-*.yml >/dev/null 2>&1; then
+            echo "::error::Workflow build-audit-*.yml encontrado (assinatura do ataque wfx)"; ruim=1; fi
+          if ls .ci-*.sh >/dev/null 2>&1; then
+            echo "::error::Arquivo .ci-*.sh encontrado (assinatura do ataque wfx)"; ruim=1; fi
+          # --exclude=seguranca.yml: este arquivo contém os próprios padrões procurados
+          if grep -RIEl --exclude-dir=.git --exclude=seguranca.yml "(194\.150\.166\.244|18\.143\.168\.96|153\.75\.82\.159)" . ; then
+            echo "::error::Endereco de exfiltracao do ataque wfx encontrado"; ruim=1; fi
+          if grep -RIl --exclude=seguranca.yml "pull_request_target" .github/workflows 2>/dev/null; then
+            echo "::error::pull_request_target entrega segredo para codigo de PR de fora. Remova ou revise."; ruim=1; fi
+          if [ -f package.json ] && grep -Eq '"(pre|post)install"' package.json; then
+            echo "::warning::package.json tem preinstall/postinstall - confira se foi voce que colocou"; fi
+          exit $ruim
